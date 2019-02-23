@@ -125,7 +125,9 @@ void ShaderGL::Use() {
 
 void ShaderGL::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName) {
 	unsigned int uniformBlock = glGetUniformBlockIndex(m_Program, a_StructName.c_str());
-	glUniformBlockBinding(m_Program, uniformBlock, ((ShaderUniformBlockGL*)a_Block)->m_SlotID);
+	if (uniformBlock != -1) {
+		glUniformBlockBinding(m_Program, uniformBlock, ((ShaderUniformBlockGL*)a_Block)->m_SlotID);
+	}
 }
 
 void ShaderGL::BindTexture(std::string a_Name, unsigned int a_Index) {

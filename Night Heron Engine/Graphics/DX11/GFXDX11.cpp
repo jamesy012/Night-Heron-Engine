@@ -6,8 +6,8 @@
 #include <d3d11_1.h>
 #include <d3d11_2.h>
 
-//#include <imgui-master\imgui.h>
-//#include <imgui-master\examples\imgui_impl_dx11.h>
+#include <imgui-master\imgui.h>
+#include <imgui-master\examples\imgui_impl_dx11.h>
 
 #include "ShaderDX11.h"
 #include "MeshDX11.h"
@@ -54,14 +54,18 @@ void GFXDX11::SetClearColor(float R, float G, float B, float A) {
 }
 
 void GFXDX11::ImGuiDraw() {
-	//ImGui::Render();
-	//ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
 void GFXDX11::ImGuiNewFrame() {
-	//ImGui_ImplDX11_NewFrame();
-	//m_Window->ImGuiNewFrame();
-	//ImGui::NewFrame();
+	ImGui_ImplDX11_NewFrame();
+	m_Window->ImGuiNewFrame();
+	ImGui::NewFrame();
+}
+
+void GFXDX11::InitImGui_Internal() {
+	ImGui_ImplDX11_Init(d3d11Device, d3d11DevCon);
 }
 
 void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
@@ -154,10 +158,6 @@ ShaderUniformBlock* GFXDX11::CreateBuffer(void * a_Object, unsigned int a_Size) 
 	}
 
 	return sub;
-}
-
-void GFXDX11::InitImGui_Internal() {
-	//ImGui_ImplDX11_Init(d3d11Device, d3d11DevCon);
 }
 
 

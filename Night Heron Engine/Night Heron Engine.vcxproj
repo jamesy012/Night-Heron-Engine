@@ -102,6 +102,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\hlsl\Debug</AdditionalLibraryDirectories>
@@ -117,6 +118,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);$(SolutionDir)Dependencies\glslang-master\glslang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\hlsl\Debug</AdditionalLibraryDirectories>
@@ -132,6 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -149,6 +152,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -158,6 +162,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Dependencies\imgui-master\examples\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\Dependencies\imgui-master\examples\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\Dependencies\imgui-master\examples\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\Dependencies\imgui-master\imgui.cpp" />
+    <ClCompile Include="..\Dependencies\imgui-master\imgui_demo.cpp" />
+    <ClCompile Include="..\Dependencies\imgui-master\imgui_draw.cpp" />
+    <ClCompile Include="..\Dependencies\imgui-master\imgui_widgets.cpp" />
     <ClCompile Include="Graphics\API\GFXAPI.cpp" />
     <ClCompile Include="Graphics\API\Mesh.cpp" />
     <ClCompile Include="Graphics\API\Shader.cpp" />

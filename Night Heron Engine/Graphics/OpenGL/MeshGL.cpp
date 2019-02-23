@@ -22,7 +22,7 @@ void MeshGL::Bind() {
 
 	//position
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVerticesType), (GLvoid*)0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(MeshVerticesType), (GLvoid*)0);
 
 	////normal
 	//glEnableVertexAttribArray(1);
@@ -42,5 +42,5 @@ void MeshGL::Bind() {
 void MeshGL::Draw() {
 	glBindVertexArray(m_Vao);
 	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
+	//glBindVertexArray(0);
 }

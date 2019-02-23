@@ -16,7 +16,7 @@
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
 
-//#include <imgui-master\imgui.h>
+#include <imgui-master\imgui.h>
 
 struct TestUniformStruct {
 public:
@@ -69,35 +69,39 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	Texture* testTexture = graphics->CreateTexture();
 
 	testTexture->loadTexture("peacock-2.jpg");
-	
+
 	testShader->AddShader(ShaderTypes::SHADER_VERTEX, "test.vert");
 	testShader->AddShader(ShaderTypes::SHADER_FRAGMENT, "test.frag");
+	//testShader->AddShader(ShaderTypes::SHADER_VERTEX, "simple.vert");
+	//testShader->AddShader(ShaderTypes::SHADER_FRAGMENT, "simple.frag");
 	testShader->LinkShaders();
-	
+
 	testMesh->CreateTriangle();
 	testMesh->Bind();
-	
+
 	TestUniformStruct testUniformStructObj;
 	TestUniformStruct2 colorTest;
 	colorTest.Color = glm::vec4(1, 0, 1, 1);
-	
+
 	testUniformStructObj.MatrixModelTest = glm::mat4(1.0f);
-	
-	testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0), glm::vec3(0, 1, 0));
+
+	//testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0), glm::vec3(0, 1, 0));
 	//projection = glm::perspective(90.0f, (float)(graphics->m_Window->m_WindowWidth / graphics->m_Window->m_WindowHeight), 0.1f, 100.0f);
 	//testUniformStructObj.MatrixProjection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 100.0f);
 	//testUniformStructObj.MatrixProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.0f, 100.0f);
-	
-	//testUniformStructObj.MatrixModelTest = glm::translate(testUniformStructObj.MatrixModelTest, glm::vec3(1, 1, -1));
+
+	testUniformStructObj.MatrixModelTest = glm::translate(testUniformStructObj.MatrixModelTest, glm::vec3(1, 1, -1));
 	ShaderUniformBlock* testUniform = graphics->CreateBuffer(&testUniformStructObj, sizeof(TestUniformStruct));
 	testShader->AddBuffer(testUniform, "Vertex_Data");
 	testUniform->UpdateBuffer(&testUniformStructObj);
-	
+
 	ShaderUniformBlock* testUniform2 = graphics->CreateBuffer(&colorTest, sizeof(TestUniformStruct2));
 	testShader->AddBuffer(testUniform2, "shader_data");
 	testUniform2->UpdateBuffer(&colorTest);
 
-	//graphics->ImGuiInit();
+	graphics->ImGuiInit();
+
+
 
 	std::chrono::high_resolution_clock timer;
 	float deltaTime = 0;
@@ -115,13 +119,13 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			auto timerStart = timer.now();
 			currentTime += deltaTime;
 
-			//graphics->ImGuiNewFrame();
 
-			//ImGui::Begin("Stats");
-			//ImGui::Text("Current Time: %f", currentTime);
-			//ImGui::Text("Delta Time: %f", deltaTime);
-			//ImGui::End();
+			graphics->ImGuiNewFrame();
 
+			ImGui::Begin("Stats");
+			ImGui::Text("Current Time: %f", currentTime);
+			ImGui::Text("Delta Time: %f", deltaTime);
+			ImGui::End();
 
 			static int counter = 0;
 			//counter = (counter + 1) % 512;
@@ -143,19 +147,19 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			//
 			graphics->SetClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 			graphics->Clear();
-			
+
 			testShader->Use();
 
 			testTexture->bind(0);
 			testShader->BindTexture("textureTest", 0);
-			
+
 			testUniformStructObj.MatrixModelTest = glm::mat4(1.0f);
 			testUniformStructObj.MatrixModelTest = glm::translate(testUniformStructObj.MatrixModelTest, glm::vec3(-2.0f, 0, 0));
 			testUniform->UpdateBuffer(&testUniformStructObj);
 			colorTest.Color = glm::vec4(1, 0, 0, 1);
 			testUniform2->UpdateBuffer(&colorTest);
 			testMesh->Draw();
-			
+
 			testUniformStructObj.MatrixModelTest = glm::mat4(1.0f);
 			testUniform->UpdateBuffer(&testUniformStructObj);
 			colorTest.Color = glm::vec4(0, 1, 0, 1);
@@ -164,14 +168,15 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 
 			testUniformStructObj.MatrixModelTest = glm::mat4(1.0f);
 			testUniformStructObj.MatrixModelTest = glm::translate(testUniformStructObj.MatrixModelTest, glm::vec3(2.0f, 0, 0));
-			testUniform->UpdateBuffer(&testUniformStructObj);			
+			testUniform->UpdateBuffer(&testUniformStructObj);
 			colorTest.Color = glm::vec4(0, 0, 1, 1);
 			testUniform2->UpdateBuffer(&colorTest);
 			testMesh->Draw();
 
-			//graphics->ImGuiDraw();
+			graphics->ImGuiDraw();
 
 			graphics->SwapBuffer();
+
 			//Sleep(1.0 / 60.0f * 1000);
 
 			auto timerEnd = timer.now();

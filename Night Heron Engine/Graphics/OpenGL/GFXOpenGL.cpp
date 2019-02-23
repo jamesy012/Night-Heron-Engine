@@ -4,9 +4,8 @@
 #include <GL/glew.h>
 #include <GL/wglew.h>
 
-//#define IMGUI_IMPL_OPENGL_LOADER_GLEW
-//#include <imgui-master\imgui.h>
-//#include <imgui-master\examples\imgui_impl_opengl3.h>
+#include <imgui-master\imgui.h>
+#include <imgui-master\examples\imgui_impl_opengl3.h>
 
 #include "ShaderGL.h"
 #include "MeshGL.h"
@@ -44,14 +43,18 @@ void GFXOpenGL::DestroyMainWindow() {
 }
 
 void GFXOpenGL::ImGuiDraw() {
-	//ImGui::Render();
-	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void GFXOpenGL::ImGuiNewFrame() {
-	//ImGui_ImplOpenGL3_NewFrame();
-	//m_Window->ImGuiNewFrame();
-	//ImGui::NewFrame();
+	ImGui_ImplOpenGL3_NewFrame();
+	m_Window->ImGuiNewFrame();
+	ImGui::NewFrame();
+}
+
+void GFXOpenGL::InitImGui_Internal() {
+	ImGui_ImplOpenGL3_Init("#version 450");
 }
 
 void GFXOpenGL::SwapBuffer() {
@@ -101,10 +104,6 @@ ShaderUniformBlock* GFXOpenGL::CreateBuffer(void * a_Object, unsigned int a_Size
 	return sub;
 }
 
-void GFXOpenGL::InitImGui_Internal() {
-	//ImGui_ImplOpenGL3_Init("#version 450");
-}
-
 bool GFXOpenGL::InitGfx() {
 
 	m_Window->m_HRC = wglCreateContext(m_Window->m_HDC);
@@ -126,7 +125,7 @@ bool GFXOpenGL::InitGfx() {
 		return FALSE;
 	}
 
-	wglSwapIntervalEXT(1);
+	//wglSwapIntervalEXT(1);
 
 	//glViewport(-1, -1, m_Window->m_WindowWidth/2, m_Window->m_WindowHeight);
 	glEnable(GL_DEBUG_OUTPUT);
@@ -139,6 +138,20 @@ bool GFXOpenGL::InitGfx() {
 	GLuint ids[numOfIds] = { 131185 };
 	glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_OTHER, GL_DONT_CARE, numOfIds, ids, false);
 	GLenum error = glGetError();
+
+	{
+		int glMajor, glMinor;
+		const  GLubyte* glVersion;
+		const  GLubyte* glVender;
+		const  GLubyte* glRenderer;
+		glGetIntegerv(GL_MAJOR_VERSION, &glMajor);
+		glGetIntegerv(GL_MINOR_VERSION, &glMinor);
+		glVersion = glGetString(GL_VERSION);
+		glVender = glGetString(GL_VENDOR);
+		glRenderer = glGetString(GL_RENDERER);
+		printf("OpenGL - %s\n(%i.%i) Vender: %s, Renderer: %s\n\n", glVersion, glMajor, glMinor, glVender, glRenderer);
+	}
+
 
 	glEnable(GL_DEPTH_TEST);
 

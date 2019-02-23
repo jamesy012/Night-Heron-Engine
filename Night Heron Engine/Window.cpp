@@ -2,14 +2,14 @@
 
 #include "Graphics/API/GFXAPI.h"
 
-//#include <imgui-master\imgui.h>
-//#include <imgui-master\examples\imgui_impl_win32.h>
-//IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#include <imgui-master\imgui.h>
+#include <imgui-master\examples\imgui_impl_win32.h>
+IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM  wParam, LPARAM  lParam) {
-	//if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) {
-	//	return 0;
-	//}
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) {
+		return 0;
+	}
 
 	switch (uMsg) {
 		case WM_KEYDOWN:
@@ -42,11 +42,11 @@ LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM  wParam, LPARAM  lParam) {
 }
 
 void Window::ImGuiInit() {
-	//ImGui_ImplWin32_Init(m_HWnd);
+	ImGui_ImplWin32_Init(m_HWnd);
 }
 
 void Window::ImGuiNewFrame() {
-	//ImGui_ImplWin32_NewFrame();
+	ImGui_ImplWin32_NewFrame();
 }
 
 
