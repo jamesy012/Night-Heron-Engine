@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_hlsl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_hlsl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{58F43B9D-4756-333F-B9DA-0BE3A633EC02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{75EF4875-503C-315D-8ACA-AD7DF0681C60}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

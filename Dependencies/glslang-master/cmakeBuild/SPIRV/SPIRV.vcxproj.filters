@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\GlslangToSpv.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\InReadableOrder.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\Logger.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\SpvBuilder.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\SpvPostProcess.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\doc.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\SpvTools.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\disassemble.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\bitutils.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\spirv.hpp">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\GLSL.std.450.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\GLSL.ext.EXT.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\GLSL.ext.KHR.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\GlslangToSpv.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\hex_float.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\Logger.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\SpvBuilder.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\spvIR.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\doc.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\SpvTools.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\disassemble.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\GLSL.ext.AMD.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\GLSL.ext.NV.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{81D6D845-6F60-346F-A76C-EFFD03E3A463}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

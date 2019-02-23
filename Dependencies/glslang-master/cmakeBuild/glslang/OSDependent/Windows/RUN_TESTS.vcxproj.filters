@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\CMakeFiles\842c11b9cbbe86fb4964d69daa7afe96\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{DCED6BB7-BFE8-3C42-BB50-C7C907C2C0AF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

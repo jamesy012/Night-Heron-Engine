@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{F1F9FD58-D3C0-4421-B1A1-71D1B7E4CE0A}</ProjectGuid>
+    <RootNamespace>NightHeronEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\glew-2.0.0\include;$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\hlsl\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);$(SolutionDir)Dependencies\glslang-master\glslang\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\hlsl\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\hlsl\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\hlsl\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Graphics\API\GFXAPI.cpp" />
+    <ClCompile Include="Graphics\API\Mesh.cpp" />
+    <ClCompile Include="Graphics\API\Shader.cpp" />
+    <ClCompile Include="Graphics\API\Texture.cpp" />
+    <ClCompile Include="Graphics\DX11\MeshDX11.cpp" />
+    <ClCompile Include="Graphics\DX11\ShaderDX11.cpp" />
+    <ClCompile Include="Graphics\DX11\TextureDX11.cpp" />
+    <ClCompile Include="Graphics\OpenGL\MeshGL.cpp" />
+    <ClCompile Include="Graphics\OpenGL\ShaderGL.cpp" />
+    <ClCompile Include="Graphics\OpenGL\TextureGL.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Graphics\DX11\GFXDX11.cpp" />
+    <ClCompile Include="Graphics\OpenGL\GFXOpenGL.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Graphics\API\GFXAPI.h" />
+    <ClInclude Include="Graphics\API\Mesh.h" />
+    <ClInclude Include="Graphics\API\Shader.h" />
+    <ClInclude Include="Graphics\API\Texture.h" />
+    <ClInclude Include="Graphics\DX11\MeshDX11.h" />
+    <ClInclude Include="Graphics\DX11\ShaderDX11.h" />
+    <ClInclude Include="Graphics\DX11\TextureDX11.h" />
+    <ClInclude Include="Graphics\OpenGL\MeshGL.h" />
+    <ClInclude Include="Graphics\OpenGL\ShaderGL.h" />
+    <ClInclude Include="Graphics\OpenGL\TextureGL.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="Graphics\DX11\GFXDX11.h" />
+    <ClInclude Include="Graphics\OpenGL\GFXOpenGL.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_cross.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_cross_parsed_ir.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_cfg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\GLSL.std.450.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_common.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_cross.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_parser.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_cross_parsed_ir.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\spirv_cfg.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{58F43B9D-4756-333F-B9DA-0BE3A633EC02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{75EF4875-503C-315D-8ACA-AD7DF0681C60}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

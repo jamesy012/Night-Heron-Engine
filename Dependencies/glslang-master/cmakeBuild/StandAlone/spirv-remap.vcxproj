@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5526892F-3E4C-31DE-B911-E3B3FEF5C4E4}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>spirv-remap</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\StandAlone\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">spirv-remap.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">spirv-remap</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\StandAlone\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">spirv-remap.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">spirv-remap</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\StandAlone\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">spirv-remap.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">spirv-remap</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\StandAlone\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">spirv-remap.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">spirv-remap</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;AMD_EXTENSIONS;NV_EXTENSIONS;ENABLE_HLSL;GLSLANG_OSINCLUDE_WIN32;ENABLE_OPT=0;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;AMD_EXTENSIONS;NV_EXTENSIONS;ENABLE_HLSL;GLSLANG_OSINCLUDE_WIN32;ENABLE_OPT=0;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\glslang\Debug\glslangd.lib;..\SPIRV\Debug\SPIRVd.lib;..\SPIRV\Debug\SPVRemapperd.lib;Debug\glslang-default-resource-limitsd.lib;psapi.lib;..\glslang\Debug\glslangd.lib;..\OGLCompilersDLL\Debug\OGLCompilerd.lib;..\glslang\OSDependent\Windows\Debug\OSDependentd.lib;..\hlsl\Debug\HLSLd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/Debug/spirv-remap.lib</ImportLibrary>
+      <ProgramDataBaseFile>G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/Debug/spirv-remap.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;AMD_EXTENSIONS;NV_EXTENSIONS;ENABLE_HLSL;GLSLANG_OSINCLUDE_WIN32;ENABLE_OPT=0;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;AMD_EXTENSIONS;NV_EXTENSIONS;ENABLE_HLSL;GLSLANG_OSINCLUDE_WIN32;ENABLE_OPT=0;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\glslang\Release\glslang.lib;..\SPIRV\Release\SPIRV.lib;..\SPIRV\Release\SPVRemapper.lib;Release\glslang-default-resource-limits.lib;psapi.lib;..\glslang\Release\glslang.lib;..\OGLCompilersDLL\Release\OGLCompiler.lib;..\glslang\OSDependent\Windows\Release\OSDependent.lib;..\hlsl\Release\HLSL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/Release/spirv-remap.lib</ImportLibrary>
+      <ProgramDataBaseFile>G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/Release/spirv-remap.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;AMD_EXTENSIONS;NV_EXTENSIONS;ENABLE_HLSL;GLSLANG_OSINCLUDE_WIN32;ENABLE_OPT=0;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;AMD_EXTENSIONS;NV_EXTENSIONS;ENABLE_HLSL;GLSLANG_OSINCLUDE_WIN32;ENABLE_OPT=0;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\glslang\MinSizeRel\glslang.lib;..\SPIRV\MinSizeRel\SPIRV.lib;..\SPIRV\MinSizeRel\SPVRemapper.lib;MinSizeRel\glslang-default-resource-limits.lib;psapi.lib;..\glslang\MinSizeRel\glslang.lib;..\OGLCompilersDLL\MinSizeRel\OGLCompiler.lib;..\glslang\OSDependent\Windows\MinSizeRel\OSDependent.lib;..\hlsl\MinSizeRel\HLSL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/MinSizeRel/spirv-remap.lib</ImportLibrary>
+      <ProgramDataBaseFile>G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/MinSizeRel/spirv-remap.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;AMD_EXTENSIONS;NV_EXTENSIONS;ENABLE_HLSL;GLSLANG_OSINCLUDE_WIN32;ENABLE_OPT=0;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;AMD_EXTENSIONS;NV_EXTENSIONS;ENABLE_HLSL;GLSLANG_OSINCLUDE_WIN32;ENABLE_OPT=0;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\SPIRV\..;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\glslang\RelWithDebInfo\glslang.lib;..\SPIRV\RelWithDebInfo\SPIRV.lib;..\SPIRV\RelWithDebInfo\SPVRemapper.lib;RelWithDebInfo\glslang-default-resource-limits.lib;psapi.lib;..\glslang\RelWithDebInfo\glslang.lib;..\OGLCompilersDLL\RelWithDebInfo\OGLCompiler.lib;..\glslang\OSDependent\Windows\RelWithDebInfo\OSDependent.lib;..\hlsl\RelWithDebInfo\HLSL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/RelWithDebInfo/spirv-remap.lib</ImportLibrary>
+      <ProgramDataBaseFile>G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/RelWithDebInfo/spirv-remap.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/StandAlone/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-HG:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master" "-BG:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild" --check-stamp-file "G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/StandAlone/CMakeLists.txt;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\CMakeLists.txt;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\StandAlone\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/StandAlone/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-HG:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master" "-BG:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild" --check-stamp-file "G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/StandAlone/CMakeLists.txt;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\CMakeLists.txt;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\StandAlone\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/StandAlone/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-HG:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master" "-BG:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild" --check-stamp-file "G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/StandAlone/CMakeLists.txt;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\CMakeLists.txt;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\StandAlone\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/StandAlone/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-HG:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master" "-BG:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild" --check-stamp-file "G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/cmakeBuild/StandAlone/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">G:/proj/Engines/Night Heron/Night Heron Engine/Dependencies/glslang-master/StandAlone/CMakeLists.txt;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\CMakeLists.txt;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\StandAlone\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\StandAlone\spirv-remap.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\ZERO_CHECK.vcxproj">
+      <Project>{72DAFE32-7ABA-365C-AC6E-B6EA8C52F3BE}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+    <ProjectReference Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\hlsl\HLSL.vcxproj">
+      <Project>{174957C9-BD01-3AFC-B7CD-79DC4024D400}</Project>
+      <Name>HLSL</Name>
+    </ProjectReference>
+    <ProjectReference Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\OGLCompiler.vcxproj">
+      <Project>{162E6B30-2A1F-3C13-96AD-7CD6E071A513}</Project>
+      <Name>OGLCompiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\OSDependent.vcxproj">
+      <Project>{34D475C9-423C-3259-A2DB-9DF84D718CEB}</Project>
+      <Name>OSDependent</Name>
+    </ProjectReference>
+    <ProjectReference Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\SPIRV.vcxproj">
+      <Project>{B67225FB-1ED7-3EA1-8B9B-40AB5150A8DD}</Project>
+      <Name>SPIRV</Name>
+    </ProjectReference>
+    <ProjectReference Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\SPVRemapper.vcxproj">
+      <Project>{1F44BF95-B934-39B3-8AFC-EF81800D7446}</Project>
+      <Name>SPVRemapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\glslang.vcxproj">
+      <Project>{BFEADE24-0F70-366C-8CEC-03AE87998EF6}</Project>
+      <Name>glslang</Name>
+    </ProjectReference>
+    <ProjectReference Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\StandAlone\glslang-default-resource-limits.vcxproj">
+      <Project>{1624C40E-12ED-3C9C-993B-887C6819AECB}</Project>
+      <Name>glslang-default-resource-limits</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

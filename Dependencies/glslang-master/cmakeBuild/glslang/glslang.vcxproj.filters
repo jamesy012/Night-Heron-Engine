@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\glslang_tab.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\attribute.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\Constant.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\iomapper.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\InfoSink.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\Initialize.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\IntermTraverse.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\Intermediate.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\ParseContextBase.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\ParseHelper.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\PoolAlloc.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\RemoveTree.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\Scan.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\ShaderLang.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\SymbolTable.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\Versions.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\intermOut.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\limits.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\linkValidate.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\parseConst.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\reflection.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\preprocessor\Pp.cpp">
+      <Filter>MachineIndependent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\preprocessor\PpAtom.cpp">
+      <Filter>MachineIndependent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\preprocessor\PpContext.cpp">
+      <Filter>MachineIndependent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\preprocessor\PpScanner.cpp">
+      <Filter>MachineIndependent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\preprocessor\PpTokens.cpp">
+      <Filter>MachineIndependent\Preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\propagateNoContraction.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\GenericCodeGen\CodeGen.cpp">
+      <Filter>GenericCodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\GenericCodeGen\Link.cpp">
+      <Filter>GenericCodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\pch.cpp">
+      <Filter>MachineIndependent</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Public\ShaderLang.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\arrays.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\BaseTypes.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\Common.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\ConstantUnion.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\InfoSink.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\InitializeGlobals.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\intermediate.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\PoolAlloc.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\ResourceLimits.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\revision.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\ShHandle.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\Include\Types.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\attribute.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\glslang_tab.cpp.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\gl_types.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\Initialize.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\iomapper.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\LiveTraverser.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\localintermediate.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\ParseHelper.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\reflection.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\RemoveTree.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\Scan.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\ScanContext.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\SymbolTable.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\Versions.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\parseVersions.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\propagateNoContraction.h">
+      <Filter>MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\preprocessor\PpContext.h">
+      <Filter>MachineIndependent\Preprocessor</Filter>
+    </ClInclude>
+    <ClInclude Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\preprocessor\PpTokens.h">
+      <Filter>MachineIndependent\Preprocessor</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\glslang\MachineIndependent\glslang.y">
+      <Filter>MachineIndependent</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="GenericCodeGen">
+      <UniqueIdentifier>{17FDF777-B494-3580-B658-7ADD12C0A607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{F71E6C47-F473-3006-816A-3217815485E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MachineIndependent">
+      <UniqueIdentifier>{9A5C44C7-8617-3554-8083-06FF2574CE7E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MachineIndependent\Preprocessor">
+      <UniqueIdentifier>{8BB6968C-B09D-355E-910A-B2F3E7964C1A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public">
+      <UniqueIdentifier>{F5D9C61B-4AFA-3522-BD2D-FF431834148F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
