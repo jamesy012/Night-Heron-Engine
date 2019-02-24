@@ -1,0 +1,17 @@
+general:
+Clean up the code
+Transform/Object class
+Input
+Worlds
+Editor viewport
+Model loading
+
+api:
+rendering pipelines
+    normal and postprocessing
+Render targets
+Text rendering/UI
+
+other:
+Possibly vulkan
+xbox/UWP?

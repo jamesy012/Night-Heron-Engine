@@ -18,8 +18,8 @@ void main() {
 	//fragColor = testBlock.color * vVertColor; 
 	//fragColor = testBlock.color; 
 	
-	fragColor = texture(textureTest, vTexCoord);
+	//fragColor = texture(textureTest, vTexCoord);
 	//fragColor = vec4(vTexCoord.x, vTexCoord.y, 0, 1); 
 	//fragColor = vVertColor;
-	//fragColor = testBlock.color * texture(textureTest, vTexCoord);
+	fragColor = testBlock.color * texture(textureTest, vTexCoord);
 } 
