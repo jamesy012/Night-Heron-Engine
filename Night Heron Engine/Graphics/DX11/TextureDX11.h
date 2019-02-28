@@ -5,6 +5,11 @@
 class TextureDX11 : public Texture {
 public:
 	virtual void bind(unsigned int a_Slot) override;
+
+	void* getTexturePtr() override {
+		return m_TextureSRV;
+	}
+
 private:
 	virtual void createData() override;
 

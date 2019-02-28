@@ -11,7 +11,12 @@ layout (std140) uniform shader_data {
 	vec4 color;
 } testBlock;
 
-layout (location = 0) uniform sampler2D textureTest;
+layout (std140, binding = 1) uniform CommonData {
+	float time;
+	vec3 pad;
+} commonData;
+
+layout (location = 1) uniform sampler2D textureTest;
  
 void main() { 
 	//fragColor = vVertColor;
@@ -21,5 +26,7 @@ void main() {
 	//fragColor = texture(textureTest, vTexCoord);
 	//fragColor = vec4(vTexCoord.x, vTexCoord.y, 0, 1); 
 	//fragColor = vVertColor;
-	fragColor = testBlock.color * texture(textureTest, vTexCoord);
+	fragColor = testBlock.color * texture(textureTest, vTexCoord + vec2(commonData.time * 0.25f,0));
+	//fragColor = testBlock.color * texture(textureTest, vTexCoord);
+	//fragColor = texture(textureTest, vTexCoord);
 } 

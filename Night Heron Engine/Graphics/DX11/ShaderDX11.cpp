@@ -21,24 +21,45 @@ D3D11_INPUT_ELEMENT_DESC VertexLayout[] = {
 UINT numVertexLayoutElements = ARRAYSIZE(VertexLayout);
 
 
-void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int> a_Code) {
+ShaderDX11::~ShaderDX11() {
+	if (VS_Buffer) {
+		PS_Buffer->Release();
+	}
+	if (VS) {
+		VS->Release();
+	}
+	if (PS_Buffer) {
+		PS_Buffer->Release();
+	}
+	if (PS) {
+		PS->Release();
+	}
+	if (vertLayout) {
+		vertLayout->Release();
+	}
+	m_CBuffers.clear();
+}
 
+void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int> a_Code) {
 
 	spirv_cross::CompilerHLSL hlsl(a_Code);
 
 	spirv_cross::ShaderResources resources = hlsl.get_shader_resources();
 	//// Get all sampled images in the shader.
-	//for (auto &resource : resources.sampled_images) {
-	//	unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
-	//	unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
-	//	printf("Image %s at set = %u, binding = %u\n", resource.name.c_str(), set, binding);
-	//
-	//	// Modify the decoration to prepare it for GLSL.
-	//	hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
-	//
-	//	// Some arbitrary remapping if we want.
-	//	hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
-	//}
+	for (auto &resource : resources.sampled_images) {
+		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
+		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
+		printf("Image %s at set = %u, binding = %u\n", resource.name.c_str(), set, binding);
+	
+		// Modify the decoration to prepare it for GLSL.
+		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
+		//
+		//// Some arbitrary remapping if we want.
+		//hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
+		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
+		hlsl.set_decoration(resource.id, spv::DecorationBinding, location);
+
+	}
 
 	// Set some options.
 	spirv_cross::CompilerHLSL::Options options;
@@ -86,12 +107,14 @@ void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int
 
 void ShaderDX11::Link_Internal() {
 	HRESULT hr;
-	hr = GFXDX11::GetCurrentContex()->d3d11Device->CreateInputLayout(VertexLayout, numVertexLayoutElements, VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), &vertLayout);
-	if (FAILED(hr)) {
-		printf("CreateInputLayout ERROR %ld\n", hr);
-		return;
+	if (VS_Buffer) {
+		hr = GFXDX11::GetCurrentContex()->d3d11Device->CreateInputLayout(VertexLayout, numVertexLayoutElements, VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), &vertLayout);
+		if (FAILED(hr)) {
+			printf("CreateInputLayout ERROR %ld\n", hr);
+			return;
+		}
+		m_IsLinked = true;
 	}
-
 }
 
 void ShaderDX11::Use() {
@@ -113,6 +136,9 @@ void ShaderDX11::Use() {
 }
 
 void ShaderDX11::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName) {
+	if (!m_IsLinked) {
+		return;
+	}
 	DX11CBufferData bd;
 	//bd.m_Data = a_Slot;
 	bd.m_Uniform = (ShaderUniformBlockDX11*)a_Block;
@@ -164,6 +190,12 @@ void ShaderDX11::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName
 void ShaderDX11::BindTexture(std::string a_Name, unsigned int a_Index) {
 }
 
+
+ShaderUniformBlockDX11::~ShaderUniformBlockDX11() {
+	if (m_Buffer) {
+		m_Buffer->Release();
+	}
+}
 
 void ShaderUniformBlockDX11::UpdateBuffer(void * a_Object) {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;

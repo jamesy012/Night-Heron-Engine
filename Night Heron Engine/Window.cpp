@@ -197,4 +197,6 @@ void Window::DestrowMainWindow() {
 		MessageBox(NULL, "Could Not Unregister Class.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
 		m_HInstance = NULL;                         // Set hInstance To NULL
 	}
+
+	ImGui_ImplWin32_Shutdown();
 }

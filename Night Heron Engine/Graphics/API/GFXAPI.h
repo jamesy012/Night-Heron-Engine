@@ -5,10 +5,6 @@ class Window;
 
 class GFX {
 public:
-
-public:
-	Window* m_Window;
-public:
 	virtual bool CreateWindowSetUpAPI() = 0;
 	virtual void DestroyMainWindow() = 0;
 
@@ -31,9 +27,11 @@ public:
 	virtual class Shader* CreateShader() = 0;
 	virtual class Mesh* CreateMesh() = 0;
 	virtual class Texture* CreateTexture() = 0;
+	virtual class RenderTarget* CreateRenderTarget(int a_Width, int a_Height) = 0;
 
 	virtual class ShaderUniformBlock* CreateBuffer(void* a_Object, unsigned int a_Size) = 0;
 
+	Window* m_Window;
 
 protected:
 	virtual bool InitGfx() = 0;

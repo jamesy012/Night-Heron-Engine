@@ -9,6 +9,8 @@
 
 class ShaderUniformBlockDX11 : public ShaderUniformBlock {
 public:
+	~ShaderUniformBlockDX11();
+
 	struct ID3D11Buffer* m_Buffer;
 
 	virtual void UpdateBuffer(void * a_Object) override;
@@ -17,6 +19,7 @@ public:
 
 class ShaderDX11 : public Shader {
 public:
+	~ShaderDX11();
 
 	void AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int> a_Code) override;
 	//virtual void AddShader_Internal(ShaderTypes a_Type, std::string a_Path) = 0;
@@ -48,6 +51,4 @@ private:
 	};
 
 	std::vector<DX11CBufferData> m_CBuffers;
-
-
 };

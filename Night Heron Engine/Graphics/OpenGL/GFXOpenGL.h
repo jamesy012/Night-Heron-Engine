@@ -4,6 +4,7 @@
 
 class GFXOpenGL : public GFX {
 public:
+	~GFXOpenGL();
 
 	bool CreateWindowSetUpAPI() override;
 	virtual void DestroyMainWindow() override;
@@ -20,6 +21,7 @@ public:
 	virtual class Shader* CreateShader() override;
 	virtual class Mesh* CreateMesh() override;
 	virtual class Texture* CreateTexture() override;
+	virtual class RenderTarget* CreateRenderTarget(int a_Width, int a_Height) override;
 
 
 	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;

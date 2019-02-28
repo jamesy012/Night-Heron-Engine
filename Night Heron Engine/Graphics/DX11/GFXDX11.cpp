@@ -15,6 +15,10 @@
 
 DirectX11Common* GFXDX11::m_CurrentContext = nullptr;
 
+GFXDX11::~GFXDX11() {
+	ImGui_ImplDX11_Shutdown();
+}
+
 bool GFXDX11::CreateWindowSetUpAPI() {
 	m_CurrentGraphics = this;
 
@@ -128,6 +132,10 @@ Mesh * GFXDX11::CreateMesh() {
 
 Texture * GFXDX11::CreateTexture() {
 	return new TextureDX11();
+}
+
+RenderTarget * GFXDX11::CreateRenderTarget(int a_Width, int a_Height) {
+	return nullptr;
 }
 
 ShaderUniformBlock* GFXDX11::CreateBuffer(void * a_Object, unsigned int a_Size) {

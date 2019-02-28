@@ -4,6 +4,19 @@
 
 #include <GL/glew.h>
 
+MeshGL::~MeshGL() {
+	if (m_Vao) {
+		glDeleteVertexArrays(1, &m_Vao);
+	}
+	if (m_Vbo) {
+		glDeleteBuffers(1, &m_Vbo);
+	}
+	if (m_Ebo) {
+		glDeleteBuffers(1, &m_Ebo);
+	}
+	m_Vao = m_Vbo = m_Ebo = 0;
+}
+
 void MeshGL::Bind() {
 	glGenVertexArrays(1, &m_Vao);
 	glGenBuffers(1, &m_Vbo);

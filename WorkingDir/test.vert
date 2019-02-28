@@ -10,6 +10,11 @@ layout (std140) uniform Vertex_Data {
 	mat4 PV;
 } VertData;
 
+layout (std140, binding = 1) uniform CommonData {
+	float time;
+	vec3 pad;
+} commonData;
+
 out vec2 vTexCoord;
 out vec4 vVertColor;
 

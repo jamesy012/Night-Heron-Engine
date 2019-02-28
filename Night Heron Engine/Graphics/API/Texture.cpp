@@ -15,3 +15,12 @@ void Texture::loadTexture(std::string a_Path) {
 
 	stbi_image_free(m_TextureData);
 }
+
+void Texture::CreateTexture(int a_Width, int a_Height) {
+	m_Width = a_Width;
+	m_Height = a_Height;
+	m_ImageFormat = 4;
+
+	createData();
+
+}

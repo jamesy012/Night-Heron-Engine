@@ -10,10 +10,13 @@
 #include "ShaderGL.h"
 #include "MeshGL.h"
 #include "TextureGL.h"
-
-
+#include "RenderTargetGL.h"
 
 static void openGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
+
+GFXOpenGL::~GFXOpenGL() {
+	ImGui_ImplOpenGL3_Shutdown();
+}
 
 bool GFXOpenGL::CreateWindowSetUpAPI() {
 	m_CurrentGraphics = this;
@@ -59,6 +62,8 @@ void GFXOpenGL::InitImGui_Internal() {
 
 void GFXOpenGL::SwapBuffer() {
 	SwapBuffers(m_Window->m_HDC);
+	//simulate vsync in a painfully bad way
+	Sleep(1.0 / 60.0f * 1000);
 }
 
 void GFXOpenGL::Clear() {
@@ -84,6 +89,10 @@ Mesh * GFXOpenGL::CreateMesh() {
 
 Texture * GFXOpenGL::CreateTexture() {
 	return new TextureGL();
+}
+
+RenderTarget * GFXOpenGL::CreateRenderTarget(int a_Width, int a_Height) {
+	return new RenderTargetGL(a_Width, a_Height);
 }
 
 ShaderUniformBlock* GFXOpenGL::CreateBuffer(void * a_Object, unsigned int a_Size) {

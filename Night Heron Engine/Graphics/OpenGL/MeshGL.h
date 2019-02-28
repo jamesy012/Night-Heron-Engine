@@ -3,6 +3,7 @@
 #include "..\API\Mesh.h"
 
 class MeshGL : public Mesh {
+	~MeshGL();
 
 	// Inherited via Mesh
 	virtual void Bind() override;

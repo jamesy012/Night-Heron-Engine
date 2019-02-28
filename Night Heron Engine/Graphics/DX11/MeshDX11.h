@@ -4,9 +4,8 @@
 
 
 class MeshDX11 : public Mesh {
-
 public:
-
+	~MeshDX11();
 
 	// Inherited via Mesh
 	virtual void Bind() override;

@@ -197,7 +197,7 @@ void Shader::AddShader(ShaderTypes a_Type, std::string a_Path) {
 
 
 	std::string infoFile = loadTextFromPath(ShaderCachePath + a_Path + ".info");
-	if (infoFile.size() != 0) {
+	if (infoFile.size() != 0 && !m_ShoudRegenerateCode) {
 		BYTE fileHash[16];
 		//for (int i = 0; i < 16; i++) {
 		//	fileHash[i] = (BYTE)infoFile[i];
@@ -208,6 +208,11 @@ void Shader::AddShader(ShaderTypes a_Type, std::string a_Path) {
 			printf("Shader: Using cached data: %s\n", a_Path.c_str());
 			info->m_HasBeenChanged = false;
 			return;
+		} else {
+			//delete old files
+			remove((ShaderCachePath + a_Path + ".info").c_str());
+			remove((ShaderCachePath + a_Path + ".spirv").c_str());
+			printf("Shader: Old code didnt match, deleteing cached data %s\n", a_Path.c_str());
 		}
 	}
 	printf("Shader: Generating Code: %s\n", a_Path.c_str());
@@ -227,13 +232,16 @@ void Shader::AddShader(ShaderTypes a_Type, std::string a_Path) {
 	newShader->setEnvTarget(glslang::EshTargetSpv, glslang::EShTargetSpv_1_0);
 	//newShader->getIntermediate()->setUseStorageBuffer();
 	newShader->setAutoMapLocations(true);
-	//newShader->setAutoMapBindings(true);
+	newShader->setAutoMapBindings(true);
 	//newShader->setHlslIoMapping(true);
 	//newShader->setEnvTargetHlslFunctionality1();
 	newShader->parse(&Resources, 450, false, EShMessages::EShMsgDefault);
 	newShader->getIntermediate()->setSourceFile(a_Path.c_str());//debug
+
+	//check if it failed:
 	if (newShader->getInfoLog() && newShader->getInfoLog()[0]) {
 		std::cout << "Shader Error: " << newShader->getInfoLog() << std::endl;
+		info->m_IsUsed = false;
 		//delete newShader;
 		return;
 	}

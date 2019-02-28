@@ -171,12 +171,14 @@
     <ClCompile Include="..\Dependencies\imgui-master\imgui_widgets.cpp" />
     <ClCompile Include="Graphics\API\GFXAPI.cpp" />
     <ClCompile Include="Graphics\API\Mesh.cpp" />
+    <ClCompile Include="Graphics\API\RenderTarget.cpp" />
     <ClCompile Include="Graphics\API\Shader.cpp" />
     <ClCompile Include="Graphics\API\Texture.cpp" />
     <ClCompile Include="Graphics\DX11\MeshDX11.cpp" />
     <ClCompile Include="Graphics\DX11\ShaderDX11.cpp" />
     <ClCompile Include="Graphics\DX11\TextureDX11.cpp" />
     <ClCompile Include="Graphics\OpenGL\MeshGL.cpp" />
+    <ClCompile Include="Graphics\OpenGL\RenderTargetGL.cpp" />
     <ClCompile Include="Graphics\OpenGL\ShaderGL.cpp" />
     <ClCompile Include="Graphics\OpenGL\TextureGL.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -187,12 +189,14 @@
   <ItemGroup>
     <ClInclude Include="Graphics\API\GFXAPI.h" />
     <ClInclude Include="Graphics\API\Mesh.h" />
+    <ClInclude Include="Graphics\API\RenderTarget.h" />
     <ClInclude Include="Graphics\API\Shader.h" />
     <ClInclude Include="Graphics\API\Texture.h" />
     <ClInclude Include="Graphics\DX11\MeshDX11.h" />
     <ClInclude Include="Graphics\DX11\ShaderDX11.h" />
     <ClInclude Include="Graphics\DX11\TextureDX11.h" />
     <ClInclude Include="Graphics\OpenGL\MeshGL.h" />
+    <ClInclude Include="Graphics\OpenGL\RenderTargetGL.h" />
     <ClInclude Include="Graphics\OpenGL\ShaderGL.h" />
     <ClInclude Include="Graphics\OpenGL\TextureGL.h" />
     <ClInclude Include="Window.h" />

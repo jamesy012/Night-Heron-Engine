@@ -23,6 +23,7 @@ public:
 
 class Shader {
 public:
+
 	std::string Path;
 
 	void AddShader(ShaderTypes a_Type, std::string a_Path);
@@ -36,6 +37,7 @@ public:
 	std::string loadTextFromPath(std::string a_Path);//move to Util class???
 
 	bool m_ShouldPrintCode = false;
+	bool m_ShoudRegenerateCode = false;
 
 protected:
 	virtual void AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int> a_Code) = 0;
@@ -45,6 +47,8 @@ protected:
 	unsigned int ShaderTypeToEShLanguage(ShaderTypes a_Type);
 	ShaderTypes EShLanguageToShaderType(unsigned int a_Type);
 
+	//has this shader been linked yet?
+	bool m_IsLinked;
 
 private:
 	struct ShaderInfo {

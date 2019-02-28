@@ -5,6 +5,15 @@
 #include <d3d11.h>
 
 
+MeshDX11::~MeshDX11() {
+	if (squareIndexBuffer) {
+		squareIndexBuffer->Release();
+	}
+	if (squareVertBuffer) {
+		squareVertBuffer->Release();
+	}
+}
+
 void MeshDX11::Bind() {
 
 	D3D11_BUFFER_DESC vertexBufferDesc;

@@ -19,6 +19,14 @@ unsigned int getOpenglShaderType(ShaderTypes a_Type) {
 	}
 }
 
+ShaderGL::~ShaderGL() {
+	DeleteShaders();
+	if (m_Program != 0) {
+		glDeleteProgram(m_Program);
+		m_Program = 0;
+	}
+}
+
 void ShaderGL::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int> a_Code) {
 	spirv_cross::CompilerGLSL glsl(a_Code);
 
@@ -86,7 +94,14 @@ void ShaderGL::Link_Internal() {
 	if (!success) {
 		GLchar infoLog[512];
 		glGetShaderInfoLog(m_Program, 512, NULL, infoLog);
+		if (infoLog[0] == -52) {
+			memcpy(infoLog,"No useful data.",16);
+		}
 		printf("ERROR::SHADER::_%u_::%s\n%s\n", m_Program, "Linking ERROR", infoLog);
+		DeleteShaders();
+		glDeleteProgram(m_Program);
+		glUseProgram(0);
+		return;
 	}
 
 
@@ -109,16 +124,14 @@ void ShaderGL::Link_Internal() {
 		printf("Uniform: %s\n", name);
 	}
 
-	for (int i = 0; i < ShaderTypes::SHADERCOUNT; i++) {
-		if (m_GLShaderIndex[i] != 0) {
-			glDetachShader(m_Program, m_GLShaderIndex[i]);
-			glDeleteShader(m_GLShaderIndex[i]);
-		}
-	}
+	DeleteShaders();
+
+	m_IsLinked = true;
+	glUseProgram(0);
 }
 
 void ShaderGL::Use() {
-	if (m_Program != 0) {
+	if (m_Program != 0 && m_IsLinked) {
 		glUseProgram(m_Program);
 	}
 }
@@ -134,8 +147,25 @@ void ShaderGL::BindTexture(std::string a_Name, unsigned int a_Index) {
 	glUniform1i(glGetUniformLocation(m_Program, a_Name.c_str()), a_Index); // set it manually
 }
 
+ShaderUniformBlockGL::~ShaderUniformBlockGL() {
+	if (m_ID != 0) {
+		glDeleteBuffers(1, &m_ID);
+		m_ID = 0;
+	}
+}
+
 void ShaderUniformBlockGL::UpdateBuffer(void * a_Object) {
 	glBindBuffer(GL_UNIFORM_BUFFER, m_ID);
 	glBufferData(GL_UNIFORM_BUFFER, m_Size, a_Object, GL_STATIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void ShaderGL::DeleteShaders() {
+	for (int i = 0; i < ShaderTypes::SHADERCOUNT; i++) {
+		if (m_GLShaderIndex[i] != 0) {
+			glDetachShader(m_Program, m_GLShaderIndex[i]);
+			glDeleteShader(m_GLShaderIndex[i]);
+			m_GLShaderIndex[i] = 0;
+		}
+	}
 }

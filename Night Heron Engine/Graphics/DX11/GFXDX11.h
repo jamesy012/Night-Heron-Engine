@@ -13,6 +13,8 @@ class GFXDX11 : public GFX {
 private:
 	static DirectX11Common* m_CurrentContext;
 public:
+	~GFXDX11();
+
 	static inline DirectX11Common* GetCurrentContex() {
 		return m_CurrentContext;
 	};
@@ -34,6 +36,8 @@ public:
 	virtual class Shader* CreateShader() override;
 	virtual class Mesh* CreateMesh() override;
 	virtual class Texture* CreateTexture() override;
+	virtual class RenderTarget* CreateRenderTarget(int a_Width, int a_Height) override;
+
 
 	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;
 

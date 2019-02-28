@@ -4,6 +4,7 @@
 
 class ShaderUniformBlockGL : public ShaderUniformBlock {
 public:
+	~ShaderUniformBlockGL();
 	unsigned int m_ID = 0;
 	unsigned int m_SlotID = 0;
 
@@ -11,9 +12,8 @@ public:
 };
 
 class ShaderGL : public Shader {
-
-
-
+public:
+	~ShaderGL();
 
 	// Inherited via Shader
 	virtual void AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int> a_Code) override;
@@ -30,6 +30,8 @@ class ShaderGL : public Shader {
 private:
 
 	unsigned int m_GLShaderIndex[(int)ShaderTypes::SHADERCOUNT] = { 0 };
+
+	void DeleteShaders();
 
 	unsigned int m_Program = 0;
 
