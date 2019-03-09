@@ -3,12 +3,11 @@
 #include "..\API\GFXAPI.h"
 
 struct DirectX11Common {
-	struct IDXGISwapChain* SwapChain;//backbuffer
-	struct ID3D11Device* d3d11Device;//dx11 non rendering stuff
-	struct ID3D11DeviceContext* d3d11DevCon;//dx11 rendering stuff
+	struct ID3D11Device* m_Device;//dx11 non rendering stuff
+	struct ID3D11DeviceContext* m_DevCon;//dx11 rendering stuff
 
-	struct ID3D11RenderTargetView* CurrentBoundRenderTarget;
-	struct ID3D11DepthStencilView* CurrentBoundDepthStencilView;
+	struct ID3D11RenderTargetView* m_CurrentBoundRenderTarget;
+	struct ID3D11DepthStencilView* m_CurrentBoundDepthStencilView;
 
 };
 
@@ -63,14 +62,17 @@ protected:
 private:
 	bool InitGfx() override;
 
-	struct IDXGISwapChain* SwapChain;//backbuffer
-	struct ID3D11Device* d3d11Device;//dx11 non rendering stuff
-	struct ID3D11DeviceContext* d3d11DevCon;//dx11 rendering stuff
-	struct ID3D11RenderTargetView* renderTargetView;//main buffer
-	struct ID3D11DepthStencilView* depthStencilView;
-	struct ID3D11Texture2D* depthStencilBuffer;
-	struct ID3D11RasterizerState* rasterState;
-	struct ID3DUserDefinedAnnotation* pPerf;
-	struct ID3D11Debug* pDebug;
+	struct IDXGISwapChain* m_SwapChain;//backbuffer
+	struct ID3D11Device* m_Device;//dx11 non rendering stuff
+	struct ID3D11DeviceContext* m_DevCon;//dx11 rendering stuff
+
+	//Might move these to a Render Target that is the main buffer
+	struct ID3D11RenderTargetView* m_RenderTargetView;//main buffer
+	struct ID3D11DepthStencilView* m_DepthStencilView;
+	struct ID3D11Texture2D* m_DepthStencilBuffer;
+
+	struct ID3D11RasterizerState* m_MainRasterState;
+	struct ID3DUserDefinedAnnotation* m_PerfDebug;
+	struct ID3D11Debug* m_DebugContext;
 
 };

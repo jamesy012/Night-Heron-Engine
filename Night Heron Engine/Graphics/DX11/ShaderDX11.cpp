@@ -83,7 +83,7 @@ void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int
 				printf("VERTEX Test SHADER ERROR\n%s",(char*)(shaderError->GetBufferPointer()));
 				return;
 			}
-			GFXDX11::GetCurrentContex()->d3d11Device->CreateVertexShader(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), NULL, &VS);
+			GFXDX11::GetCurrentContex()->m_Device->CreateVertexShader(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), NULL, &VS);
 			if (FAILED(hr)) {
 				printf("PIXEL Test SHADER ERROR CreateVertexShader\n%s", (char*)(shaderError->GetBufferPointer()));
 				return;
@@ -95,7 +95,7 @@ void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int
 				printf("PIXEL Test SHADER ERROR\n%s", (char*)(shaderError->GetBufferPointer()));
 				return;
 			}
-			GFXDX11::GetCurrentContex()->d3d11Device->CreatePixelShader(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), NULL, &PS);
+			GFXDX11::GetCurrentContex()->m_Device->CreatePixelShader(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), NULL, &PS);
 			if (FAILED(hr)) {
 				printf("PIXEL Test SHADER ERROR CreatePixelShader\n%s", (char*)(shaderError->GetBufferPointer()));
 				return;
@@ -108,7 +108,7 @@ void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int
 void ShaderDX11::Link_Internal() {
 	HRESULT hr;
 	if (VS_Buffer) {
-		hr = GFXDX11::GetCurrentContex()->d3d11Device->CreateInputLayout(VertexLayout, numVertexLayoutElements, VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), &vertLayout);
+		hr = GFXDX11::GetCurrentContex()->m_Device->CreateInputLayout(VertexLayout, numVertexLayoutElements, VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), &vertLayout);
 		if (FAILED(hr)) {
 			printf("CreateInputLayout ERROR %ld\n", hr);
 			return;
@@ -118,21 +118,21 @@ void ShaderDX11::Link_Internal() {
 }
 
 void ShaderDX11::Use() {
-	GFXDX11::GetCurrentContex()->d3d11DevCon->IASetInputLayout(vertLayout);
-	GFXDX11::GetCurrentContex()->d3d11DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	GFXDX11::GetCurrentContex()->m_DevCon->IASetInputLayout(vertLayout);
+	GFXDX11::GetCurrentContex()->m_DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	for (int i = 0; i < m_CBuffers.size(); i++) {
 		if (m_CBuffers[i].m_VertexSlot != -1) {
-			GFXDX11::GetCurrentContex()->d3d11DevCon->VSSetConstantBuffers(m_CBuffers[i].m_VertexSlot, 1, &m_CBuffers[i].m_Uniform->m_Buffer);
+			GFXDX11::GetCurrentContex()->m_DevCon->VSSetConstantBuffers(m_CBuffers[i].m_VertexSlot, 1, &m_CBuffers[i].m_Uniform->m_Buffer);
 		}
 		if (m_CBuffers[i].m_PixelSlot != -1) {
-			GFXDX11::GetCurrentContex()->d3d11DevCon->PSSetConstantBuffers(m_CBuffers[i].m_PixelSlot, 1, &m_CBuffers[i].m_Uniform->m_Buffer);
+			GFXDX11::GetCurrentContex()->m_DevCon->PSSetConstantBuffers(m_CBuffers[i].m_PixelSlot, 1, &m_CBuffers[i].m_Uniform->m_Buffer);
 		}
 
 	}
 
-	GFXDX11::GetCurrentContex()->d3d11DevCon->VSSetShader(VS, 0, 0);
-	GFXDX11::GetCurrentContex()->d3d11DevCon->PSSetShader(PS, 0, 0);
+	GFXDX11::GetCurrentContex()->m_DevCon->VSSetShader(VS, 0, 0);
+	GFXDX11::GetCurrentContex()->m_DevCon->PSSetShader(PS, 0, 0);
 }
 
 void ShaderDX11::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName) {
@@ -201,9 +201,9 @@ void ShaderUniformBlockDX11::UpdateBuffer(void * a_Object) {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
-	GFXDX11::GetCurrentContex()->d3d11DevCon->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	GFXDX11::GetCurrentContex()->m_DevCon->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	//  Update the vertex buffer here.
 	memcpy(mappedResource.pData, a_Object, m_Size);
 	//  Reenable GPU access to the vertex buffer data.
-	GFXDX11::GetCurrentContex()->d3d11DevCon->Unmap(m_Buffer, 0);
+	GFXDX11::GetCurrentContex()->m_DevCon->Unmap(m_Buffer, 0);
 }

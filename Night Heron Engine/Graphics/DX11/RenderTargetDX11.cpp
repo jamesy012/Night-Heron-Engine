@@ -14,7 +14,7 @@ void RenderTargetDX11::SetSize(unsigned int a_Width, unsigned int a_Height) {
 }
 
 void RenderTargetDX11::Use() {
-	GFXDX11::GetCurrentContex()->d3d11DevCon->OMSetRenderTargets(1, &m_RenderTarget, m_DepthStencil);
+	GFXDX11::GetCurrentContex()->m_DevCon->OMSetRenderTargets(1, &m_RenderTarget, m_DepthStencil);
 
 	D3D11_VIEWPORT viewport;
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
@@ -24,11 +24,11 @@ void RenderTargetDX11::Use() {
 	viewport.MaxDepth = 1.0f;
 	viewport.MinDepth = 0.0f;
 
-	GFXDX11::GetCurrentContex()->d3d11DevCon->RSSetViewports(1, &viewport);
+	GFXDX11::GetCurrentContex()->m_DevCon->RSSetViewports(1, &viewport);
 
 
-	GFXDX11::GetCurrentContex()->CurrentBoundRenderTarget = m_RenderTarget;
-	GFXDX11::GetCurrentContex()->CurrentBoundDepthStencilView = m_DepthStencil;
+	GFXDX11::GetCurrentContex()->m_CurrentBoundRenderTarget = m_RenderTarget;
+	GFXDX11::GetCurrentContex()->m_CurrentBoundDepthStencilView = m_DepthStencil;
 
 }
 
@@ -59,9 +59,9 @@ void RenderTargetDX11::SetupRenderTarget_Internal() {
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-	GFXDX11::GetCurrentContex()->d3d11Device->CreateRenderTargetView(tex2D->Get2DTextrueRef(), &renderTargetViewDesc, &m_RenderTarget);
+	GFXDX11::GetCurrentContex()->m_Device->CreateRenderTargetView(tex2D->Get2DTextrueRef(), &renderTargetViewDesc, &m_RenderTarget);
 
-	GFXDX11::GetCurrentContex()->d3d11Device->CreateDepthStencilView(depthStencil->Get2DTextrueRef(), NULL, &m_DepthStencil);
+	GFXDX11::GetCurrentContex()->m_Device->CreateDepthStencilView(depthStencil->Get2DTextrueRef(), NULL, &m_DepthStencil);
 }
 
 Texture * RenderTargetDX11::GetTexture() {

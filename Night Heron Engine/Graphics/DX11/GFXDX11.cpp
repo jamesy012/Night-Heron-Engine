@@ -30,13 +30,13 @@ bool GFXDX11::CreateWindowSetUpAPI() {
 }
 
 void GFXDX11::DestroyMainWindow() {
-	SwapChain->SetFullscreenState(false, NULL);
-	SwapChain->Release();
-	d3d11Device->Release();
-	d3d11DevCon->Release();
+	m_SwapChain->SetFullscreenState(false, NULL);
+	m_SwapChain->Release();
+	m_Device->Release();
+	m_DevCon->Release();
 
-	depthStencilView->Release();
-	renderTargetView->Release();
+	m_DepthStencilView->Release();
+	m_RenderTargetView->Release();
 
 	m_Window->DestrowMainWindow();
 
@@ -45,12 +45,12 @@ void GFXDX11::DestroyMainWindow() {
 }
 
 void GFXDX11::SwapBuffer() {
-	SwapChain->Present(1, 0);
+	m_SwapChain->Present(1, 0);
 }
 
 void GFXDX11::Clear() {
-	d3d11DevCon->ClearRenderTargetView(m_CurrentContext->CurrentBoundRenderTarget, &m_ClearR);
-	d3d11DevCon->ClearDepthStencilView(m_CurrentContext->CurrentBoundDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_DevCon->ClearRenderTargetView(m_CurrentContext->m_CurrentBoundRenderTarget, &m_ClearR);
+	m_DevCon->ClearDepthStencilView(m_CurrentContext->m_CurrentBoundDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void GFXDX11::SetClearColor(float R, float G, float B, float A) {
@@ -69,24 +69,24 @@ void GFXDX11::ImGuiNewFrame() {
 }
 
 void GFXDX11::InitImGui_Internal() {
-	ImGui_ImplDX11_Init(d3d11Device, d3d11DevCon);
+	ImGui_ImplDX11_Init(m_Device, m_DevCon);
 }
 
 void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
-	if (SwapChain) {
+	if (m_SwapChain) {
 		HRESULT hr;
 
-		renderTargetView->Release();
-		SwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+		m_RenderTargetView->Release();
+		m_SwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 
 		ID3D11Texture2D* backbuffer;
-		hr = SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
+		hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
 		if (FAILED(hr)) {
 			MessageBox(NULL, "Error GetBuffer SwapChain", "Error", MB_OK | MB_ICONERROR);
 			return;
 		}
 
-		hr = d3d11Device->CreateRenderTargetView(backbuffer, NULL, &renderTargetView);
+		hr = m_Device->CreateRenderTargetView(backbuffer, NULL, &m_RenderTargetView);
 		backbuffer->Release();
 		if (FAILED(hr)) {
 			MessageBox(NULL, "Error CreateRenderTargetView", "Error", MB_OK | MB_ICONERROR);
@@ -94,19 +94,19 @@ void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
 		}
 
 		D3D11_TEXTURE2D_DESC depthStencilDesc;
-		depthStencilBuffer->GetDesc(&depthStencilDesc);
+		m_DepthStencilBuffer->GetDesc(&depthStencilDesc);
 
-		depthStencilBuffer->Release();
-		depthStencilView->Release();
+		m_DepthStencilBuffer->Release();
+		m_DepthStencilView->Release();
 
 		depthStencilDesc.Width = a_Width;
 		depthStencilDesc.Height = a_Height;
 
-		d3d11Device->CreateTexture2D(&depthStencilDesc, NULL, &depthStencilBuffer);
-		d3d11Device->CreateDepthStencilView(depthStencilBuffer, NULL, &depthStencilView);
+		m_Device->CreateTexture2D(&depthStencilDesc, NULL, &m_DepthStencilBuffer);
+		m_Device->CreateDepthStencilView(m_DepthStencilBuffer, NULL, &m_DepthStencilView);
 
 
-		d3d11DevCon->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
+		m_DevCon->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 
 
 
@@ -118,7 +118,7 @@ void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
 		viewport.MaxDepth = 1.0f;
 		viewport.MinDepth = 0.0f;
 
-		d3d11DevCon->RSSetViewports(1, &viewport);
+		m_DevCon->RSSetViewports(1, &viewport);
 	}
 }
 
@@ -156,7 +156,7 @@ ShaderUniformBlock* GFXDX11::CreateBuffer(void * a_Object, unsigned int a_Size) 
 	InitData.SysMemPitch = 0;
 	InitData.SysMemSlicePitch = 0;
 
-	hr = d3d11Device->CreateBuffer(&cbbd, &InitData, &sub->m_Buffer);
+	hr = m_Device->CreateBuffer(&cbbd, &InitData, &sub->m_Buffer);
 	if (FAILED(hr)) {
 		if (cbbd.ByteWidth % 4 != 0) {
 			MessageBox(NULL, "Error Buffer is not a power of 4 bytes", "Error", MB_OK | MB_ICONERROR);
@@ -170,23 +170,23 @@ ShaderUniformBlock* GFXDX11::CreateBuffer(void * a_Object, unsigned int a_Size) 
 
 void GFXDX11::PushDebugGroup(CMString a_Name) {
 	std::wstring stemp = std::wstring(a_Name.begin(), a_Name.end());
-	if (pPerf) {
-		pPerf->BeginEvent(stemp.c_str());
+	if (m_PerfDebug) {
+		m_PerfDebug->BeginEvent(stemp.c_str());
 	} else {
 		//D3DPERF_BeginEvent(D3DCOLOR_RGBA(255, 0, 255, 0), stemp.c_str());
 	}
 }
 
 void GFXDX11::PopDebugGroup() {
-	if (pPerf) {
-		pPerf->EndEvent();
+	if (m_PerfDebug) {
+		m_PerfDebug->EndEvent();
 	} else {
 		//D3DPERF_EndEvent();
 	}
 }
 
 void GFXDX11::ResetRenderTarget() {
-	d3d11DevCon->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
+	m_DevCon->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 
 	D3D11_VIEWPORT viewport;
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
@@ -196,10 +196,10 @@ void GFXDX11::ResetRenderTarget() {
 	viewport.MaxDepth = 1.0f;
 	viewport.MinDepth = 0.0f;
 
-	d3d11DevCon->RSSetViewports(1, &viewport);
+	m_DevCon->RSSetViewports(1, &viewport);
 
-	m_CurrentContext->CurrentBoundRenderTarget = renderTargetView;
-	m_CurrentContext->CurrentBoundDepthStencilView= depthStencilView;
+	m_CurrentContext->m_CurrentBoundRenderTarget = m_RenderTargetView;
+	m_CurrentContext->m_CurrentBoundDepthStencilView= m_DepthStencilView;
 
 }
 
@@ -232,28 +232,28 @@ bool GFXDX11::InitGfx() {
 	swapChainDesc.Windowed = true;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-	hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, D3D11_CREATE_DEVICE_DEBUG, NULL, NULL, D3D11_SDK_VERSION, &swapChainDesc, &SwapChain, &d3d11Device, NULL, &d3d11DevCon);
+	hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, D3D11_CREATE_DEVICE_DEBUG, NULL, NULL, D3D11_SDK_VERSION, &swapChainDesc, &m_SwapChain, &m_Device, NULL, &m_DevCon);
 	if (FAILED(hr)) {
 		MessageBox(NULL, "Error Creating Window", "Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
 
 	ID3D11Texture2D* backbuffer;
-	hr = SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
+	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
 	if (FAILED(hr)) {
 		MessageBox(NULL, "Error GetBuffer SwapChain", "Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
 
-	hr = d3d11Device->CreateRenderTargetView(backbuffer, NULL, &renderTargetView);
+	hr = m_Device->CreateRenderTargetView(backbuffer, NULL, &m_RenderTargetView);
 	backbuffer->Release();
 	if (FAILED(hr)) {
 		MessageBox(NULL, "Error CreateRenderTargetView", "Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
 
-	hr = d3d11DevCon->QueryInterface(__uuidof(ID3DUserDefinedAnnotation), (void **)&pPerf);
-	hr = d3d11Device->QueryInterface(__uuidof(pDebug), reinterpret_cast<void**>(&pDebug));
+	hr = m_DevCon->QueryInterface(__uuidof(ID3DUserDefinedAnnotation), (void **)&m_PerfDebug);
+	hr = m_Device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_DebugContext));
 
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_TEXTURE2D_DESC));
@@ -269,8 +269,8 @@ bool GFXDX11::InitGfx() {
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags = 0;
 
-	d3d11Device->CreateTexture2D(&depthStencilDesc, NULL, &depthStencilBuffer);
-	d3d11Device->CreateDepthStencilView(depthStencilBuffer, NULL, &depthStencilView);
+	m_Device->CreateTexture2D(&depthStencilDesc, NULL, &m_DepthStencilBuffer);
+	m_Device->CreateDepthStencilView(m_DepthStencilBuffer, NULL, &m_DepthStencilView);
 
 	ResetRenderTarget();
 
@@ -281,14 +281,13 @@ bool GFXDX11::InitGfx() {
 	rasterizerDesc.CullMode = D3D11_CULL_BACK;
 	rasterizerDesc.FrontCounterClockwise = false;
 	rasterizerDesc.CullMode = D3D11_CULL_NONE;
-	hr = d3d11Device->CreateRasterizerState(&rasterizerDesc, &rasterState);
+	hr = m_Device->CreateRasterizerState(&rasterizerDesc, &m_MainRasterState);
 
-	d3d11DevCon->RSSetState(rasterState);
+	m_DevCon->RSSetState(m_MainRasterState);
 
 
-	m_CurrentContext->d3d11DevCon = d3d11DevCon;
-	m_CurrentContext->d3d11Device = d3d11Device;
-	m_CurrentContext->SwapChain = SwapChain;
+	m_CurrentContext->m_DevCon = m_DevCon;
+	m_CurrentContext->m_Device = m_Device;
 
 	return true;
 }

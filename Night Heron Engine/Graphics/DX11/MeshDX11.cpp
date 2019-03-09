@@ -42,12 +42,12 @@ void MeshDX11::Bind() {
 	
 	HRESULT hr;
 
-	hr = GFXDX11::GetCurrentContex()->d3d11Device->CreateBuffer(&vertexBufferDesc, &vertexData, &squareVertBuffer);
+	hr = GFXDX11::GetCurrentContex()->m_Device->CreateBuffer(&vertexBufferDesc, &vertexData, &squareVertBuffer);
 	if (FAILED(hr)) {
 		printf("vertexData error %ld\n", hr);
 		return;
 	}
-	hr = GFXDX11::GetCurrentContex()->d3d11Device->CreateBuffer(&indexBufferDesc, &indexData, &squareIndexBuffer);
+	hr = GFXDX11::GetCurrentContex()->m_Device->CreateBuffer(&indexBufferDesc, &indexData, &squareIndexBuffer);
 	if (FAILED(hr)) {
 		printf("indexData ERROR %ld\n", hr);
 		return;
@@ -59,8 +59,8 @@ void MeshDX11::Draw() {
 	const UINT VertexStride = sizeof(Vertex);
 	const UINT VertexOffset = 0;
 
-	GFXDX11::GetCurrentContex()->d3d11DevCon->IASetVertexBuffers(0, 1, &squareVertBuffer, &VertexStride, &VertexOffset);
-	GFXDX11::GetCurrentContex()->d3d11DevCon->IASetIndexBuffer(squareIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	GFXDX11::GetCurrentContex()->m_DevCon->IASetVertexBuffers(0, 1, &squareVertBuffer, &VertexStride, &VertexOffset);
+	GFXDX11::GetCurrentContex()->m_DevCon->IASetIndexBuffer(squareIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	GFXDX11::GetCurrentContex()->d3d11DevCon->DrawIndexed(m_Indices.size(), 0, 0);
+	GFXDX11::GetCurrentContex()->m_DevCon->DrawIndexed(m_Indices.size(), 0, 0);
 }

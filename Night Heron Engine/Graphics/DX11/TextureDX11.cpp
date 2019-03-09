@@ -17,15 +17,15 @@ static DXGI_FORMAT getDX11FormatFromSTBFormat(unsigned int a_Format) {
 
 void TextureDX11::Bind(unsigned int a_Slot) {
 	m_BoundSlot = a_Slot;
-	GFXDX11::GetCurrentContex()->d3d11DevCon->PSSetSamplers(a_Slot, 1, &m_SamplerRef);
-	GFXDX11::GetCurrentContex()->d3d11DevCon->PSSetShaderResources(a_Slot, 1, &m_TextureSRV);
+	GFXDX11::GetCurrentContex()->m_DevCon->PSSetSamplers(a_Slot, 1, &m_SamplerRef);
+	GFXDX11::GetCurrentContex()->m_DevCon->PSSetShaderResources(a_Slot, 1, &m_TextureSRV);
 }
 
 void TextureDX11::UnBind() {
 	ID3D11SamplerState* nullHolderSampler[1] = { NULL };
 	ID3D11ShaderResourceView* nullHolderSRV[1] = { NULL };
-	GFXDX11::GetCurrentContex()->d3d11DevCon->PSSetSamplers(m_BoundSlot, 1, nullHolderSampler);
-	GFXDX11::GetCurrentContex()->d3d11DevCon->PSSetShaderResources(m_BoundSlot, 1, nullHolderSRV);
+	GFXDX11::GetCurrentContex()->m_DevCon->PSSetSamplers(m_BoundSlot, 1, nullHolderSampler);
+	GFXDX11::GetCurrentContex()->m_DevCon->PSSetShaderResources(m_BoundSlot, 1, nullHolderSRV);
 	m_BoundSlot = -1;
 }
 
@@ -52,14 +52,14 @@ void TextureDX11::createData() {
 	texDesc.SampleDesc.Quality = 0;
 
 	if (m_TextureData == nullptr) {
-		hr = GFXDX11::GetCurrentContex()->d3d11Device->CreateTexture2D(&texDesc, NULL, &m_TextureRef);
+		hr = GFXDX11::GetCurrentContex()->m_Device->CreateTexture2D(&texDesc, NULL, &m_TextureRef);
 	} else {
 		D3D11_SUBRESOURCE_DATA resources;
 		ZeroMemory(&resources, sizeof(D3D11_SUBRESOURCE_DATA));
 		resources.pSysMem = m_TextureData;
 		resources.SysMemPitch = m_Width * m_ImageFormat;
 
-		hr = GFXDX11::GetCurrentContex()->d3d11Device->CreateTexture2D(&texDesc, &resources, &m_TextureRef);
+		hr = GFXDX11::GetCurrentContex()->m_Device->CreateTexture2D(&texDesc, &resources, &m_TextureRef);
 	}
 
 	if (m_IsShaderResource) {
@@ -69,7 +69,7 @@ void TextureDX11::createData() {
 		srvd.TextureCube.MipLevels = texDesc.MipLevels;
 		srvd.TextureCube.MostDetailedMip = 0;
 
-		hr = GFXDX11::GetCurrentContex()->d3d11Device->CreateShaderResourceView(m_TextureRef, &srvd, &m_TextureSRV);
+		hr = GFXDX11::GetCurrentContex()->m_Device->CreateShaderResourceView(m_TextureRef, &srvd, &m_TextureSRV);
 
 	}
 	if(m_ShouldCreateSampler) {
@@ -83,7 +83,7 @@ void TextureDX11::createData() {
 		samplerDesc.MinLOD = 0;
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-		hr = GFXDX11::GetCurrentContex()->d3d11Device->CreateSamplerState(&samplerDesc, &m_SamplerRef);
+		hr = GFXDX11::GetCurrentContex()->m_Device->CreateSamplerState(&samplerDesc, &m_SamplerRef);
 	}
 
 }
