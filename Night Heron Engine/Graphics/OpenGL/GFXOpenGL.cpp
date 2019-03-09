@@ -113,6 +113,14 @@ ShaderUniformBlock* GFXOpenGL::CreateBuffer(void * a_Object, unsigned int a_Size
 	return sub;
 }
 
+void GFXOpenGL::PushDebugGroup(CMString a_Name) {
+	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 2910, a_Name.size(), a_Name.c_str());
+}
+
+void GFXOpenGL::PopDebugGroup() {
+	glPopDebugGroup();
+}
+
 bool GFXOpenGL::InitGfx() {
 
 	m_Window->m_HRC = wglCreateContext(m_Window->m_HDC);

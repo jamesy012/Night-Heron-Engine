@@ -122,7 +122,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);$(SolutionDir)Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\hlsl\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3d9.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -188,6 +188,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommonTypes.h" />
     <ClInclude Include="Graphics\API\GFXAPI.h" />
     <ClInclude Include="Graphics\API\Mesh.h" />
     <ClInclude Include="Graphics\API\RenderTarget.h" />

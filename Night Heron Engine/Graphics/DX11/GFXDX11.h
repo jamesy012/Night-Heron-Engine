@@ -44,6 +44,9 @@ public:
 
 	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;
 
+	virtual void PushDebugGroup(CMString a_Name) override;
+	virtual void PopDebugGroup() override;
+
 	virtual SimpleVec2 GetImGuiImageUV0() override {
 		return SimpleVec2(0, 0);
 	};
@@ -67,4 +70,7 @@ private:
 	struct ID3D11DepthStencilView* depthStencilView;
 	struct ID3D11Texture2D* depthStencilBuffer;
 	struct ID3D11RasterizerState* rasterState;
+	struct ID3DUserDefinedAnnotation* pPerf;
+	struct ID3D11Debug* pDebug;
+
 };

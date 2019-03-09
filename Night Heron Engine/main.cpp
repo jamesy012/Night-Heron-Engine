@@ -78,7 +78,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	Texture* testTexture = graphics->CreateTexture();
 	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 
-	testTexture->loadTexture("peacock-2.jpg");
+	testTexture->LoadTexture("peacock-2.jpg");
 
 	testShader->AddShader(ShaderTypes::SHADER_VERTEX, "test.vert");
 	testShader->AddShader(ShaderTypes::SHADER_FRAGMENT, "test.frag");
@@ -133,6 +133,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else {
+			graphics->PushDebugGroup("Frame");
 			auto timerStart = timer.now();
 			currentTime += deltaTime;
 
@@ -164,6 +165,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			testUniformStructObj.MatrixProjection = glm::perspective(glm::radians(fov), (float)graphics->m_Window->m_WindowWidth / graphics->m_Window->m_WindowHeight, 0.1f, 100.0f);
 			
 			if (testRT) {
+				graphics->PushDebugGroup("Render Target");
 				testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(x*0.25f, y*0.25f, 1.5f), glm::vec3(0), glm::vec3(0, 1, 0));
 				testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
 			
@@ -179,7 +181,10 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				testMesh->Draw();
 			
 				testRT->Reset();
+				graphics->PopDebugGroup();
 			}
+
+
 
 			testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(x, y, 5), glm::vec3(0), glm::vec3(0, 1, 0));
 			testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
@@ -191,12 +196,13 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			////testUniformStructObj.colorTest.g = (counter > 255 ? 512 - counter : counter) / 255.0f;
 			//
 
+			graphics->PushDebugGroup("Main Render");
 			graphics->SetClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 			graphics->Clear();
 			testShader->Use();
 
 
-			testTexture->bind(1);
+			testTexture->Bind(1);
 			testShader->BindTexture("textureTest", 1);
 
 			testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0, 0));
@@ -223,8 +229,14 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			testUniform2->UpdateBuffer(&colorTest);
 			testMesh->Draw();
 
-			graphics->ImGuiDraw();
+			testTexture->UnBind();
 
+			graphics->PopDebugGroup();
+			graphics->PushDebugGroup("ImGui Render");
+			graphics->ImGuiDraw();
+			graphics->PopDebugGroup();
+
+			graphics->PopDebugGroup();
 			graphics->SwapBuffer();
 
 			auto timerEnd = timer.now();

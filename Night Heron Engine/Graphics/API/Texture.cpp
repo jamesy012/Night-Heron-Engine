@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb-master/stb_image.h>
 
-void Texture::loadTexture(std::string a_Path) {
+void Texture::LoadTexture(std::string a_Path) {
 
 	m_Path = a_Path;
 

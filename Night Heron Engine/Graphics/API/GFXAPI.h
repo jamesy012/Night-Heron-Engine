@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SimpleMath.h"
+#include "CommonTypes.h"
 
 class Window;
 
@@ -33,11 +34,14 @@ public:
 
 	virtual class ShaderUniformBlock* CreateBuffer(void* a_Object, unsigned int a_Size) = 0;
 
-	Window* m_Window;
+
+	virtual void PushDebugGroup(CMString a_Name) = 0;
+	virtual void PopDebugGroup() = 0;
 
 	virtual SimpleVec2 GetImGuiImageUV0() = 0;
 	virtual SimpleVec2 GetImGuiImageUV1() = 0;
 
+	Window* m_Window;
 protected:
 	virtual bool InitGfx() = 0;
 	virtual void InitImGui_Internal() = 0;

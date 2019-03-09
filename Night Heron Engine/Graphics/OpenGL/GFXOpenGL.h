@@ -26,6 +26,9 @@ public:
 
 	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;
 
+	virtual void PushDebugGroup(CMString a_Name) override;
+	virtual void PopDebugGroup() override;
+
 	virtual SimpleVec2 GetImGuiImageUV0() override {
 		return SimpleVec2(0, 1);
 	};

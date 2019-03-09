@@ -231,9 +231,11 @@ void    ImGui_ImplOpenGL3_RenderDrawData(ImDrawData* draw_data)
         size_t idx_buffer_offset = 0;
 
         glBindBuffer(GL_ARRAY_BUFFER, g_VboHandle);
+        glObjectLabel(GL_BUFFER, g_VboHandle, -1, "ImGui VBO");
         glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)cmd_list->VtxBuffer.Size * sizeof(ImDrawVert), (const GLvoid*)cmd_list->VtxBuffer.Data, GL_STREAM_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_ElementsHandle);
+        glObjectLabel(GL_BUFFER, g_ElementsHandle, -1, "ImGui EBO");
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx), (const GLvoid*)cmd_list->IdxBuffer.Data, GL_STREAM_DRAW);
 
         for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
@@ -270,6 +272,7 @@ void    ImGui_ImplOpenGL3_RenderDrawData(ImDrawData* draw_data)
         }
     }
     glDeleteVertexArrays(1, &vao_handle);
+
 
     // Restore modified GL state
     glUseProgram(last_program);
@@ -316,6 +319,7 @@ bool ImGui_ImplOpenGL3_CreateFontsTexture()
 
     // Restore state
     glBindTexture(GL_TEXTURE_2D, last_texture);
+    glObjectLabel(GL_TEXTURE, g_FontTexture, -1, "ImGui Texture2D");
 
     return true;
 }

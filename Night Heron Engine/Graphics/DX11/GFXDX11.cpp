@@ -3,8 +3,8 @@
 //#include "WindowDX11.h"
 #include "Window.h"
 
-#include <d3d11_1.h>
 #include <d3d11_2.h>
+//#include <d3d9.h>
 
 #include <imgui-master\imgui.h>
 #include <imgui-master\examples\imgui_impl_dx11.h>
@@ -168,6 +168,23 @@ ShaderUniformBlock* GFXDX11::CreateBuffer(void * a_Object, unsigned int a_Size) 
 	return sub;
 }
 
+void GFXDX11::PushDebugGroup(CMString a_Name) {
+	std::wstring stemp = std::wstring(a_Name.begin(), a_Name.end());
+	if (pPerf) {
+		pPerf->BeginEvent(stemp.c_str());
+	} else {
+		//D3DPERF_BeginEvent(D3DCOLOR_RGBA(255, 0, 255, 0), stemp.c_str());
+	}
+}
+
+void GFXDX11::PopDebugGroup() {
+	if (pPerf) {
+		pPerf->EndEvent();
+	} else {
+		//D3DPERF_EndEvent();
+	}
+}
+
 void GFXDX11::ResetRenderTarget() {
 	d3d11DevCon->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
 
@@ -234,6 +251,9 @@ bool GFXDX11::InitGfx() {
 		MessageBox(NULL, "Error CreateRenderTargetView", "Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
+
+	hr = d3d11DevCon->QueryInterface(__uuidof(ID3DUserDefinedAnnotation), (void **)&pPerf);
+	hr = d3d11Device->QueryInterface(__uuidof(pDebug), reinterpret_cast<void**>(&pDebug));
 
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_TEXTURE2D_DESC));

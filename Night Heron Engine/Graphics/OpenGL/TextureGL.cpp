@@ -13,9 +13,16 @@ static unsigned int getGLFormatFromSTBFormat(unsigned int a_Format) {
 	}
 }
 
-void TextureGL::bind(unsigned int a_Slot) {
+void TextureGL::Bind(unsigned int a_Slot) {
+	m_BoundSlot = a_Slot;
 	glActiveTexture(GL_TEXTURE0 + a_Slot);
 	glBindTexture(GL_TEXTURE_2D, m_BufferID);
+}
+
+void TextureGL::UnBind() {
+	glActiveTexture(GL_TEXTURE0 + m_BoundSlot);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	m_BoundSlot = -1;
 }
 
 void TextureGL::createData() {

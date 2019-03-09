@@ -4,7 +4,8 @@
 
 class TextureDX11 : public Texture {
 public:
-	virtual void bind(unsigned int a_Slot) override;
+	virtual void Bind(unsigned int a_Slot) override;
+	virtual void UnBind() override;
 
 	void* getTexturePtr() override {
 		return m_TextureSRV;

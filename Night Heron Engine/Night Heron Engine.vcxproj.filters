@@ -146,5 +146,8 @@
     <ClInclude Include="SimpleMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CommonTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
