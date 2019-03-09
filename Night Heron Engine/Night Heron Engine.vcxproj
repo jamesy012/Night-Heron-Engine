@@ -175,6 +175,7 @@
     <ClCompile Include="Graphics\API\Shader.cpp" />
     <ClCompile Include="Graphics\API\Texture.cpp" />
     <ClCompile Include="Graphics\DX11\MeshDX11.cpp" />
+    <ClCompile Include="Graphics\DX11\RenderTargetDX11.cpp" />
     <ClCompile Include="Graphics\DX11\ShaderDX11.cpp" />
     <ClCompile Include="Graphics\DX11\TextureDX11.cpp" />
     <ClCompile Include="Graphics\OpenGL\MeshGL.cpp" />
@@ -193,12 +194,14 @@
     <ClInclude Include="Graphics\API\Shader.h" />
     <ClInclude Include="Graphics\API\Texture.h" />
     <ClInclude Include="Graphics\DX11\MeshDX11.h" />
+    <ClInclude Include="Graphics\DX11\RenderTargetDX11.h" />
     <ClInclude Include="Graphics\DX11\ShaderDX11.h" />
     <ClInclude Include="Graphics\DX11\TextureDX11.h" />
     <ClInclude Include="Graphics\OpenGL\MeshGL.h" />
     <ClInclude Include="Graphics\OpenGL\RenderTargetGL.h" />
     <ClInclude Include="Graphics\OpenGL\ShaderGL.h" />
     <ClInclude Include="Graphics\OpenGL\TextureGL.h" />
+    <ClInclude Include="SimpleMath.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Graphics\DX11\GFXDX11.h" />
     <ClInclude Include="Graphics\OpenGL\GFXOpenGL.h" />

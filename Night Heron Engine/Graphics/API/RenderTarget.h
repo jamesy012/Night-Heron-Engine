@@ -20,4 +20,6 @@ protected:
 
 	unsigned int m_Width;
 	unsigned int m_Height;
+
+	Texture* m_Texture;
 };

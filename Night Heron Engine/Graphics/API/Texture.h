@@ -9,6 +9,7 @@ public:
 	virtual void bind(unsigned int a_Slot) = 0;
 
 	virtual void* getTexturePtr() = 0;
+
 protected:
 	virtual void createData() = 0;
 

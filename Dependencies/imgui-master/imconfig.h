@@ -60,6 +60,10 @@
         ImVec4(const MyVec4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }     \
         operator MyVec4() const { return MyVec4(x,y,z,w); }
 */
+#include "SimpleMath.h"
+#define IM_VEC2_CLASS_EXTRA                                                 \
+        ImVec2(const SimpleVec2& f) { x = f.v1; y = f.v2; }                 \
+        operator SimpleVec2() const { return SimpleVec2(x,y); }
 
 //---- Use 32-bit vertex indices (default is 16-bit) to allow meshes with more than 64K vertices. Render function needs to support it.
 //#define ImDrawIdx unsigned int

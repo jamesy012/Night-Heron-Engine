@@ -12,6 +12,7 @@
 #include "ShaderDX11.h"
 #include "MeshDX11.h"
 #include "TextureDX11.h"
+#include "RenderTargetDX11.h"
 
 DirectX11Common* GFXDX11::m_CurrentContext = nullptr;
 
@@ -48,9 +49,8 @@ void GFXDX11::SwapBuffer() {
 }
 
 void GFXDX11::Clear() {
-	const float bgColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	d3d11DevCon->ClearRenderTargetView(renderTargetView, &m_ClearR);
-	d3d11DevCon->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	d3d11DevCon->ClearRenderTargetView(m_CurrentContext->CurrentBoundRenderTarget, &m_ClearR);
+	d3d11DevCon->ClearDepthStencilView(m_CurrentContext->CurrentBoundDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void GFXDX11::SetClearColor(float R, float G, float B, float A) {
@@ -135,7 +135,7 @@ Texture * GFXDX11::CreateTexture() {
 }
 
 RenderTarget * GFXDX11::CreateRenderTarget(int a_Width, int a_Height) {
-	return nullptr;
+	return new RenderTargetDX11(a_Width, a_Height);
 }
 
 ShaderUniformBlock* GFXDX11::CreateBuffer(void * a_Object, unsigned int a_Size) {
@@ -168,9 +168,28 @@ ShaderUniformBlock* GFXDX11::CreateBuffer(void * a_Object, unsigned int a_Size) 
 	return sub;
 }
 
+void GFXDX11::ResetRenderTarget() {
+	d3d11DevCon->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
+
+	D3D11_VIEWPORT viewport;
+	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+
+	viewport.Width = (float)m_Window->m_WindowWidth;
+	viewport.Height = (float)m_Window->m_WindowHeight;
+	viewport.MaxDepth = 1.0f;
+	viewport.MinDepth = 0.0f;
+
+	d3d11DevCon->RSSetViewports(1, &viewport);
+
+	m_CurrentContext->CurrentBoundRenderTarget = renderTargetView;
+	m_CurrentContext->CurrentBoundDepthStencilView= depthStencilView;
+
+}
+
 
 bool GFXDX11::InitGfx() {
 
+	m_CurrentContext = new DirectX11Common();
 	HRESULT hr;
 
 	DXGI_MODE_DESC bufferDesc;
@@ -233,17 +252,7 @@ bool GFXDX11::InitGfx() {
 	d3d11Device->CreateTexture2D(&depthStencilDesc, NULL, &depthStencilBuffer);
 	d3d11Device->CreateDepthStencilView(depthStencilBuffer, NULL, &depthStencilView);
 
-	d3d11DevCon->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
-
-	D3D11_VIEWPORT viewport;
-	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-
-	viewport.Width = (float)m_Window->m_WindowWidth;
-	viewport.Height = (float)m_Window->m_WindowHeight;
-	viewport.MaxDepth = 1.0f;
-	viewport.MinDepth = 0.0f;
-
-	d3d11DevCon->RSSetViewports(1, &viewport);
+	ResetRenderTarget();
 
 
 	D3D11_RASTERIZER_DESC rasterizerDesc;
@@ -257,7 +266,6 @@ bool GFXDX11::InitGfx() {
 	d3d11DevCon->RSSetState(rasterState);
 
 
-	m_CurrentContext = new DirectX11Common;
 	m_CurrentContext->d3d11DevCon = d3d11DevCon;
 	m_CurrentContext->d3d11Device = d3d11Device;
 	m_CurrentContext->SwapChain = SwapChain;

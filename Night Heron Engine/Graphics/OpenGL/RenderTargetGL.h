@@ -19,5 +19,4 @@ private:
 	unsigned int m_Fbo = 0;
 	unsigned int m_RenderBuffer = 0;
 
-	Texture* m_Texture;
 };

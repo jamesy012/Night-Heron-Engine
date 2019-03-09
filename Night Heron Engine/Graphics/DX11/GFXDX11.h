@@ -7,6 +7,9 @@ struct DirectX11Common {
 	struct ID3D11Device* d3d11Device;//dx11 non rendering stuff
 	struct ID3D11DeviceContext* d3d11DevCon;//dx11 rendering stuff
 
+	struct ID3D11RenderTargetView* CurrentBoundRenderTarget;
+	struct ID3D11DepthStencilView* CurrentBoundDepthStencilView;
+
 };
 
 class GFXDX11 : public GFX {
@@ -40,6 +43,15 @@ public:
 
 
 	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;
+
+	virtual SimpleVec2 GetImGuiImageUV0() override {
+		return SimpleVec2(0, 0);
+	};
+	virtual SimpleVec2 GetImGuiImageUV1() override {
+		return SimpleVec2(1, 1);
+	};
+
+	void ResetRenderTarget();
 
 protected:
 	virtual void InitImGui_Internal() override;

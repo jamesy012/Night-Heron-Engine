@@ -26,6 +26,14 @@ public:
 
 	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;
 
+	virtual SimpleVec2 GetImGuiImageUV0() override {
+		return SimpleVec2(0, 1);
+	};
+	virtual SimpleVec2 GetImGuiImageUV1() override {
+		return SimpleVec2(1, 0);
+	};
+
+
 protected:
 	virtual void InitImGui_Internal() override;
 

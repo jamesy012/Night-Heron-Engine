@@ -144,7 +144,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			ImGui::Text("fps: %f", ImGui::GetIO().Framerate);
 			ImGui::DragFloat("FOV", &fov, 1, 0, 180);
 			if (testRT) {
-				ImGui::Image(testRT->GetTexture()->getTexturePtr(), ImVec2(200, 200), ImVec2(0,1), ImVec2(1,0));
+				ImGui::Image(testRT->GetTexture()->getTexturePtr(), ImVec2(200, 200), m_CurrentGraphics->GetImGuiImageUV0(), m_CurrentGraphics->GetImGuiImageUV1());
 			}
 			ImGui::End();
 
@@ -166,17 +166,18 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			if (testRT) {
 				testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(x*0.25f, y*0.25f, 1.5f), glm::vec3(0), glm::vec3(0, 1, 0));
 				testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
-
+			
 				testRT->Use();
 				graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 				graphics->Clear();
+				testShader->Use();
 
 				testUniformStructObj.MatrixModelTest = glm::mat4(1.0f);
 				testUniform->UpdateBuffer(&testUniformStructObj);
 				colorTest.Color = glm::vec4(1, 1, 1, 1);
 				testUniform2->UpdateBuffer(&colorTest);
 				testMesh->Draw();
-
+			
 				testRT->Reset();
 			}
 
@@ -192,8 +193,8 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 
 			graphics->SetClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 			graphics->Clear();
-
 			testShader->Use();
+
 
 			testTexture->bind(1);
 			testShader->BindTexture("textureTest", 1);
