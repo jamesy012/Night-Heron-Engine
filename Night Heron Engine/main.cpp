@@ -19,6 +19,12 @@
 
 #include <Dependency/ImGui/imgui.h>
 
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+#include <assimp/DefaultLogger.hpp>
+#include <assimp/LogStream.hpp>
+
 struct TestUniformStruct {
 public:
 	glm::mat4 MatrixView = glm::mat4();

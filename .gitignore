@@ -273,3 +273,14 @@ Dependencies/glm/test/
 Dependencies/glslang-master/gtests/
 Dependencies/glslang-master/cmakeBuild/CMakeFiles/
 Dependencies/glslang-master/Test/
+Dependencies/assimp-4.1.0/tools/
+Dependencies/assimp-4.1.0/test/
+Dependencies/assimp-4.1.0/scripts/
+Dependencies/assimp-4.1.0/samples/
+Dependencies/assimp-4.1.0/port/
+Dependencies/assimp-4.1.0/packaging/
+Dependencies/assimp-4.1.0/code/
+Dependencies/assimp-4.1.0/tools/
+Dependencies/assimp-4.1.0/contrib/
+Dependencies/assimp-4.1.0/cmake-modules/
+Dependencies/assimp-4.1.0/cmakeBuild/
