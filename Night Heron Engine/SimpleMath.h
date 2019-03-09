@@ -1,5 +1,7 @@
 #pragma once
 
+typedef unsigned int uint;
+
 class SimpleVec2 {
 public:
 

@@ -13,6 +13,7 @@
 #include "Graphics/API/Texture.h"
 #include "Graphics/API/RenderTarget.h"
 #include "Window.h"
+#include "Model.h"
 
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
@@ -82,9 +83,12 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	//testShader->m_ShoudRegenerateCode = true;
 	Mesh* testMesh = graphics->CreateMesh();
 	Texture* testTexture = graphics->CreateTexture();
+	Texture* whiteTexture = graphics->CreateTexture();
 	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 
 	testTexture->LoadTexture("peacock-2.jpg");
+
+	whiteTexture->CreateTexture(1, 1);
 
 	testShader->AddShader(ShaderTypes::SHADER_VERTEX, "test.vert");
 	testShader->AddShader(ShaderTypes::SHADER_FRAGMENT, "test.frag");
@@ -121,6 +125,10 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	if (testRT) {
 		testRT->SetupRenderTarget_Internal();
 	}
+
+	Model testModel;
+	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.1/Tree1.1.fbx");
+	//testModel.LoadModel("Models/nanosuit.obj");
 
 	graphics->ImGuiInit();
 
@@ -172,24 +180,27 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			
 			if (testRT) {
 				graphics->PushDebugGroup("Render Target");
-				testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(x*0.25f, y*0.25f, 1.5f), glm::vec3(0), glm::vec3(0, 1, 0));
+				testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(-x, y, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
 				testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
 			
 				testRT->Use();
 				graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 				graphics->Clear();
 				testShader->Use();
-				testTexture->Bind(1);
+				//testTexture->Bind(1);
 				testShader->BindTexture("textureTest", 1);
 
-				testUniformStructObj.MatrixModelTest = glm::mat4(1.0f);
+				testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.0f, 0));
+				testUniformStructObj.MatrixModelTest = glm::rotate(testUniformStructObj.MatrixModelTest, 90.0f, glm::vec3(0, 1, 1));
 				testUniform->UpdateBuffer(&testUniformStructObj);
 				colorTest.Color = glm::vec4(1, 1, 1, 1);
 				testUniform2->UpdateBuffer(&colorTest);
-				testMesh->Draw();
+				//testMesh->Draw();
+				whiteTexture->Bind(1);
+				testModel.Draw();
 			
 				testRT->Reset();
-				testTexture->UnBind();
+				whiteTexture->UnBind();
 				graphics->PopDebugGroup();
 			}
 

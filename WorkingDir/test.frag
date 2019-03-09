@@ -26,7 +26,8 @@ void main() {
 	//fragColor = texture(textureTest, vTexCoord);
 	//fragColor = vec4(vTexCoord.x, vTexCoord.y, 0, 1); 
 	//fragColor = vVertColor;
-	fragColor = testBlock.color * texture(textureTest, vTexCoord + vec2(commonData.time * 0.25f,0));
+	//fragColor = testBlock.color * texture(textureTest, vTexCoord + vec2(commonData.time * 0.25f,0));
+	fragColor = vVertColor * testBlock.color * texture(textureTest, vTexCoord + vec2(commonData.time * 0.25f,0));
 	//fragColor = testBlock.color * texture(textureTest, vTexCoord);
 	//fragColor = texture(textureTest, vTexCoord);
 } 

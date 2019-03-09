@@ -62,7 +62,7 @@ void Mesh::CreateTriangle() {
 	for (unsigned int i = 0; i < indexSize; i += 3) {
 		Vertex vert;
 		vert.m_Pos = vertPos[indexData[i] - 1];
-		vert.m_Color = glm::vec4(1, 0, 1, 1);
+		vert.m_Color = glm::vec4(1, 1, 1, 1);
 		vert.m_UV = texCoords[indexData[i + 1] - 1];
 		//vert.normal = normals[indexData[i + 2] - 1];
 

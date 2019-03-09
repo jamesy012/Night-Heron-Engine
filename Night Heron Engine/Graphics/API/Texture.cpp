@@ -21,6 +21,11 @@ void Texture::CreateTexture(int a_Width, int a_Height) {
 	m_Height = a_Height;
 	m_ImageFormat = 4;
 
+	if (m_TextureData == nullptr) {
+		m_TextureData = new unsigned char[m_Width*m_Height*m_ImageFormat];
+		memset(m_TextureData, 255, m_Width*m_Height*m_ImageFormat);
+	}
+
 	createData();
 
 }
