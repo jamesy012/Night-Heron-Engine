@@ -6,8 +6,8 @@
 #include <d3d11_2.h>
 //#include <d3d9.h>
 
-#include <imgui-master\imgui.h>
-#include <imgui-master\examples\imgui_impl_dx11.h>
+#include <Dependency/ImGui/imgui.h>
+#include <Dependency/ImGui/examples/imgui_impl_dx11.h>
 
 #include "ShaderDX11.h"
 #include "MeshDX11.h"

@@ -1,6 +1,6 @@
 #include "GFXAPI.h"
 
-#include <imgui-master\imgui.h>
+#include <Dependency/ImGui/imgui.h>
 #include <Window.h>
 
 

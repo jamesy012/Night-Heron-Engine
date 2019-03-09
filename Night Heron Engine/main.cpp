@@ -17,7 +17,7 @@
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
 
-#include <imgui-master\imgui.h>
+#include <Dependency/ImGui/imgui.h>
 
 struct TestUniformStruct {
 public:

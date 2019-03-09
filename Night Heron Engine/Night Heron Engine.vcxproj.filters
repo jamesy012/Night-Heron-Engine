@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Dependancys">
+    <Filter Include="Dependencies">
       <UniqueIdentifier>{c0e3c3c7-ce98-49fd-bf7b-48aa4d91c0a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dependancys\glslang">
-      <UniqueIdentifier>{944c637e-53f9-4c05-af40-9d3209a76db9}</UniqueIdentifier>
+    <Filter Include="Dependencies\ImGui">
+      <UniqueIdentifier>{fc8d91cf-bfaf-42e9-8adc-d019dead41ed}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -63,27 +63,6 @@
     <ClCompile Include="Graphics\DX11\TextureDX11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Dependencies\imgui-master\examples\imgui_impl_opengl3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Dependencies\imgui-master\examples\imgui_impl_dx11.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Dependencies\imgui-master\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Dependencies\imgui-master\imgui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Dependencies\imgui-master\imgui_demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Dependencies\imgui-master\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Dependencies\imgui-master\examples\imgui_impl_win32.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\API\RenderTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,6 +71,27 @@
     </ClCompile>
     <ClCompile Include="Graphics\DX11\RenderTargetDX11.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\ImGui\imgui.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\ImGui\imgui_demo.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\ImGui\imgui_draw.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\ImGui\examples\imgui_impl_dx11.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\ImGui\examples\imgui_impl_opengl3.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\ImGui\examples\imgui_impl_win32.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependency\ImGui\imgui_widgets.cpp">
+      <Filter>Dependencies\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +147,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CommonTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\ImGui\imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\ImGui\imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\ImGui\examples\imgui_impl_dx11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\ImGui\examples\imgui_impl_opengl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependency\ImGui\examples\imgui_impl_win32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

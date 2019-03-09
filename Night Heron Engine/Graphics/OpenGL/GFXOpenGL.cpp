@@ -4,8 +4,8 @@
 #include <GL/glew.h>
 #include <GL/wglew.h>
 
-#include <imgui-master\imgui.h>
-#include <imgui-master\examples\imgui_impl_opengl3.h>
+#include <Dependency/ImGui/imgui.h>
+#include <Dependency/ImGui/examples\imgui_impl_opengl3.h>
 
 #include "ShaderGL.h"
 #include "MeshGL.h"

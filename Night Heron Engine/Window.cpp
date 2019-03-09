@@ -2,8 +2,8 @@
 
 #include "Graphics/API/GFXAPI.h"
 
-#include <imgui-master\imgui.h>
-#include <imgui-master\examples\imgui_impl_win32.h>
+#include <Dependency/ImGui/imgui.h>
+#include <Dependency/ImGui/examples\imgui_impl_win32.h>
 IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM  wParam, LPARAM  lParam) {
