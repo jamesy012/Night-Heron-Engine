@@ -16,7 +16,7 @@ Model::Model() {
 
 Model::~Model() {
 	for (int i = 0; i < m_Meshs.size();i++) {
-		delete m_Meshs[i];
+		delete m_Meshs[i].m_Mesh;
 	}
 }
 
@@ -28,18 +28,32 @@ void Model::LoadModel(CMString a_FileName) {
 
 	ProcessNode(scene->mRootNode, scene);
 
+	uint index = a_FileName.FindFromEnd('/') + 1;
+	SetDebugObjName(a_FileName.SubStr(index, a_FileName.Size() - index));
 }
 
 void Model::Draw() {
 	for (int i = 0; i < m_Meshs.size(); i++) {
-		m_Meshs[i]->Draw();
+		m_Meshs[i].m_Mesh->Draw();
+	}
+}
+
+void Model::SetDebugObjName_Internal() {
+	for (int i = 0; i < m_Meshs.size(); i++) {
+		CMString index = CMString::IntToString(i);
+		CMString objName = m_DebugName + " - " + index + " - " + m_Meshs[i].m_ObjName;
+		m_Meshs[i].m_Mesh->SetDebugObjName(objName);
 	}
 }
 
 void Model::ProcessNode(aiNode * node, const aiScene * scene) {
 	for (uint i = 0; i < node->mNumMeshes; i++) {
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		m_Meshs.push_back(ProcessMesh(mesh, scene));
+		aiMesh* assimpMesh = scene->mMeshes[node->mMeshes[i]];
+
+		Mesh* mesh = ProcessMesh(assimpMesh, scene);
+
+		CMString objName = assimpMesh->mName.C_Str();
+		m_Meshs.push_back({ mesh, objName });
 	}
 
 	for (uint i = 0; i < node->mNumChildren; i++) {

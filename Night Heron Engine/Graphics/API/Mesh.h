@@ -6,6 +6,9 @@
 
 #include <vector>
 
+#include "CommonTypes.h"
+#include "GFXObj.h"
+
 struct Vertex {
 	glm::vec4 m_Pos;
 	glm::vec2 m_UV;
@@ -16,7 +19,7 @@ struct Vertex {
 typedef Vertex MeshVerticesType;
 typedef unsigned int MeshIndicesType;
 
-class Mesh {
+class Mesh : public GFXObj {
 public:
 
 	std::vector<MeshVerticesType> m_Vertices;
@@ -26,6 +29,6 @@ public:
 
 	virtual void Draw() = 0;
 
-	void CreateTriangle();
+	void CreateSquare();
 
 };

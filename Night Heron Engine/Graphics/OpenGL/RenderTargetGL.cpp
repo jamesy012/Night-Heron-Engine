@@ -55,6 +55,21 @@ void RenderTargetGL::SetupRenderTarget_Internal() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void RenderTargetGL::SetDebugObjName_Internal() {
+	if (m_Texture) {
+		m_Texture->SetDebugObjName(m_DebugName + " Texture");
+	}
+	if (m_Fbo) {
+		CMString temp = m_DebugName + " Frame Buffer";
+		glObjectLabel(GL_FRAMEBUFFER, m_Fbo, -1, temp.Get());
+	}
+	if (m_RenderBuffer) {
+		CMString temp = m_DebugName + " Render Buffer View";
+		glObjectLabel(GL_RENDERBUFFER, m_RenderBuffer, -1, temp.Get());
+
+	}
+}
+
 Texture * RenderTargetGL::GetTexture() {
 	return m_Texture;
 }

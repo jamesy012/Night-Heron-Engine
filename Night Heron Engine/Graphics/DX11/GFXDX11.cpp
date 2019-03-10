@@ -119,6 +119,16 @@ void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
 		viewport.MinDepth = 0.0f;
 
 		m_DevCon->RSSetViewports(1, &viewport);
+
+		CMString temp;
+		temp = "DX11 Main View";
+		m_RenderTargetView->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+		temp = "DX11 Depth Stencil View";
+		m_DepthStencilView->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+		temp = "DX11 Depth Stencil Buffer";
+		m_DepthStencilBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+		temp = "DX11 Back Buffer";
+		backbuffer->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
 	}
 }
 
@@ -254,7 +264,6 @@ bool GFXDX11::InitGfx() {
 		MessageBox(NULL, "Error Creating Window", "Error", MB_OK | MB_ICONERROR);
 		return false;
 	}
-
 	ID3D11Texture2D* backbuffer;
 	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
 	if (FAILED(hr)) {
@@ -305,6 +314,16 @@ bool GFXDX11::InitGfx() {
 
 	m_CurrentContext->m_DevCon = m_DevCon;
 	m_CurrentContext->m_Device = m_Device;
+
+	CMString temp;
+	temp = "DX11 Main View";
+	m_RenderTargetView->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+	temp = "DX11 Depth Stencil View";
+	m_DepthStencilView->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+	temp = "DX11 Depth Stencil Buffer";
+	m_DepthStencilBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+	temp = "DX11 Back Buffer";
+	backbuffer->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
 
 	return true;
 }

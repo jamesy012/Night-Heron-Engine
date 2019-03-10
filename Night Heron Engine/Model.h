@@ -1,8 +1,9 @@
 #pragma once
 
 #include "CommonTypes.h"
+#include "Graphics/API/GFXObj.h"
 
-class Model {
+class Model : public GFXObj {
 public:
 	Model();
 	~Model();
@@ -12,9 +13,16 @@ public:
 	void Draw();
 
 private:
+	virtual void SetDebugObjName_Internal() override;
+
 	void ProcessNode(struct aiNode* node, const struct aiScene* scene);
 	class Mesh* ProcessMesh(struct aiMesh* mesh, const struct aiScene* scene);
 
-	CMArray<class Mesh*> m_Meshs;
+	struct ModelMeshHolder {
+		class Mesh* m_Mesh;
+		CMString m_ObjName;
+	};
+
+	CMArray<ModelMeshHolder> m_Meshs;
 };
 

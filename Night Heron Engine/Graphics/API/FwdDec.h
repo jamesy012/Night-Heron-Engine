@@ -6,3 +6,5 @@ class RenderTarget;
 class Shader;
 class ShaderUniformBlock;
 class Texture;
+class GFXObj;
+

@@ -15,6 +15,8 @@ public:
 
 	virtual void SetupRenderTarget_Internal() override;
 private:
+	virtual void SetDebugObjName_Internal() override;
+
 	struct ID3D11RenderTargetView* m_RenderTarget;
 	struct ID3D11DepthStencilView* m_DepthStencil;
 

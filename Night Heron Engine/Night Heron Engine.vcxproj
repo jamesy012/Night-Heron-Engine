@@ -99,7 +99,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm\;$(ProjectDir);$(SolutionDir)Dependencies\glslang-master\glslang\include\;$(ProjectDir)Dependency\;$(SolutionDir)Dependencies\assimp-4.1.0\include\;$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm\;$(ProjectDir);$(ProjectDir)Dependency\;$(SolutionDir)Dependencies\assimp-4.1.0\include\;$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -115,7 +115,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm\;$(ProjectDir);$(SolutionDir)Dependencies\glslang-master\glslang\include\;$(ProjectDir)Dependency\;$(SolutionDir)Dependencies\assimp-4.1.0\include\;$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm\;$(ProjectDir);$(ProjectDir)Dependency\;$(SolutionDir)Dependencies\assimp-4.1.0\include\;$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -170,6 +170,7 @@
     <ClCompile Include="Dependency\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Dependency\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Graphics\API\GFXAPI.cpp" />
+    <ClCompile Include="Graphics\API\GFXObj.cpp" />
     <ClCompile Include="Graphics\API\Mesh.cpp" />
     <ClCompile Include="Graphics\API\RenderTarget.cpp" />
     <ClCompile Include="Graphics\API\Shader.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Graphics\API\FwdDec.h" />
     <ClInclude Include="Graphics\API\GFXAPI.h" />
+    <ClInclude Include="Graphics\API\GFXObj.h" />
     <ClInclude Include="Graphics\API\Mesh.h" />
     <ClInclude Include="Graphics\API\RenderTarget.h" />
     <ClInclude Include="Graphics\API\Shader.h" />

@@ -79,6 +79,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	}
 
 	Shader* testShader = graphics->CreateShader();
+	testShader->SetDebugObjName("Test Shader");
 	testShader->m_ShouldPrintCode = true;
 	//testShader->m_ShoudRegenerateCode = true;
 	Mesh* testMesh = graphics->CreateMesh();
@@ -87,8 +88,10 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 
 	testTexture->LoadTexture("peacock-2.jpg");
+	testTexture->SetDebugObjName("Test Texture");
 
 	whiteTexture->CreateTexture(1, 1);
+	whiteTexture->SetDebugObjName("White Texture");
 
 	testShader->AddShader(ShaderTypes::SHADER_VERTEX, "test.vert");
 	testShader->AddShader(ShaderTypes::SHADER_FRAGMENT, "test.frag");
@@ -96,7 +99,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	//testShader->AddShader(ShaderTypes::SHADER_FRAGMENT, "simple.frag");
 	testShader->LinkShaders();
 
-	testMesh->CreateTriangle();
+	testMesh->CreateSquare();
 	testMesh->Bind();
 
 	TestUniformStruct testUniformStructObj;
@@ -114,16 +117,20 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	//testUniformStructObj.MatrixModelTest = glm::translate(testUniformStructObj.MatrixModelTest, glm::vec3(1, 1, -1));
 
 	ShaderUniformBlock* testUniform = graphics->CreateBuffer(&testUniformStructObj, sizeof(TestUniformStruct));
+	testUniform->SetDebugObjName("MVP Buffer");
 	testShader->AddBuffer(testUniform, "Vertex_Data");
 
 	ShaderUniformBlock* testUniform2 = graphics->CreateBuffer(&colorTest, sizeof(TestUniformStruct2));
+	testUniform2->SetDebugObjName("Color Test Buffer");
 	testShader->AddBuffer(testUniform2, "shader_data");
 
 	ShaderUniformBlock* commonDataBlock = graphics->CreateBuffer(&commonPerFrameData, sizeof(CommonDataStruct));
+	commonDataBlock->SetDebugObjName("Common Data Buffer");
 	testShader->AddBuffer(commonDataBlock, "CommonData");
 
 	if (testRT) {
 		testRT->SetupRenderTarget_Internal();
+		testRT->SetDebugObjName("Test RT");
 	}
 
 	Model testModel;

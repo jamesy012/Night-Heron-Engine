@@ -1,7 +1,10 @@
 #pragma once
 
+#include "GFXObj.h"
+
 class Texture;
-class RenderTarget {
+
+class RenderTarget : public GFXObj {
 friend class GFX;
 protected:
 	RenderTarget(unsigned int a_Width, unsigned int a_Height);

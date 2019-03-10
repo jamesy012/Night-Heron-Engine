@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "GFXObj.h"
+
 enum ShaderTypes {
 	SHADER_VERTEX,
 	SHADER_FRAGMENT,
@@ -13,7 +15,7 @@ namespace glslang {
 	class TShader;
 };
 
-class ShaderUniformBlock {
+class ShaderUniformBlock : public GFXObj {
 public:
 	//unsigned int m_Slot = 0;
 	unsigned int m_Size = 0;
@@ -21,7 +23,7 @@ public:
 	virtual void UpdateBuffer(void* a_Object) = 0;
 };
 
-class Shader {
+class Shader : public GFXObj {
 public:
 
 	std::string Path;

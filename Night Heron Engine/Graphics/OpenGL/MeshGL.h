@@ -11,6 +11,7 @@ class MeshGL : public Mesh {
 	virtual void Draw() override;
 
 private:
+	virtual void SetDebugObjName_Internal() override;
 
 	unsigned int m_Vao, m_Vbo, m_Ebo;
 

@@ -13,6 +13,12 @@ static unsigned int getGLFormatFromSTBFormat(unsigned int a_Format) {
 	}
 }
 
+void TextureGL::SetDebugObjName_Internal() {
+	if (m_BufferID) {
+		glObjectLabel(GL_TEXTURE, m_BufferID, -1, m_DebugName.Get());
+	}
+}
+
 void TextureGL::createData() {
 	unsigned int glType = getGLFormatFromSTBFormat(m_ImageFormat);
 

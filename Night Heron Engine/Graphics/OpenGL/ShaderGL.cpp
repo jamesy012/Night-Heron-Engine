@@ -143,6 +143,12 @@ void ShaderGL::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName) 
 	}
 }
 
+void ShaderGL::SetDebugObjName_Internal() {
+	if (m_Program) {
+		glObjectLabel(GL_PROGRAM, m_Program, -1, m_DebugName.Get());
+	}
+}
+
 void ShaderGL::BindTexture(std::string a_Name, unsigned int a_Index) {
 	glUniform1i(glGetUniformLocation(m_Program, a_Name.c_str()), a_Index); // set it manually
 }
@@ -158,6 +164,12 @@ void ShaderUniformBlockGL::UpdateBuffer(void * a_Object) {
 	glBindBuffer(GL_UNIFORM_BUFFER, m_ID);
 	glBufferData(GL_UNIFORM_BUFFER, m_Size, a_Object, GL_STATIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void ShaderUniformBlockGL::SetDebugObjName_Internal() {
+	if (m_ID) {
+		glObjectLabel(GL_BUFFER, m_ID, -1, m_DebugName.Get());
+	}
 }
 
 void ShaderGL::DeleteShaders() {

@@ -64,6 +64,23 @@ void RenderTargetDX11::SetupRenderTarget_Internal() {
 	GFXDX11::GetCurrentContex()->m_Device->CreateDepthStencilView(depthStencil->Get2DTextrueRef(), NULL, &m_DepthStencil);
 }
 
+void RenderTargetDX11::SetDebugObjName_Internal() {
+	if (m_Texture) {
+		m_Texture->SetDebugObjName(m_DebugName + " Texture");
+	}
+	if (m_DepthStencilTexture) {
+		m_DepthStencilTexture->SetDebugObjName(m_DebugName + " Depth Texture");
+	}
+	if (m_RenderTarget) {
+		CMString temp = m_DebugName + " Render Target View";
+		m_RenderTarget->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+	}
+	if (m_DepthStencil) {
+		CMString temp = m_DebugName + " Depth Stencil View";
+		m_DepthStencil->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+	}
+}
+
 Texture * RenderTargetDX11::GetTexture() {
 	return m_Texture;
 }

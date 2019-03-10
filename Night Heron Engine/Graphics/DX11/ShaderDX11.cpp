@@ -23,7 +23,7 @@ UINT numVertexLayoutElements = ARRAYSIZE(VertexLayout);
 
 ShaderDX11::~ShaderDX11() {
 	if (VS_Buffer) {
-		PS_Buffer->Release();
+		VS_Buffer->Release();
 	}
 	if (VS) {
 		VS->Release();
@@ -187,6 +187,21 @@ void ShaderDX11::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName
 
 }
 
+void ShaderDX11::SetDebugObjName_Internal() {
+	if (VS) {
+		CMString temp = m_DebugName + " VS Shader";
+		VS->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+	}
+	if (PS) {
+		CMString temp = m_DebugName + " PS Shader";
+		PS->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+	}
+	if (vertLayout) {
+		CMString temp = m_DebugName + " Vert layout";
+		vertLayout->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
+	}
+}
+
 void ShaderDX11::BindTexture(std::string a_Name, unsigned int a_Index) {
 }
 
@@ -206,4 +221,10 @@ void ShaderUniformBlockDX11::UpdateBuffer(void * a_Object) {
 	memcpy(mappedResource.pData, a_Object, m_Size);
 	//  Reenable GPU access to the vertex buffer data.
 	GFXDX11::GetCurrentContex()->m_DevCon->Unmap(m_Buffer, 0);
+}
+
+void ShaderUniformBlockDX11::SetDebugObjName_Internal() {
+	if (m_Buffer) {
+		m_Buffer->SetPrivateData(WKPDID_D3DDebugObjectName, m_DebugName.Size(), m_DebugName.Get());
+	}
 }

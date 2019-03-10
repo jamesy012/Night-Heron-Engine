@@ -9,6 +9,8 @@ public:
 	unsigned int m_SlotID = 0;
 
 	virtual void UpdateBuffer(void * a_Object) override;
+private:
+	virtual void SetDebugObjName_Internal() override;
 };
 
 class ShaderGL : public Shader {
@@ -28,6 +30,7 @@ public:
 	virtual void AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName) override;
 
 private:
+	virtual void SetDebugObjName_Internal() override;
 
 	unsigned int m_GLShaderIndex[(int)ShaderTypes::SHADERCOUNT] = { 0 };
 

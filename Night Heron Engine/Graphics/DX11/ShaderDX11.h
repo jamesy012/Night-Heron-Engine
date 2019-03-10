@@ -14,7 +14,8 @@ public:
 	struct ID3D11Buffer* m_Buffer;
 
 	virtual void UpdateBuffer(void * a_Object) override;
-
+private:
+	virtual void SetDebugObjName_Internal() override;
 };
 
 class ShaderDX11 : public Shader {
@@ -30,11 +31,10 @@ public:
 	void Link_Internal() override;
 	void Use() override;
 
-	// Inherited via Shader
-
-
 	virtual void AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName) override;
 private:
+	virtual void SetDebugObjName_Internal() override;
+
 	struct ID3D10Blob* VS_Buffer;
 	struct ID3D10Blob* PS_Buffer;
 

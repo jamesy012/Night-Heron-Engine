@@ -14,6 +14,12 @@ static DXGI_FORMAT getDX11FormatFromSTBFormat(unsigned int a_Format) {
 	}
 }
 
+void TextureDX11::SetDebugObjName_Internal() {
+	if (m_TextureRef) {
+		m_TextureRef->SetPrivateData(WKPDID_D3DDebugObjectName, m_DebugName.Size(), m_DebugName.Get());
+	}
+}
+
 void TextureDX11::createData() {
 	HRESULT hr;
 	D3D11_TEXTURE2D_DESC texDesc;

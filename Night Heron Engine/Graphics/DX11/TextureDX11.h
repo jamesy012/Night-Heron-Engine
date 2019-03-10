@@ -20,6 +20,8 @@ public:
 		return m_SamplerRef;
 	};
 
+	virtual void SetDebugObjName_Internal() override;
+
 	unsigned int m_ExtraBindFlags = 0;
 	unsigned int m_DesiredFormat = 0;
 	bool m_IsShaderResource = true;

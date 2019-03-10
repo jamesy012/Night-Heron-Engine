@@ -11,6 +11,8 @@ public:
 	unsigned int getBufferID() {
 		return m_BufferID;
 	}
+
+	virtual void SetDebugObjName_Internal() override;
 private:
 	virtual void createData() override;
 

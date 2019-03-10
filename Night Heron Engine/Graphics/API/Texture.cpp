@@ -13,6 +13,8 @@ void Texture::LoadTexture(std::string a_Path) {
 
 	createData();
 
+	SetDebugObjName_Internal();
+
 	stbi_image_free(m_TextureData);
 }
 

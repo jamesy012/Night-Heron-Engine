@@ -75,6 +75,8 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
         desc.MiscFlags = 0;
         if (g_pd3dDevice->CreateBuffer(&desc, NULL, &g_pVB) < 0)
             return;
+        const char debugName[] = "ImGui - Vertex Buffer";
+        g_pVB->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(debugName) - 1, debugName);
     }
     if (!g_pIB || g_IndexBufferSize < draw_data->TotalIdxCount)
     {
@@ -88,6 +90,8 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
         if (g_pd3dDevice->CreateBuffer(&desc, NULL, &g_pIB) < 0)
             return;
+        const char debugName[] = "ImGui - Index Buffer";
+        g_pIB->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(debugName) - 1, debugName);
     }
 
     // Copy and convert all vertices into a single contiguous buffer
@@ -201,6 +205,7 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
     ctx->OMSetDepthStencilState(g_pDepthStencilState, 0);
     ctx->RSSetState(g_pRasterizerState);
 
+
     // Render command lists
     int vtx_offset = 0;
     int idx_offset = 0;
@@ -208,6 +213,12 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
     for (int n = 0; n < draw_data->CmdListsCount; n++)
     {
         const ImDrawList* cmd_list = draw_data->CmdLists[n];
+        //{
+        //    ID3D11ShaderResourceView* tex = (ID3D11ShaderResourceView*)cmd_list->CmdBuffer.Data->TextureId;
+        //    const char debugName[] = "ImGui - White/Other Texture";
+        //    tex->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(debugName) - 1, debugName);
+        //}
+
         for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
         {
             const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
@@ -279,6 +290,10 @@ static void ImGui_ImplDX11_CreateFontsTexture()
         subResource.SysMemPitch = desc.Width * 4;
         subResource.SysMemSlicePitch = 0;
         g_pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
+        {
+            const char debugName[] = "ImGui - Font Texture";
+            pTexture->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(debugName) - 1, debugName);
+        }
 
         // Create texture view
         D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
@@ -288,7 +303,13 @@ static void ImGui_ImplDX11_CreateFontsTexture()
         srvDesc.Texture2D.MipLevels = desc.MipLevels;
         srvDesc.Texture2D.MostDetailedMip = 0;
         g_pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, &g_pFontTextureView);
+
         pTexture->Release();
+        {
+            const char debugName[] = "ImGui - Font SRV";
+            g_pFontTextureView->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(debugName) - 1, debugName);
+
+        }
     }
 
     // Store our identifier
@@ -378,6 +399,9 @@ bool    ImGui_ImplDX11_CreateDeviceObjects()
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
             desc.MiscFlags = 0;
             g_pd3dDevice->CreateBuffer(&desc, NULL, &g_pVertexConstantBuffer);
+            const char debugName[] = "ImGui - Constant Buffer";
+            g_pVertexConstantBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(debugName) - 1, debugName);
+
         }
     }
 
@@ -404,6 +428,7 @@ bool    ImGui_ImplDX11_CreateDeviceObjects()
             return false;
         if (g_pd3dDevice->CreatePixelShader((DWORD*)g_pPixelShaderBlob->GetBufferPointer(), g_pPixelShaderBlob->GetBufferSize(), NULL, &g_pPixelShader) != S_OK)
             return false;
+
     }
 
     // Create the blending setup

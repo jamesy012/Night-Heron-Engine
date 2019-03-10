@@ -50,10 +50,27 @@ void MeshGL::Bind() {
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(MeshVerticesType), (GLvoid*)offsetof(Vertex, m_Color));
 
 	glBindVertexArray(0);
+
+	SetDebugObjName_Internal();
 }
 
 void MeshGL::Draw() {
 	glBindVertexArray(m_Vao);
 	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
 	//glBindVertexArray(0);
+}
+
+void MeshGL::SetDebugObjName_Internal() {
+	if (m_Vao) {
+		CMString temp = m_DebugName + " VAO";
+		glObjectLabel(GL_BUFFER, m_Vao, -1, temp.Get());
+	}
+	if (m_Vbo) {
+		CMString temp = m_DebugName + " VBO";
+		glObjectLabel(GL_BUFFER, m_Vbo, -1, temp.Get());
+	}
+	if (m_Ebo) {
+		CMString temp = m_DebugName + " EBO";
+		glObjectLabel(GL_BUFFER, m_Ebo, -1, temp.Get());
+	}
 }

@@ -1,8 +1,9 @@
 #pragma once
 
 #include <string>
+#include "GFXObj.h"
 
-class Texture {
+class Texture : public GFXObj {
 public:
 	void LoadTexture(std::string a_Path);
 	void CreateTexture(int a_Width, int a_Height);

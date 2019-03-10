@@ -13,7 +13,9 @@ public:
 	virtual void Draw() override;
 
 private:
-	struct ID3D11Buffer* squareVertBuffer;
-	struct ID3D11Buffer* squareIndexBuffer;
+	virtual void SetDebugObjName_Internal() override;
+
+	struct ID3D11Buffer* m_VertexBuffer;
+	struct ID3D11Buffer* m_IndexBuffer;
 
 };

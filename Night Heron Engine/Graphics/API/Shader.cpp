@@ -338,4 +338,5 @@ void Shader::LinkShaders() {
 	}
 
 	Link_Internal();
+	SetDebugObjName_Internal();
 }

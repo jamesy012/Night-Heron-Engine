@@ -16,6 +16,8 @@ public:
 	virtual void SetupRenderTarget_Internal() override;
 
 private:
+	virtual void SetDebugObjName_Internal() override;
+
 	unsigned int m_Fbo = 0;
 	unsigned int m_RenderBuffer = 0;
 
