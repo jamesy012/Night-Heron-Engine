@@ -14,21 +14,6 @@ static DXGI_FORMAT getDX11FormatFromSTBFormat(unsigned int a_Format) {
 	}
 }
 
-
-void TextureDX11::Bind(unsigned int a_Slot) {
-	m_BoundSlot = a_Slot;
-	GFXDX11::GetCurrentContex()->m_DevCon->PSSetSamplers(a_Slot, 1, &m_SamplerRef);
-	GFXDX11::GetCurrentContex()->m_DevCon->PSSetShaderResources(a_Slot, 1, &m_TextureSRV);
-}
-
-void TextureDX11::UnBind() {
-	ID3D11SamplerState* nullHolderSampler[1] = { NULL };
-	ID3D11ShaderResourceView* nullHolderSRV[1] = { NULL };
-	GFXDX11::GetCurrentContex()->m_DevCon->PSSetSamplers(m_BoundSlot, 1, nullHolderSampler);
-	GFXDX11::GetCurrentContex()->m_DevCon->PSSetShaderResources(m_BoundSlot, 1, nullHolderSRV);
-	m_BoundSlot = -1;
-}
-
 void TextureDX11::createData() {
 	HRESULT hr;
 	D3D11_TEXTURE2D_DESC texDesc;

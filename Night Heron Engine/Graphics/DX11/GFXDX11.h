@@ -43,6 +43,9 @@ public:
 
 	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;
 
+	virtual void BindTexture(Texture* a_Tex, uint a_Slot) override;
+	virtual void UnbindTexture(uint a_Slot) override;
+
 	virtual void PushDebugGroup(CMString a_Name) override;
 	virtual void PopDebugGroup() override;
 

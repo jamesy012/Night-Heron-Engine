@@ -4,9 +4,6 @@
 
 class TextureGL : public Texture {
 public:
-	virtual void Bind(unsigned int a_Slot) override;
-	virtual void UnBind() override;
-
 	void* getTexturePtr() override {
 		return (void*)m_BufferID;
 	}

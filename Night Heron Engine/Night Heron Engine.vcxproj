@@ -195,6 +195,8 @@
     <ClInclude Include="Dependency\ImGui\examples\imgui_impl_win32.h" />
     <ClInclude Include="Dependency\ImGui\imconfig.h" />
     <ClInclude Include="Dependency\ImGui\imgui.h" />
+    <ClInclude Include="Debug.h" />
+    <ClInclude Include="Graphics\API\FwdDec.h" />
     <ClInclude Include="Graphics\API\GFXAPI.h" />
     <ClInclude Include="Graphics\API\Mesh.h" />
     <ClInclude Include="Graphics\API\RenderTarget.h" />

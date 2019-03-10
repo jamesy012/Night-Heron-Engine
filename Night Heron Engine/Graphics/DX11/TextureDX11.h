@@ -4,8 +4,6 @@
 
 class TextureDX11 : public Texture {
 public:
-	virtual void Bind(unsigned int a_Slot) override;
-	virtual void UnBind() override;
 
 	void* getTexturePtr() override {
 		return m_TextureSRV;
@@ -14,6 +12,13 @@ public:
 	struct ID3D11Texture2D* Get2DTextrueRef() {
 		return m_TextureRef;
 	}
+
+	struct ID3D11ShaderResourceView * GetTextureSRV() const {
+		return m_TextureSRV;
+	};
+	struct ID3D11SamplerState* GetSamplerRef() const {
+		return m_SamplerRef;
+	};
 
 	unsigned int m_ExtraBindFlags = 0;
 	unsigned int m_DesiredFormat = 0;

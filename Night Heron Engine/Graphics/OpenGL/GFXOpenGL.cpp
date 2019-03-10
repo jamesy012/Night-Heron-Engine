@@ -113,6 +113,18 @@ ShaderUniformBlock* GFXOpenGL::CreateBuffer(void * a_Object, unsigned int a_Size
 	return sub;
 }
 
+void GFXOpenGL::BindTexture(Texture * a_Tex, uint a_Slot) {
+	glActiveTexture(GL_TEXTURE0 + a_Slot);
+	glBindTexture(GL_TEXTURE_2D, (GLuint)a_Tex->getTexturePtr());
+	m_TextureSlots[a_Slot] = a_Tex;
+}
+
+void GFXOpenGL::UnbindTexture(uint a_Slot) {
+	glActiveTexture(GL_TEXTURE0 + a_Slot);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	m_TextureSlots[a_Slot] = nullptr;
+}
+
 void GFXOpenGL::PushDebugGroup(CMString a_Name) {
 	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 2910, a_Name.size(), a_Name.c_str());
 }

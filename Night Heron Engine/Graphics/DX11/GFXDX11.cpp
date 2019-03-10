@@ -168,6 +168,23 @@ ShaderUniformBlock* GFXDX11::CreateBuffer(void * a_Object, unsigned int a_Size) 
 	return sub;
 }
 
+void GFXDX11::BindTexture(Texture * a_Tex, uint a_Slot) {
+	const TextureDX11* dxTex = (TextureDX11*)a_Tex;
+	ID3D11ShaderResourceView* textureSRV = dxTex->GetTextureSRV();
+	ID3D11SamplerState* samplerRef = dxTex->GetSamplerRef();
+	GFXDX11::GetCurrentContex()->m_DevCon->PSSetSamplers(a_Slot, 1, &samplerRef);
+	GFXDX11::GetCurrentContex()->m_DevCon->PSSetShaderResources(a_Slot, 1, &textureSRV);
+	m_TextureSlots[a_Slot] = a_Tex;
+}
+
+void GFXDX11::UnbindTexture(uint a_Slot) {
+	ID3D11SamplerState* nullHolderSampler[1] = { NULL };
+	ID3D11ShaderResourceView* nullHolderSRV[1] = { NULL };
+	GFXDX11::GetCurrentContex()->m_DevCon->PSSetSamplers(a_Slot, 1, nullHolderSampler);
+	GFXDX11::GetCurrentContex()->m_DevCon->PSSetShaderResources(a_Slot, 1, nullHolderSRV);
+	m_TextureSlots[a_Slot] = nullptr;
+}
+
 void GFXDX11::PushDebugGroup(CMString a_Name) {
 	std::wstring stemp = std::wstring(a_Name.begin(), a_Name.end());
 	if (m_PerfDebug) {

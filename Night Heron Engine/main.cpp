@@ -187,7 +187,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 				graphics->Clear();
 				testShader->Use();
-				//testTexture->Bind(1);
 				testShader->BindTexture("textureTest", 1);
 
 				testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.0f, 0));
@@ -196,11 +195,15 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				colorTest.Color = glm::vec4(1, 1, 1, 1);
 				testUniform2->UpdateBuffer(&colorTest);
 				//testMesh->Draw();
-				whiteTexture->Bind(1);
+
+				graphics->BindTexture(whiteTexture,1);
+
 				testModel.Draw();
 			
 				testRT->Reset();
-				whiteTexture->UnBind();
+
+				graphics->UnbindTexture(1);
+
 				graphics->PopDebugGroup();
 			}
 
@@ -222,7 +225,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			testShader->Use();
 
 
-			testTexture->Bind(1);
+			graphics->BindTexture(testTexture, 1);
 			testShader->BindTexture("textureTest", 1);
 
 			testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0, 0));
@@ -249,7 +252,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			testUniform2->UpdateBuffer(&colorTest);
 			testMesh->Draw();
 
-			testTexture->UnBind();
+			graphics->UnbindTexture(1);
 
 			graphics->PopDebugGroup();
 			graphics->PushDebugGroup("ImGui Render");

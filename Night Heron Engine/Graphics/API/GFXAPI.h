@@ -2,6 +2,7 @@
 
 #include "SimpleMath.h"
 #include "CommonTypes.h"
+#include "FwdDec.h"
 
 class Window;
 
@@ -27,12 +28,15 @@ public:
 
 	virtual void ResizeWindow(int a_Width, int a_Height);
 
-	virtual class Shader* CreateShader() = 0;
-	virtual class Mesh* CreateMesh() = 0;
-	virtual class Texture* CreateTexture() = 0;
-	virtual class RenderTarget* CreateRenderTarget(int a_Width, int a_Height) = 0;
+	virtual Shader* CreateShader() = 0;
+	virtual Mesh* CreateMesh() = 0;
+	virtual Texture* CreateTexture() = 0;
+	virtual RenderTarget* CreateRenderTarget(int a_Width, int a_Height) = 0;
 
-	virtual class ShaderUniformBlock* CreateBuffer(void* a_Object, unsigned int a_Size) = 0;
+	virtual ShaderUniformBlock* CreateBuffer(void* a_Object, uint a_Size) = 0;
+
+	virtual void BindTexture(Texture* a_Tex, uint a_Slot) = 0;
+	virtual void UnbindTexture(uint a_Slot) = 0;
 
 
 	virtual void PushDebugGroup(CMString a_Name) = 0;
@@ -49,7 +53,9 @@ protected:
 
 	float m_ClearR = 0, m_ClearG = 0, m_ClearB = 0, m_ClearA = 1;
 
-
+#define NUM_OF_TEXTURE_SLOTS 32
+	//reference to hold which textures are in each slot
+	Texture* m_TextureSlots[NUM_OF_TEXTURE_SLOTS] = {nullptr};
 
 };
 
