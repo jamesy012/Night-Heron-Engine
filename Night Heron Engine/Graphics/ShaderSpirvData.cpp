@@ -149,19 +149,19 @@ void ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
 	CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash);
 	CryptHashData(hHash, (BYTE*)shaderFile.c_str(), shaderFile.length(), 0);
-	DWORD cbHash = 16;
-	uchar rgbHash[16];
+	DWORD cbHash = HASH_LENGTH;
+	uchar rgbHash[HASH_LENGTH];
 	CryptGetHashParam(hHash, HP_HASHVAL, rgbHash, &cbHash, 0);
 	CryptDestroyHash(hHash);
 	CryptReleaseContext(hProv, 0);
-	memcpy(m_Hash, rgbHash, 16);
+	memcpy(m_Hash, rgbHash, HASH_LENGTH);
 	
 
 
 	std::string infoFile = Util::LoadTextFromPath(ShaderCachePath + m_FilePath.m_FilePath + ".info");
 	if (infoFile.size() != 0) {
 
-		int res = memcmp(m_Hash, &infoFile[0], 16);
+		int res = memcmp(m_Hash, &infoFile[0], HASH_LENGTH);
 
 		if (res == 0) {
 			printf("Shader: Using cached data: %s\n", m_FilePath.m_FilePath.c_str());
@@ -222,7 +222,7 @@ void ShaderSpirvData::GetTypeFromFilePath() {
 	m_ShaderType = ShaderType::SHADERCOUNT;
 
 	for (int i = 0; i < hashs.Length(); i++) {
-		if (memcmp(hashs[i], fileNameHash, 16) == 0) {
+		if (memcmp(hashs[i], fileNameHash, HASH_LENGTH) == 0) {
 			m_ShaderType = (ShaderType)i;
 			break;
 		}
@@ -337,7 +337,7 @@ void ShaderSpirvData::SaveInfoFile(bool a_DidFail) {
 		if (a_DidFail) {
 			infoFile << "Failed.\n";
 		} else {
-			for (int q = 0; q < 16; q++) {
+			for (int q = 0; q < HASH_LENGTH; q++) {
 				infoFile << m_Hash[q];
 			}
 			infoFile << "\n";

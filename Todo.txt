@@ -2,15 +2,16 @@ general:
 Clean up the code
 Transform/Object class
 Input
-Worlds
 Editor viewport
-Model loading
+Materials
+Scenes
+object GUIDS
 
 api:
 rendering pipelines
     normal and postprocessing
-Render targets
-Text rendering/UI
+Improve Render targets
+Text rendering/UI (ImGui is alright at this stage)
 
 other:
 Possibly vulkan

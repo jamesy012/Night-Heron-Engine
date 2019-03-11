@@ -8,6 +8,7 @@
 namespace fs = std::experimental::filesystem;
 
 #include "ImGui/imgui.h"
+#include "Util.h"
 
 ShaderManager::ShaderManager() {
 }
@@ -97,11 +98,11 @@ void ShaderManager::SeachFolder(CMString a_Path) {
 }
 
 bool ShaderManager::IsFileAShader(CMString a_FilePath) {
-	uchar fileHash[16] = { 0 };
+	uchar fileHash[HASH_LENGTH] = { 0 };
 	a_FilePath.SubStrFindFromEnd('.').ToLower().Hash(fileHash);
 
 	for (int i = 0; i < m_FileTypes.Length(); i++) {
-		if (memcmp(m_FileTypes[i].m_ExtenstionHash, fileHash, 16) == 0) {
+		if (memcmp(m_FileTypes[i].m_ExtenstionHash, fileHash, HASH_LENGTH) == 0) {
 			return true;
 		}
 	}

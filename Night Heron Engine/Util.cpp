@@ -3,13 +3,6 @@
 #include <fstream> //std::ifstream
 #include <sstream> //std::stringstream
 
-Util::Util() {
-}
-
-
-Util::~Util() {
-}
-
 CMString Util::LoadTextFromPath(CMString a_Path) {
 	if (a_Path.Length() > 1 && a_Path.at(0) == '/') {
 		a_Path = a_Path.SubStr(1, a_Path.Length());

@@ -4,10 +4,10 @@
 
 #define CMLog(Message) printf(Message);
 
+#define HASH_LENGTH 16
+
 class Util {
 public:
-	Util();
-	~Util();
 
 	static CMString LoadTextFromPath(CMString a_Path);
 

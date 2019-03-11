@@ -25,7 +25,6 @@ public:
 	std::string Path;
 
 	void AddShader(ShaderSpirvData* a_Shader);
-	void AddShader(ShaderType a_Type, std::string a_Path);
 	void LinkShaders();
 	virtual void Use() = 0;
 
@@ -35,7 +34,6 @@ public:
 	virtual void BindTexture(std::string a_Name, unsigned int a_Index) = 0;
 
 	std::vector<unsigned int> loadSpirvFromPath(std::string a_Path);
-	std::string loadTextFromPath(std::string a_Path);//move to Util class???
 
 	bool m_ShouldPrintCode = false;
 	bool m_ShoudRegenerateCode = false;
@@ -45,9 +43,6 @@ protected:
 	virtual void AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) = 0;
 	//virtual void AddShader_Internal(ShaderTypes a_Type, std::string a_Path) = 0;
 	virtual void Link_Internal() = 0;
-
-	unsigned int ShaderTypeToEShLanguage(ShaderType a_Type);
-	ShaderType EShLanguageToShaderType(unsigned int a_Type);
 
 	//has this shader been linked yet?
 	bool m_IsLinked;
