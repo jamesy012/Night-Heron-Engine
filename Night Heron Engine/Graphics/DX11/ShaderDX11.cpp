@@ -15,8 +15,8 @@
 //};
 D3D11_INPUT_ELEMENT_DESC VertexLayout[] = {
 	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(Vertex, m_UV), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+{ "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(Vertex, m_UV), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+{ "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 UINT numVertexLayoutElements = ARRAYSIZE(VertexLayout);
 
@@ -40,7 +40,7 @@ ShaderDX11::~ShaderDX11() {
 	m_CBuffers.clear();
 }
 
-void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int> a_Code) {
+void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
 
 	spirv_cross::CompilerHLSL hlsl(a_Code);
 
@@ -50,7 +50,7 @@ void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int
 		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
 		printf("Image %s at set = %u, binding = %u\n", resource.name.c_str(), set, binding);
-	
+
 		// Modify the decoration to prepare it for GLSL.
 		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
 		//
@@ -77,10 +77,10 @@ void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int
 
 	ID3D10Blob* shaderError;
 	switch (a_Type) {
-		case ShaderTypes::SHADER_VERTEX:
+		case ShaderType::SHADER_VERTEX:
 			hr = D3DCompile(source.c_str(), source.size(), NULL, nullptr, nullptr, "main", "vs_5_0", 0, 0, &VS_Buffer, &shaderError);
 			if (FAILED(hr)) {
-				printf("VERTEX Test SHADER ERROR\n%s",(char*)(shaderError->GetBufferPointer()));
+				printf("VERTEX Test SHADER ERROR\n%s", (char*)(shaderError->GetBufferPointer()));
 				return;
 			}
 			GFXDX11::GetCurrentContex()->m_Device->CreateVertexShader(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), NULL, &VS);
@@ -89,7 +89,7 @@ void ShaderDX11::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int
 				return;
 			}
 			return;
-		case ShaderTypes::SHADER_FRAGMENT:
+		case ShaderType::SHADER_FRAGMENT:
 			hr = D3DCompile(source.c_str(), source.size(), NULL, nullptr, nullptr, "main", "ps_5_0", 0, 0, &PS_Buffer, &shaderError);
 			if (FAILED(hr)) {
 				printf("PIXEL Test SHADER ERROR\n%s", (char*)(shaderError->GetBufferPointer()));
@@ -135,7 +135,32 @@ void ShaderDX11::Use() {
 	GFXDX11::GetCurrentContex()->m_DevCon->PSSetShader(PS, 0, 0);
 }
 
-void ShaderDX11::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName) {
+void ShaderDX11::Reload() {
+	if (VS_Buffer) {
+		VS_Buffer->Release();
+	}
+	if (VS) {
+		VS->Release();
+	}
+	if (PS_Buffer) {
+		PS_Buffer->Release();
+	}
+	if (PS) {
+		PS->Release();
+	}
+	if (vertLayout) {
+		vertLayout->Release();
+	}
+	m_CBuffers.clear();
+
+	LinkShaders();
+
+	for (int i = 0; i < m_AttachedUniforms.Length(); i++) {
+		AddBuffer_Internal(m_AttachedUniforms[i].m_Block, m_AttachedUniforms[i].m_Name);
+	}
+}
+
+void ShaderDX11::AddBuffer_Internal(ShaderUniformBlock* a_Block, CMString a_StructName) {
 	if (!m_IsLinked) {
 		return;
 	}
@@ -146,11 +171,11 @@ void ShaderDX11::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName
 	ID3D11ShaderReflection* reflector;
 	D3D11_SHADER_DESC shaderDesc;
 	D3D11_SHADER_BUFFER_DESC desc;
-	{
+	if (VS_Buffer) {
 		D3DReflect(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflector);
 		ZeroMemory(&shaderDesc, sizeof(D3D11_SHADER_DESC));
 		reflector->GetDesc(&shaderDesc);
-		
+
 		for (int i = 0; i < shaderDesc.ConstantBuffers; i++) {
 
 			ID3D11ShaderReflectionConstantBuffer* cbuffer = reflector->GetConstantBufferByIndex(i);
@@ -164,7 +189,7 @@ void ShaderDX11::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName
 
 		reflector->Release();
 	}
-	{
+	if (PS_Buffer) {
 		D3DReflect(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflector);
 
 		reflector->GetDesc(&shaderDesc);

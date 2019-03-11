@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SimpleMath.h"
-#include "CommonTypes.h"
+#include "Types.h"
 #include "FwdDec.h"
 
 class Window;

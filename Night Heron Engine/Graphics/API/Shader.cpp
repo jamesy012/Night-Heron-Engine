@@ -120,24 +120,29 @@ const TBuiltInResource DefaultTBuiltInResource = {
 	/* .generalConstantMatrixVectorIndexing = */ 1,
 } };
 
-unsigned int Shader::ShaderTypeToEShLanguage(ShaderTypes a_Type) {
+unsigned int Shader::ShaderTypeToEShLanguage(ShaderType a_Type) {
 	switch (a_Type) {
 		default:
-		case ShaderTypes::SHADER_VERTEX:
+		case ShaderType::SHADER_VERTEX:
 			return EShLangVertex;
-		case ShaderTypes::SHADER_FRAGMENT:
+		case ShaderType::SHADER_FRAGMENT:
 			return EShLangFragment;
 	}
 }
 
-ShaderTypes Shader::EShLanguageToShaderType(unsigned int a_Type) {
+ShaderType Shader::EShLanguageToShaderType(unsigned int a_Type) {
 	switch (a_Type) {
 		default:
 		case EShLangVertex:
-			return ShaderTypes::SHADER_VERTEX;
+			return ShaderType::SHADER_VERTEX;
 		case EShLangFragment:
-			return ShaderTypes::SHADER_FRAGMENT;
+			return ShaderType::SHADER_FRAGMENT;
 	}
+}
+
+void Shader::AddBuffer(ShaderUniformBlock * a_Block, CMString a_StructName) {
+	m_AttachedUniforms.push_back({a_Block, a_StructName});
+	AddBuffer_Internal(a_Block, a_StructName);
 }
 
 std::vector<unsigned int> Shader::loadSpirvFromPath(std::string a_Path) {
@@ -170,170 +175,20 @@ std::string Shader::loadTextFromPath(std::string a_Path) {
 	return fileBuffer.str();
 }
 
-void Shader::AddShader(ShaderTypes a_Type, std::string a_Path) {
-	ShaderInfo* info = &m_Shaders[a_Type];
-
-	if (info->m_HasBeenGenerated) {
-		std::cout << "Shader Already has a shader of type: " << (int)a_Type << std::endl;
-		return;
-	}
-
+void Shader::AddShader(ShaderSpirvData * a_Shader) {
+	ShaderInfo* info = &m_Shaders[a_Shader->m_ShaderType];
+	info->m_Path = a_Shader->m_FilePath.m_FilePath;
+	info->m_HasBeenLoaded = a_Shader->m_HasBeenLoaded;
 	info->m_IsUsed = true;
-	info->m_Path = a_Path;
 
-	std::string shaderFile = loadTextFromPath(a_Path);
-
-	HCRYPTPROV hProv;
-	HCRYPTHASH hHash;
-	CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
-	CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash);
-	CryptHashData(hHash, (BYTE*)shaderFile.c_str(), shaderFile.length(), 0);
-	DWORD cbHash = 16;
-	BYTE rgbHash[16];
-	CryptGetHashParam(hHash, HP_HASHVAL, rgbHash, &cbHash, 0);
-	CryptDestroyHash(hHash);
-	CryptReleaseContext(hProv, 0);
-	memcpy(info->m_Hash, rgbHash, 16);
-
-
-	std::string infoFile = loadTextFromPath(ShaderCachePath + a_Path + ".info");
-	if (infoFile.size() != 0 && !m_ShoudRegenerateCode) {
-		BYTE fileHash[16];
-		//for (int i = 0; i < 16; i++) {
-		//	fileHash[i] = (BYTE)infoFile[i];
-		//}
-		memcpy(fileHash, &infoFile[0], 16);
-		int res = memcmp(rgbHash, fileHash, 16);
-		if (res == 0) {
-			printf("Shader: Using cached data: %s\n", a_Path.c_str());
-			info->m_HasBeenChanged = false;
-			return;
-		} else {
-			//delete old files
-			remove((ShaderCachePath + a_Path + ".info").c_str());
-			remove((ShaderCachePath + a_Path + ".spirv").c_str());
-			printf("Shader: Old code didnt match, deleteing cached data %s\n", a_Path.c_str());
-		}
-	}
-	printf("Shader: Generating Code: %s\n", a_Path.c_str());
-	info->m_HasBeenChanged = true;
-
-
-
-	const char* s[1] = { shaderFile.c_str() };
-	EShLanguage language = (EShLanguage)ShaderTypeToEShLanguage(a_Type);
-
-	TBuiltInResource Resources = DefaultTBuiltInResource;
-	glslang::InitializeProcess();
-	glslang::TShader* newShader = new glslang::TShader(language);
-	newShader->setStrings(s, 1);
-	newShader->setEnvInput(glslang::EShSourceGlsl, language, glslang::EShClientOpenGL, 450);
-	newShader->setEnvClient(glslang::EShClientOpenGL, glslang::EShTargetOpenGL_450);
-	newShader->setEnvTarget(glslang::EshTargetSpv, glslang::EShTargetSpv_1_0);
-	//newShader->getIntermediate()->setUseStorageBuffer();
-	newShader->setAutoMapLocations(true);
-	newShader->setAutoMapBindings(true);
-	//newShader->setHlslIoMapping(true);
-	//newShader->setEnvTargetHlslFunctionality1();
-	newShader->parse(&Resources, 450, false, EShMessages::EShMsgDefault);
-	newShader->getIntermediate()->setSourceFile(a_Path.c_str());//debug
-
-	//check if it failed:
-	if (newShader->getInfoLog() && newShader->getInfoLog()[0]) {
-		std::cout << "Shader Error: " << newShader->getInfoLog() << std::endl;
-		info->m_IsUsed = false;
-		//delete newShader;
-		return;
-	}
-
-	info->m_Shader = newShader;
-
-	//m_Shaders[(int)a_Type] = info;
-
-	glslang::FinalizeProcess();
+	a_Shader->AddShader(this);
 }
 
 void Shader::LinkShaders() {
-	bool shouldLink = false;
-	glslang::TProgram program;
-	for (int i = 0; i < ShaderTypes::SHADERCOUNT; i++) {
-		if (m_Shaders[i].m_IsUsed) {
-			if (m_Shaders[i].m_HasBeenChanged) {
-				if (m_Shaders[i].m_Shader != 0) {
-					program.addShader(m_Shaders[i].m_Shader);
-					shouldLink = true;
-				}
 
-				//Update the info file with the new hash
-				CreateDirectory(ShaderCachePath, NULL);
-				std::ofstream infoFile(ShaderCachePath + m_Shaders[i].m_Path + ".info");
-				if (infoFile.is_open()) {
-					for (int q = 0; q < 16; q++) {
-						infoFile << m_Shaders[i].m_Hash[q];
-					}
-					infoFile << "\n";
-					infoFile << m_Shaders[i].m_Path;
-					infoFile.close();
-				}
-			} else {
-				//file hasent changed since last time, so just load it's spirv code
-				AddShader_Internal((ShaderTypes)i, loadSpirvFromPath(ShaderCachePath + m_Shaders[i].m_Path + ".spirv"));
-				//continue;
-			}
-
-		}
-	}
-
-	if (shouldLink) {
-		program.link(EShMessages::EShMsgDefault);
-
-		program.mapIO();
-
-		program.buildReflection();
-		//program.dumpReflection();
-
-		if (program.getInfoLog() && program.getInfoLog()[0]) {
-			std::cout << "linking: " << program.getInfoLog() << std::endl;
-		}
-
-
-		for (int stage = 0; stage < EShLangCount; ++stage) {
-			if (program.getIntermediate((EShLanguage)stage)) {
-				glslang::TIntermediate* shaderStage = program.getIntermediate((EShLanguage)stage);
-				TIntermNode* root = shaderStage->getTreeRoot();
-				std::vector<unsigned int> spirv;
-				spv::SpvBuildLogger logger;
-				glslang::SpvOptions spvOptions;
-				spvOptions.generateDebugInfo = false;
-				spvOptions.disableOptimizer = true;
-				spvOptions.validate = true;
-				spvOptions.optimizeSize = true;
-				glslang::GlslangToSpv(*shaderStage, spirv, &logger, &spvOptions);
-
-
-				//OUTPUT TO BINARY:
-				//if (m_ShouldOutputToBinary) {
-				//}
-
-				bool didFail = false;
-				if (logger.getAllMessages().size() != 0) {
-					std::cout << "Logger Messages:" << logger.getAllMessages() << std::endl;
-					didFail = true;
-				}
-
-				if (!didFail) {
-					//spv::Disassemble(std::cout, spirv);
-					glslang::OutputSpvBin(spirv, (ShaderCachePath + std::string(shaderStage->getSourceFile()) + ".spirv").c_str());
-
-					AddShader_Internal(EShLanguageToShaderType((EShLanguage)stage), spirv);
-				} else {
-					std::ofstream infoFile(ShaderCachePath + std::string(shaderStage->getSourceFile()) + ".info");
-					if (infoFile.is_open()) {
-						infoFile << "Failed.\n";
-						infoFile.close();
-					}
-				}
-			}
+	for (int i = 0; i < ShaderType::SHADERCOUNT; i++) {
+		if (m_Shaders[i].m_HasBeenLoaded && m_Shaders[i].m_IsUsed) {
+			AddShader_Internal((ShaderType)i, loadSpirvFromPath(ShaderCachePath + m_Shaders[i].m_Path + ".spirv"));
 		}
 	}
 

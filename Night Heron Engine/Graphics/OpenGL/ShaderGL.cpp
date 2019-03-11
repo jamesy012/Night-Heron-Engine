@@ -8,11 +8,11 @@
 #include <SPIRV-Cross-master/spirv_glsl.hpp>
 
 
-unsigned int getOpenglShaderType(ShaderTypes a_Type) {
+unsigned int getOpenglShaderType(ShaderType a_Type) {
 	switch (a_Type) {
-		case ShaderTypes::SHADER_VERTEX:
+		case ShaderType::SHADER_VERTEX:
 			return GL_VERTEX_SHADER;
-		case ShaderTypes::SHADER_FRAGMENT:
+		case ShaderType::SHADER_FRAGMENT:
 			return GL_FRAGMENT_SHADER;
 		default:
 			return 0;
@@ -27,7 +27,7 @@ ShaderGL::~ShaderGL() {
 	}
 }
 
-void ShaderGL::AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int> a_Code) {
+void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
 	spirv_cross::CompilerGLSL glsl(a_Code);
 
 	spirv_cross::ShaderResources resources = glsl.get_shader_resources();
@@ -81,7 +81,7 @@ void ShaderGL::Link_Internal() {
 	m_Program = glCreateProgram();
 
 
-	for (int i = 0; i < ShaderTypes::SHADERCOUNT; i++) {
+	for (int i = 0; i < ShaderType::SHADERCOUNT; i++) {
 		if (m_GLShaderIndex[i] != 0) {
 			glAttachShader(m_Program, m_GLShaderIndex[i]);
 		}
@@ -136,8 +136,21 @@ void ShaderGL::Use() {
 	}
 }
 
-void ShaderGL::AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName) {
-	unsigned int uniformBlock = glGetUniformBlockIndex(m_Program, a_StructName.c_str());
+void ShaderGL::Reload() {
+	DeleteShaders();
+	if (m_Program != 0) {
+		glDeleteProgram(m_Program);
+		m_Program = 0;
+	}
+	LinkShaders();
+
+	for (int i = 0; i < m_AttachedUniforms.Length(); i++) {
+		AddBuffer_Internal(m_AttachedUniforms[i].m_Block, m_AttachedUniforms[i].m_Name);
+	}
+}
+
+void ShaderGL::AddBuffer_Internal(ShaderUniformBlock* a_Block, CMString a_StructName) {
+	unsigned int uniformBlock = glGetUniformBlockIndex(m_Program, a_StructName.Get());
 	if (uniformBlock != -1) {
 		glUniformBlockBinding(m_Program, uniformBlock, ((ShaderUniformBlockGL*)a_Block)->m_SlotID);
 	}
@@ -173,7 +186,7 @@ void ShaderUniformBlockGL::SetDebugObjName_Internal() {
 }
 
 void ShaderGL::DeleteShaders() {
-	for (int i = 0; i < ShaderTypes::SHADERCOUNT; i++) {
+	for (int i = 0; i < ShaderType::SHADERCOUNT; i++) {
 		if (m_GLShaderIndex[i] != 0) {
 			glDetachShader(m_Program, m_GLShaderIndex[i]);
 			glDeleteShader(m_GLShaderIndex[i]);

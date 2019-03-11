@@ -6,10 +6,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)WorkingDir</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>
-    </LocalDebuggerCommandArguments>
-    <RemoteDebuggerCommandArguments>
-    </RemoteDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-DX11</LocalDebuggerCommandArguments>
+    <RemoteDebuggerCommandArguments>-DX11</RemoteDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)WorkingDir</LocalDebuggerWorkingDirectory>

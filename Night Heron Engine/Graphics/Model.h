@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CommonTypes.h"
-#include "Graphics/API/GFXObj.h"
+#include "Types.h"
+#include "API/GFXObj.h"
 
 class Model : public GFXObj {
 public:

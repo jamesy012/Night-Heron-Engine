@@ -13,7 +13,8 @@
 #include "Graphics/API/Texture.h"
 #include "Graphics/API/RenderTarget.h"
 #include "Window.h"
-#include "Model.h"
+#include "Graphics/Model.h"
+#include "Graphics/ShaderManager.h"
 
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
@@ -25,6 +26,8 @@
 #include <assimp/scene.h>
 #include <assimp/DefaultLogger.hpp>
 #include <assimp/LogStream.hpp>
+
+#include "Graphics/ShaderSpirvData.h"
 
 struct TestUniformStruct {
 public:
@@ -87,14 +90,24 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	Texture* whiteTexture = graphics->CreateTexture();
 	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 
+	ShaderManager shaderManager;
+	shaderManager.FindAllShaders();
+
 	testTexture->LoadTexture("peacock-2.jpg");
 	testTexture->SetDebugObjName("Test Texture");
 
 	whiteTexture->CreateTexture(1, 1);
 	whiteTexture->SetDebugObjName("White Texture");
 
-	testShader->AddShader(ShaderTypes::SHADER_VERTEX, "test.vert");
-	testShader->AddShader(ShaderTypes::SHADER_FRAGMENT, "test.frag");
+	ShaderSpirvData* testVertSSD = shaderManager.GetShader("test.vert");
+	//testVertSSD.LoadFromFile("test.vert");
+	ShaderSpirvData* testFragSSD = shaderManager.GetShader("test.frag");
+	//testFragSSD.LoadFromFile("test.frag");
+
+	testShader->AddShader(testVertSSD);
+	testShader->AddShader(testFragSSD);
+	//testShader->AddShader(ShaderType::SHADER_VERTEX, "test.vert");
+	//testShader->AddShader(ShaderType::SHADER_FRAGMENT, "test.frag");
 	//testShader->AddShader(ShaderTypes::SHADER_VERTEX, "simple.vert");
 	//testShader->AddShader(ShaderTypes::SHADER_FRAGMENT, "simple.frag");
 	testShader->LinkShaders();
@@ -133,6 +146,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 		testRT->SetDebugObjName("Test RT");
 	}
 
+
 	Model testModel;
 	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.1/Tree1.1.fbx");
 	//testModel.LoadModel("Models/nanosuit.obj");
@@ -159,6 +173,24 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			currentTime += deltaTime;
 
 			graphics->ImGuiNewFrame();
+
+			static bool DemoWindow = false;
+			static bool ShaderMenu = true;
+
+			if (ImGui::BeginMainMenuBar()) {
+				if (ImGui::BeginMenu("Windows")) {
+					ImGui::MenuItem("Demo", NULL, &DemoWindow);
+					ImGui::MenuItem("Shaders", NULL, &ShaderMenu);
+					ImGui::EndMenu();
+				}
+				ImGui::EndMainMenuBar();
+			}
+
+			shaderManager.ImGuiWindow(&ShaderMenu);
+
+			if (DemoWindow) {
+				ImGui::ShowDemoWindow(&DemoWindow);
+			}
 
 			ImGui::Begin("Stats");
 			ImGui::Text("Current Time: %f", currentTime);

@@ -183,14 +183,20 @@
     <ClCompile Include="Graphics\OpenGL\RenderTargetGL.cpp" />
     <ClCompile Include="Graphics\OpenGL\ShaderGL.cpp" />
     <ClCompile Include="Graphics\OpenGL\TextureGL.cpp" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Graphics\Model.cpp" />
+    <ClCompile Include="Graphics\ShaderSpirvData.cpp" />
+    <ClCompile Include="Graphics\ShaderManager.cpp" />
+    <ClCompile Include="Types.cpp" />
+    <ClCompile Include="Util.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Graphics\DX11\GFXDX11.cpp" />
     <ClCompile Include="Graphics\OpenGL\GFXOpenGL.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommonTypes.h" />
+    <ClInclude Include="Graphics\ShaderSpirvData.h" />
+    <ClInclude Include="Graphics\ShaderManager.h" />
+    <ClInclude Include="Types.h" />
     <ClInclude Include="Dependency\ImGui\examples\imgui_impl_dx11.h" />
     <ClInclude Include="Dependency\ImGui\examples\imgui_impl_opengl3.h" />
     <ClInclude Include="Dependency\ImGui\examples\imgui_impl_win32.h" />
@@ -212,8 +218,9 @@
     <ClInclude Include="Graphics\OpenGL\RenderTargetGL.h" />
     <ClInclude Include="Graphics\OpenGL\ShaderGL.h" />
     <ClInclude Include="Graphics\OpenGL\TextureGL.h" />
-    <ClInclude Include="Model.h" />
+    <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="SimpleMath.h" />
+    <ClInclude Include="Util.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Graphics\DX11\GFXDX11.h" />
     <ClInclude Include="Graphics\OpenGL\GFXOpenGL.h" />

@@ -22,7 +22,7 @@ class ShaderDX11 : public Shader {
 public:
 	~ShaderDX11();
 
-	void AddShader_Internal(ShaderTypes a_Type, std::vector<unsigned int> a_Code) override;
+	void AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) override;
 	//virtual void AddShader_Internal(ShaderTypes a_Type, std::string a_Path) = 0;
 
 	virtual void BindTexture(std::string a_Name, unsigned int a_Index) override;
@@ -30,9 +30,10 @@ public:
 
 	void Link_Internal() override;
 	void Use() override;
+	virtual void Reload() override;
 
-	virtual void AddBuffer(ShaderUniformBlock* a_Block, std::string a_StructName) override;
 private:
+	virtual void AddBuffer_Internal(ShaderUniformBlock* a_Block, CMString a_StructName) override;
 	virtual void SetDebugObjName_Internal() override;
 
 	struct ID3D10Blob* VS_Buffer;
