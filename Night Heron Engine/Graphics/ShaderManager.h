@@ -2,6 +2,9 @@
 
 #include "Types.h"
 class ShaderSpirvData;
+class Shader;
+
+extern class ShaderManager* _CShaderManager;
 
 class ShaderManager {
 public:
@@ -14,23 +17,15 @@ public:
 
 	ShaderSpirvData* GetShader(CMString a_FilePath);
 
+	CMArray<Shader*> m_Shaders;
 private:
 	void SeachFolder(CMString a_Path);
 	bool IsFileAShader(CMString a_FilePath);
 
 	CMArray<CMString> m_ShaderPaths;
-	CMArray<ShaderSpirvData*> m_Shaders;
+	CMArray<ShaderSpirvData*> m_ShaderObjects;
 
-	struct ShaderFile {
-		ShaderFile(const char* a_FileExtention) {			
-			CMString(a_FileExtention).Hash(m_ExtenstionHash);
-		}
-		uchar m_ExtenstionHash[16] = { 0 };
-	};
-
-
-	CMArray<ShaderFile> m_FileTypes = { ".vert", ".frag" };
-
+	const CMArray<CMStringHash> m_ShaderFileTypes = { ".vert", ".frag" };
 	CMString m_CurrentPath = "";
 };
 

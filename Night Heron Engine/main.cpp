@@ -9,12 +9,15 @@
 #include "Graphics/DX11/GFXDX11.h"
 
 #include "Graphics/API/Shader.h"
-#include "Graphics/API/Mesh.h"
 #include "Graphics/API/Texture.h"
 #include "Graphics/API/RenderTarget.h"
 #include "Window.h"
 #include "Graphics/Model.h"
+#include "Graphics/Material.h"
+
 #include "Graphics/ShaderManager.h"
+#include "Manager.h"
+#include "Singletons.h"
 
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
@@ -28,6 +31,9 @@
 #include <assimp/LogStream.hpp>
 
 #include "Graphics/ShaderSpirvData.h"
+
+#include "Transform.h"
+#include "Object.h"
 
 struct TestUniformStruct {
 public:
@@ -81,17 +87,35 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 		return -1;
 	}
 
+	SingletonManager::CreateSingletons();
+
 	Shader* testShader = graphics->CreateShader();
+	Shader* treeShader = graphics->CreateShader();
 	testShader->SetDebugObjName("Test Shader");
 	testShader->m_ShouldPrintCode = true;
+	treeShader->SetDebugObjName("tree Shader");
+	treeShader->m_ShouldPrintCode = true;
 	//testShader->m_ShoudRegenerateCode = true;
-	Mesh* testMesh = graphics->CreateMesh();
 	Texture* testTexture = graphics->CreateTexture();
 	Texture* whiteTexture = graphics->CreateTexture();
 	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 
-	ShaderManager shaderManager;
-	shaderManager.FindAllShaders();
+	Model* squareModel = new Model();
+	squareModel->CreateSquare();
+
+	Object square1("Square1"), square2("Square2"), square3("Square3"), square4("Square4"), treeObj("WorldTree");
+	square1.m_Transform.SetPosition(glm::vec3(-2, 0, 0));
+	square2.m_Transform.SetPosition(glm::vec3(0, 0, 0));
+	square3.m_Transform.SetPosition(glm::vec3(2, 0, 0));
+	square4.m_Transform.SetPosition(glm::vec3(2, 2, 0));
+	treeObj.m_Transform.SetPosition(glm::vec3(-6.5f, 5.5f, -5.5f));
+	treeObj.m_Transform.SetRotation(glm::vec3(-55.0f, 0, 55.0f));
+
+	_CManager->m_Objects.Add(&square1);
+	_CManager->m_Objects.Add(&square2);
+	_CManager->m_Objects.Add(&square3);
+	_CManager->m_Objects.Add(&square4);
+	_CManager->m_Objects.Add(&treeObj);
 
 	testTexture->LoadTexture("peacock-2.jpg");
 	testTexture->SetDebugObjName("Test Texture");
@@ -99,21 +123,12 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	whiteTexture->CreateTexture(1, 1);
 	whiteTexture->SetDebugObjName("White Texture");
 
-	ShaderSpirvData* testVertSSD = shaderManager.GetShader("test.vert");
-	//testVertSSD.LoadFromFile("test.vert");
-	ShaderSpirvData* testFragSSD = shaderManager.GetShader("test.frag");
-	//testFragSSD.LoadFromFile("test.frag");
-
-	testShader->AddShader(testVertSSD);
-	testShader->AddShader(testFragSSD);
-	//testShader->AddShader(ShaderType::SHADER_VERTEX, "test.vert");
-	//testShader->AddShader(ShaderType::SHADER_FRAGMENT, "test.frag");
-	//testShader->AddShader(ShaderTypes::SHADER_VERTEX, "simple.vert");
-	//testShader->AddShader(ShaderTypes::SHADER_FRAGMENT, "simple.frag");
+	testShader->AddShader(_CShaderManager->GetShader("test.vert"));
+	testShader->AddShader(_CShaderManager->GetShader("test.frag"));
+	treeShader->AddShader(_CShaderManager->GetShader("test2.vert"));
+	treeShader->AddShader(_CShaderManager->GetShader("test2.frag"));
 	testShader->LinkShaders();
-
-	testMesh->CreateSquare();
-	testMesh->Bind();
+	treeShader->LinkShaders();
 
 	TestUniformStruct testUniformStructObj;
 	TestUniformStruct2 colorTest;
@@ -132,14 +147,17 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	ShaderUniformBlock* testUniform = graphics->CreateBuffer(&testUniformStructObj, sizeof(TestUniformStruct));
 	testUniform->SetDebugObjName("MVP Buffer");
 	testShader->AddBuffer(testUniform, "Vertex_Data");
+	treeShader->AddBuffer(testUniform, "Vertex_Data");
 
 	ShaderUniformBlock* testUniform2 = graphics->CreateBuffer(&colorTest, sizeof(TestUniformStruct2));
 	testUniform2->SetDebugObjName("Color Test Buffer");
 	testShader->AddBuffer(testUniform2, "shader_data");
+	treeShader->AddBuffer(testUniform2, "shader_data");
 
 	ShaderUniformBlock* commonDataBlock = graphics->CreateBuffer(&commonPerFrameData, sizeof(CommonDataStruct));
 	commonDataBlock->SetDebugObjName("Common Data Buffer");
 	testShader->AddBuffer(commonDataBlock, "CommonData");
+	treeShader->AddBuffer(commonDataBlock, "CommonData");
 
 	if (testRT) {
 		testRT->SetupRenderTarget_Internal();
@@ -148,8 +166,19 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 
 
 	Model testModel;
-	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.1/Tree1.1.fbx");
+	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");
 	//testModel.LoadModel("Models/nanosuit.obj");
+
+	Material treeModelMat1;
+	treeModelMat1.SetDebugObjName("Tree Model Mat 1");
+	Material treeModelMat2;
+	treeModelMat2.SetDebugObjName("Tree Model Mat 2");
+	treeModelMat1.m_Shader = treeShader;
+	treeModelMat2.m_Shader = testShader;
+	
+	testModel.SetMaterial(&treeModelMat1, 0);
+	testModel.SetMaterial(&treeModelMat2, 1);
+	squareModel->SetMaterial(&treeModelMat2, 0);
 
 	graphics->ImGuiInit();
 
@@ -177,6 +206,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			static bool DemoWindow = false;
 			static bool ShaderMenu = true;
 
+
 			if (ImGui::BeginMainMenuBar()) {
 				if (ImGui::BeginMenu("Windows")) {
 					ImGui::MenuItem("Demo", NULL, &DemoWindow);
@@ -186,11 +216,15 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				ImGui::EndMainMenuBar();
 			}
 
-			shaderManager.ImGuiWindow(&ShaderMenu);
+			_CShaderManager->ImGuiWindow(&ShaderMenu);
+			_CManager->ImGuiWindow();
 
 			if (DemoWindow) {
 				ImGui::ShowDemoWindow(&DemoWindow);
 			}
+
+			static bool RotateCamera = true;
+			static glm::vec3 CameraPos = glm::vec3(0, 0, 5);
 
 			ImGui::Begin("Stats");
 			ImGui::Text("Current Time: %f", currentTime);
@@ -198,15 +232,16 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			ImGui::Text("fps: %f", ImGui::GetIO().Framerate);
 			ImGui::DragFloat("FOV", &fov, 1, 0, 180);
 			if (testRT) {
-				ImGui::Image(testRT->GetTexture()->getTexturePtr(), ImVec2(200, 200), m_CurrentGraphics->GetImGuiImageUV0(), m_CurrentGraphics->GetImGuiImageUV1());
+				ImGui::Image(testRT->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
 			}
+			ImGui::Checkbox("Rotate Camera", &RotateCamera);
+			ImGui::DragFloat3("Camera Pos", &CameraPos.x, 0.25f);
 			ImGui::End();
 
 			bool ShowMetrics = true;
 
 			commonPerFrameData.time = currentTime;
 			commonDataBlock->UpdateBuffer(&commonPerFrameData);
-
 
 			static int counter = 0;
 			//counter = (counter + 1) % 512;
@@ -215,18 +250,18 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			float x = glm::sin(counter / 64.0f) * 5;
 			float y = glm::cos(counter / 82.0f) * 3;
 			//
-			testUniformStructObj.MatrixProjection = glm::perspective(glm::radians(fov), (float)graphics->m_Window->m_WindowWidth / graphics->m_Window->m_WindowHeight, 0.1f, 100.0f);
-			
+			testUniformStructObj.MatrixProjection = glm::perspective(glm::radians(fov), (float)graphics->m_Window->GetAspect(), 0.1f, 100.0f);
+
 			if (testRT) {
 				graphics->PushDebugGroup("Render Target");
 				testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(-x, y, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
 				testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
-			
-				testRT->Use();
+
+				_CGraphics->UseRenderTarget(testRT);
 				graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 				graphics->Clear();
-				testShader->Use();
-				testShader->BindTexture("textureTest", 1);
+				//treeShader->Use();
+				//treeShader->BindTexture("textureTest", 1);
 
 				testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.0f, 0));
 				testUniformStructObj.MatrixModelTest = glm::rotate(testUniformStructObj.MatrixModelTest, 90.0f, glm::vec3(0, 1, 1));
@@ -235,20 +270,24 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				testUniform2->UpdateBuffer(&colorTest);
 				//testMesh->Draw();
 
-				graphics->BindTexture(whiteTexture,1);
+				graphics->BindTexture(whiteTexture, 0);
 
 				testModel.Draw();
-			
-				testRT->Reset();
 
-				graphics->UnbindTexture(1);
+				_CGraphics->ResetRenderTarget();
+
+				graphics->UnbindTexture(0);
 
 				graphics->PopDebugGroup();
 			}
 
 
 
-			testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(x, y, 5), glm::vec3(0), glm::vec3(0, 1, 0));
+			if (RotateCamera) {
+				testUniformStructObj.MatrixView = glm::lookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));
+			} else {
+				testUniformStructObj.MatrixView = glm::inverse(glm::translate(glm::mat4(1), CameraPos));
+			}
 			testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
 			//
 			//
@@ -264,34 +303,40 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			testShader->Use();
 
 
-			graphics->BindTexture(testTexture, 1);
-			testShader->BindTexture("textureTest", 1);
+			graphics->BindTexture(testTexture, 0);
+			//testShader->BindTexture("textureTest", 1);
 
-			testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0, 0));
+			testUniformStructObj.MatrixModelTest = square1.m_Transform.GetModelMatrix();
 			testUniform->UpdateBuffer(&testUniformStructObj);
 			colorTest.Color = glm::vec4(1, 0, 0, 1);
 			testUniform2->UpdateBuffer(&colorTest);
-			testMesh->Draw();
+			squareModel->Draw();
 
-			testUniformStructObj.MatrixModelTest = glm::mat4(1.0f);
+			testUniformStructObj.MatrixModelTest = square2.m_Transform.GetModelMatrix();
 			testUniform->UpdateBuffer(&testUniformStructObj);
 			colorTest.Color = glm::vec4(0, 1, 0, 1);
 			testUniform2->UpdateBuffer(&colorTest);
-			testMesh->Draw();
+			squareModel->Draw();
 
-			testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0, 0));
+			testUniformStructObj.MatrixModelTest = square3.m_Transform.GetModelMatrix();
 			testUniform->UpdateBuffer(&testUniformStructObj);
 			colorTest.Color = glm::vec4(0, 0, 1, 1);
 			testUniform2->UpdateBuffer(&colorTest);
-			testMesh->Draw();
+			squareModel->Draw();
 
-			testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 0));
+			testUniformStructObj.MatrixModelTest = square4.m_Transform.GetModelMatrix();
 			testUniform->UpdateBuffer(&testUniformStructObj);
 			colorTest.Color = glm::vec4(1, 1, 1, 1);
 			testUniform2->UpdateBuffer(&colorTest);
-			testMesh->Draw();
+			squareModel->Draw();
 
-			graphics->UnbindTexture(1);
+			graphics->BindTexture(whiteTexture, 0);
+
+			testUniformStructObj.MatrixModelTest = treeObj.m_Transform.GetModelMatrix();
+			testUniform->UpdateBuffer(&testUniformStructObj);
+			testModel.Draw();
+
+			graphics->UnbindTexture(0);
 
 			graphics->PopDebugGroup();
 			graphics->PushDebugGroup("ImGui Render");
@@ -312,7 +357,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	delete testUniform;
 	delete testUniform2;
 	delete commonDataBlock;
-	delete testMesh;
+	delete squareModel;
 	delete testTexture;
 	delete testShader;
 	delete graphics;

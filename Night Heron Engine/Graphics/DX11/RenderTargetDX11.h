@@ -9,8 +9,9 @@ public:
 
 	// Inherited via RenderTarget
 	virtual void SetSize(unsigned int a_Width, unsigned int a_Height) override;
-	virtual void Use() override;
-	virtual void Reset() override;
+	//virtual void Use() override;
+	//virtual void Reset() override;
+	virtual void Bind() override;
 	virtual Texture* GetTexture() override;
 
 	virtual void SetupRenderTarget_Internal() override;

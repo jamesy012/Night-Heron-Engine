@@ -49,17 +49,41 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 	for (auto &resource : resources.sampled_images) {
 		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
-		printf("Image %s at set = %u, binding = %u\n", resource.name.c_str(), set, binding);
+		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
+		printf("Image %s at set = %u, binding = %u Location = %u\n", resource.name.c_str(), set, binding, location);
 
 		// Modify the decoration to prepare it for GLSL.
 		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
 		//
 		//// Some arbitrary remapping if we want.
 		//hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
-		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
 		hlsl.set_decoration(resource.id, spv::DecorationBinding, location);
 
+		m_HasTextureForSlot[location] = true;
 	}
+
+	for (auto &resource : resources.uniform_buffers) {
+		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
+		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
+		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
+		printf("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+
+		// Modify the decoration to prepare it for GLSL.
+		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
+		//
+		//// Some arbitrary remapping if we want.
+		//hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
+		if (binding != 0) {
+			hlsl.set_decoration(resource.id, spv::DecorationLocation, binding);
+
+			binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
+			location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
+			printf("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+		}
+
+		m_ShaderCBufferList.push_back({ GetShaderTypeString(a_Type) + resource.name, location});
+	}
+
 
 	// Set some options.
 	spirv_cross::CompilerHLSL::Options options;
@@ -118,6 +142,7 @@ void ShaderDX11::Link_Internal() {
 }
 
 void ShaderDX11::Use() {
+	_CCurrentShader = this;
 	GFXDX11::GetCurrentContex()->m_DevCon->IASetInputLayout(vertLayout);
 	GFXDX11::GetCurrentContex()->m_DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -172,40 +197,54 @@ void ShaderDX11::AddBuffer_Internal(ShaderUniformBlock* a_Block, CMString a_Stru
 	D3D11_SHADER_DESC shaderDesc;
 	D3D11_SHADER_BUFFER_DESC desc;
 	if (VS_Buffer) {
-		D3DReflect(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflector);
-		ZeroMemory(&shaderDesc, sizeof(D3D11_SHADER_DESC));
-		reflector->GetDesc(&shaderDesc);
-
-		for (int i = 0; i < shaderDesc.ConstantBuffers; i++) {
-
-			ID3D11ShaderReflectionConstantBuffer* cbuffer = reflector->GetConstantBufferByIndex(i);
-			ZeroMemory(&desc, sizeof(D3D11_SHADER_BUFFER_DESC));
-			cbuffer->GetDesc(&desc);
-			if (desc.Name == a_StructName) {
-				bd.m_VertexSlot = i;
+		//D3DReflect(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflector);
+		//ZeroMemory(&shaderDesc, sizeof(D3D11_SHADER_DESC));
+		//reflector->GetDesc(&shaderDesc);
+		//
+		//for (int i = 0; i < shaderDesc.ConstantBuffers; i++) {
+		//
+		//	ID3D11ShaderReflectionConstantBuffer* cbuffer = reflector->GetConstantBufferByIndex(i);
+		//	ZeroMemory(&desc, sizeof(D3D11_SHADER_BUFFER_DESC));
+		//	cbuffer->GetDesc(&desc);
+		//	if (desc.Name == a_StructName) {
+		//		bd.m_VertexSlot = i;
+		//		break;
+		//	}
+		//}
+		//
+		//reflector->Release();
+		CMString structName = GetShaderTypeString(SHADER_VERTEX) + a_StructName;
+		for (int i = 0; i < m_ShaderCBufferList.Length(); i++) {
+			if (m_ShaderCBufferList[i].m_Name == structName) {
+				bd.m_VertexSlot = m_ShaderCBufferList[i].m_Location;
 				break;
 			}
 		}
-
-		reflector->Release();
 	}
 	if (PS_Buffer) {
-		D3DReflect(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflector);
-
-		reflector->GetDesc(&shaderDesc);
-
-		for (int i = 0; i < shaderDesc.ConstantBuffers; i++) {
-
-			ID3D11ShaderReflectionConstantBuffer* cbuffer = reflector->GetConstantBufferByIndex(i);
-			ZeroMemory(&desc, sizeof(D3D11_SHADER_BUFFER_DESC));
-			cbuffer->GetDesc(&desc);
-			if (desc.Name == a_StructName) {
-				bd.m_PixelSlot = i;
+		//D3DReflect(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflector);
+		//
+		//reflector->GetDesc(&shaderDesc);
+		//
+		//for (int i = 0; i < shaderDesc.ConstantBuffers; i++) {
+		//
+		//	ID3D11ShaderReflectionConstantBuffer* cbuffer = reflector->GetConstantBufferByIndex(i);
+		//	ZeroMemory(&desc, sizeof(D3D11_SHADER_BUFFER_DESC));
+		//	cbuffer->GetDesc(&desc);
+		//	if (desc.Name == a_StructName) {
+		//		bd.m_PixelSlot = i;
+		//		break;
+		//	}
+		//}
+		//
+		//reflector->Release();
+		CMString structName = GetShaderTypeString(SHADER_FRAGMENT) + a_StructName;
+		for (int i = 0; i < m_ShaderCBufferList.Length(); i++) {
+			if (m_ShaderCBufferList[i].m_Name == structName) {
+				bd.m_PixelSlot = m_ShaderCBufferList[i].m_Location;
 				break;
 			}
 		}
-
-		reflector->Release();
 	}
 
 	m_CBuffers.push_back(bd);

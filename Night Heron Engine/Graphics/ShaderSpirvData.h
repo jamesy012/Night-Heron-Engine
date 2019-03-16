@@ -10,6 +10,15 @@ enum ShaderType {
 	SHADERCOUNT,
 };
 
+enum class ShaderLoadRes {
+	//compiled from supplied file
+	SHADERLOAD_COMPILED,
+	//file not changed, we used the old compiled source
+	SHADERLOAD_LOAD,
+	//error loading/compiling shader
+	SHADERLOAD_ERROR
+};
+
 namespace glslang {
 	class TShader;
 	class TProgram;
@@ -20,8 +29,8 @@ class ShaderSpirvData {
 public:
 	ShaderSpirvData();
 
-	void LoadFromFile(CMString a_FilePath);
-	void Reload();
+	ShaderLoadRes LoadFromFile(CMString a_FilePath);
+	ShaderLoadRes Reload();
 	ShaderType m_ShaderType;
 
 	void AddShader(Shader* a_Shader);

@@ -1,11 +1,11 @@
 #pragma once
+//Basic Data holders
 
 typedef unsigned int uint;
 typedef unsigned char uchar;
 
-class SimpleVec2 {
+struct SimpleVec2 {
 public:
-
 	SimpleVec2(float i1, float i2) {
 		v1 = i1;
 		v2 = i2;

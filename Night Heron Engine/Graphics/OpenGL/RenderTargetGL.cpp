@@ -10,6 +10,7 @@ void RenderTargetGL::SetSize(unsigned int a_Width, unsigned int a_Height) {
 	//need resize on texture
 }
 
+/*
 void RenderTargetGL::Use() {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_Fbo);
 	glViewport(0, 0, m_Width, m_Height);
@@ -17,8 +18,9 @@ void RenderTargetGL::Use() {
 
 void RenderTargetGL::Reset() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, m_CurrentGraphics->m_Window->m_WindowWidth, m_CurrentGraphics->m_Window->m_WindowHeight);
+	glViewport(0, 0, _CGraphics->m_Window->m_WindowWidth, _CGraphics->m_Window->m_WindowHeight);
 }
+*/
 
 void RenderTargetGL::SetupRenderTarget_Internal() {
 	//(FramebufferBufferTypes::TEXTURE, FramebufferBufferFormats::RGBA, 16);
@@ -68,6 +70,10 @@ void RenderTargetGL::SetDebugObjName_Internal() {
 		glObjectLabel(GL_RENDERBUFFER, m_RenderBuffer, -1, temp.Get());
 
 	}
+}
+
+void RenderTargetGL::Bind() {
+	glBindFramebuffer(GL_FRAMEBUFFER, m_Fbo);
 }
 
 Texture * RenderTargetGL::GetTexture() {

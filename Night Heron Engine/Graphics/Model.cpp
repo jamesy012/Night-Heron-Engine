@@ -7,10 +7,16 @@
 
 #include "SimpleMath.h"
 
+#include "Singletons.h"
+#include "Manager.h"
+
 #include <Graphics/API/GFXAPI.h>
 #include <Graphics/API/Mesh.h>
 
+#include "Graphics/Material.h"
+
 Model::Model() {
+	_CManager->m_Models.Add(this);
 }
 
 
@@ -18,6 +24,7 @@ Model::~Model() {
 	for (int i = 0; i < m_Meshs.size();i++) {
 		delete m_Meshs[i].m_Mesh;
 	}
+	_CManager->m_Models.Remove(this);
 }
 
 void Model::LoadModel(CMString a_FileName) {
@@ -32,10 +39,69 @@ void Model::LoadModel(CMString a_FileName) {
 	SetDebugObjName(a_FileName.SubStr(index, a_FileName.Size() - index));
 }
 
+void Model::CreateSquare() {
+	glm::vec4 vertPos[] = {
+		glm::vec4(1, -1, -1, 1),
+		glm::vec4(1, -1, 1, 1),
+		glm::vec4(-1, -1, 1, 1),
+		glm::vec4(-1, -1, -1, 1),
+		glm::vec4(1, 1, -1, 1),
+		glm::vec4(1, 1, 1, 1),
+		glm::vec4(-1, 1, 1, 1),
+		glm::vec4(-1, 1, -1, 1),
+	};
+	glm::vec2 texCoords[]{//y coords have been flipped
+		glm::vec2(1, 0),
+		glm::vec2(0, 0),
+		glm::vec2(0, 1),
+		glm::vec2(1, 1),
+	};
+	unsigned int indexData[]{
+		2, 1, 1, 3, 2, 1, 4, 3, 1,
+		8, 2, 2, 7, 3, 2, 6, 4, 2,
+		1, 4, 3, 5, 1, 3, 6, 2, 3,
+		2, 4, 4, 6, 1, 4, 7, 2, 4,
+		7, 1, 5, 8, 2, 5, 4, 3, 5,
+		1, 3, 6, 4, 4, 6, 8, 1, 6,
+		1, 4, 1, 2, 1, 1, 4, 3, 1,
+		5, 1, 2, 8, 2, 2, 6, 4, 2,
+		2, 3, 3, 1, 4, 3, 6, 2, 3,
+		3, 3, 4, 2, 4, 4, 7, 2, 4,
+		3, 4, 5, 7, 1, 5, 4, 3, 5,
+		5, 2, 6, 1, 3, 6, 8, 1, 6,
+	};
+	unsigned int indexSize = sizeof(indexData) / sizeof(unsigned int);
+
+	Mesh* mesh = _CGraphics->CreateMesh();
+
+	mesh->m_Vertices.reserve(indexSize);
+	mesh->m_Indices.reserve(indexSize);
+	for (unsigned int i = 0; i < indexSize; i += 3) {
+		Vertex vert;
+		vert.m_Pos = vertPos[indexData[i] - 1];
+		vert.m_Color = glm::vec4(1, 1, 1, 1);
+		vert.m_UV = texCoords[indexData[i + 1] - 1];
+		//vert.normal = normals[indexData[i + 2] - 1];
+
+		mesh->m_Vertices.push_back(vert);
+		mesh->m_Indices.push_back(i / 3);
+	}
+	mesh->Bind();
+	m_Meshs.push_back({ mesh, "Model_Square" });
+	SetDebugObjName("Square");
+}
+
 void Model::Draw() {
 	for (int i = 0; i < m_Meshs.size(); i++) {
+		if (m_Meshs[i].m_Material) {
+			m_Meshs[i].m_Material->Use();
+		}
 		m_Meshs[i].m_Mesh->Draw();
 	}
+}
+
+void Model::SetMaterial(Material * a_NewMaterial, uint a_Slot) {
+	m_Meshs[a_Slot].m_Material = a_NewMaterial;
 }
 
 void Model::SetDebugObjName_Internal() {
@@ -169,7 +235,7 @@ Mesh * Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 	}
 
 
-	Mesh* newMesh = m_CurrentGraphics->CreateMesh();
+	Mesh* newMesh = _CGraphics->CreateMesh();
 	newMesh->m_Vertices = verties;
 	newMesh->m_Indices = indices;
 	newMesh->Bind();

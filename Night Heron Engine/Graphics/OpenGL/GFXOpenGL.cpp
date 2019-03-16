@@ -7,6 +7,7 @@
 #include <Dependency/ImGui/imgui.h>
 #include <Dependency/ImGui/examples\imgui_impl_opengl3.h>
 
+#include "Singletons.h"
 #include "ShaderGL.h"
 #include "MeshGL.h"
 #include "TextureGL.h"
@@ -19,7 +20,7 @@ GFXOpenGL::~GFXOpenGL() {
 }
 
 bool GFXOpenGL::CreateWindowSetUpAPI() {
-	m_CurrentGraphics = this;
+	_CGraphics = this;
 
 	m_Window = new Window();
 	m_Window->m_WindowTitle += " - OpenGL";
@@ -95,6 +96,21 @@ RenderTarget * GFXOpenGL::CreateRenderTarget(int a_Width, int a_Height) {
 	return new RenderTargetGL(a_Width, a_Height);
 }
 
+void GFXOpenGL::UseRenderTarget(RenderTarget* a_Rt) {
+	a_Rt->Bind();
+	glViewport(0, 0, a_Rt->GetWidth(), a_Rt->GetHeight());
+}
+
+void GFXOpenGL::ResetRenderTarget() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, m_Window->m_WindowWidth, m_Window->m_WindowHeight);
+}
+
+void GFXOpenGL::ResetShader() {
+	_CCurrentShader = nullptr;
+	glUseProgram(0);
+}
+
 ShaderUniformBlock* GFXOpenGL::CreateBuffer(void * a_Object, unsigned int a_Size) {
 
 	ShaderUniformBlockGL* sub = new ShaderUniformBlockGL();
@@ -114,6 +130,12 @@ ShaderUniformBlock* GFXOpenGL::CreateBuffer(void * a_Object, unsigned int a_Size
 }
 
 void GFXOpenGL::BindTexture(Texture * a_Tex, uint a_Slot) {
+	if (!_CCurrentShader) {
+		return;
+	}
+	//this should be the same?
+	glUniform1i(_CCurrentShader->m_HasTextureForSlot[a_Slot] ? a_Slot : -1, a_Slot);
+
 	glActiveTexture(GL_TEXTURE0 + a_Slot);
 	glBindTexture(GL_TEXTURE_2D, (GLuint)a_Tex->getTexturePtr());
 	m_TextureSlots[a_Slot] = a_Tex;

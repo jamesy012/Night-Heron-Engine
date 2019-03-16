@@ -16,6 +16,10 @@
 #include <string> //std::string
 
 #include "API/Shader.h"
+#include "Util.h"
+
+#include "Singletons.h"
+#include "API/GFXAPI.h"
 
 #define ShaderCachePath "ShaderCache\\"
 
@@ -129,10 +133,10 @@ const TBuiltInResource DefaultTBuiltInResource = {
 ShaderSpirvData::ShaderSpirvData() {
 }
 
-void ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
+ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	if (m_Shader) {
 		CMLog("Shader already exists");
-		return;
+		return ShaderLoadRes::SHADERLOAD_ERROR;
 	}
 	m_FilePath = a_FilePath;
 	GetTypeFromFilePath();
@@ -141,7 +145,7 @@ void ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 
 	if (shaderFile.Length() <= 5) {
 		SaveInfoFile(true);
-		return;
+		return ShaderLoadRes::SHADERLOAD_ERROR;
 	}
 	
 	HCRYPTPROV hProv;
@@ -166,7 +170,7 @@ void ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 		if (res == 0) {
 			printf("Shader: Using cached data: %s\n", m_FilePath.m_FilePath.c_str());
 			m_HasBeenLoaded = true;
-			return;
+			return ShaderLoadRes::SHADERLOAD_LOAD;
 		} else {
 			//delete old files
 			remove((ShaderCachePath + m_FilePath.m_FilePath + ".info").c_str());
@@ -180,7 +184,7 @@ void ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	if (!GenerateGLSlangData(shaderFile)) {
 		CMASSERT_MSG(true, "Failed To Generate GLSLang");
 		delete m_Shader;
-		return;
+		return ShaderLoadRes::SHADERLOAD_ERROR;
 	}
 
 	//Generate SPIRV From GLSlang
@@ -188,7 +192,7 @@ void ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 		CMASSERT_MSG(true, "Failed To Generate Spirv Data from glslang");
 		delete m_Program;
 		delete m_Shader;
-		return;
+		return ShaderLoadRes::SHADERLOAD_ERROR;
 	}
 
 	m_HasBeenLoaded = true;
@@ -197,17 +201,24 @@ void ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	delete m_Shader;
 	m_Program = nullptr;
 	m_Shader = nullptr;
+
+	return ShaderLoadRes::SHADERLOAD_COMPILED;
 }
 
-void ShaderSpirvData::Reload() {
+ShaderLoadRes ShaderSpirvData::Reload() {
 	m_HasBeenLoaded = false;
 
-	LoadFromFile(m_FilePath.m_FilePath);
+	ShaderLoadRes res = LoadFromFile(m_FilePath.m_FilePath);
 
-	for (int i = 0; i < m_AttachedShaders.Length(); i++) {
-		m_AttachedShaders[i]->Reload();
-
+	if (res != ShaderLoadRes::SHADERLOAD_ERROR) {
+		for (int i = 0; i < m_AttachedShaders.Length(); i++) {
+			m_AttachedShaders[i]->Reload();
+		}
 	}
+
+	_CGraphics->ResetShader();
+		
+	return res;
 }
 
 void ShaderSpirvData::AddShader(Shader * a_Shader) {
@@ -215,14 +226,14 @@ void ShaderSpirvData::AddShader(Shader * a_Shader) {
 }
 
 void ShaderSpirvData::GetTypeFromFilePath() {
-	const CMArray<uchar*> hashs = { CMString(".vert").HashAlloc(), CMString(".frag").HashAlloc() };
+	const CMArray<CMStringHash> hashs = { ".vert", ".frag" };
 
 	uchar* fileNameHash = m_FilePath.m_FileName.SubStrFindFromEnd('.').ToLower().HashAlloc();
 
 	m_ShaderType = ShaderType::SHADERCOUNT;
 
 	for (int i = 0; i < hashs.Length(); i++) {
-		if (memcmp(hashs[i], fileNameHash, HASH_LENGTH) == 0) {
+		if (memcmp(hashs[i].m_ExtenstionHash, fileNameHash, HASH_LENGTH) == 0) {
 			m_ShaderType = (ShaderType)i;
 			break;
 		}
@@ -230,9 +241,6 @@ void ShaderSpirvData::GetTypeFromFilePath() {
 
 	CMASSERT_MSG(m_ShaderType == ShaderType::SHADERCOUNT, "Could not find Type of shader!");
 
-	for (int i = 0; i < hashs.Length(); i++) {
-		delete[] hashs[i];
-	}
 	delete fileNameHash;
 }
 

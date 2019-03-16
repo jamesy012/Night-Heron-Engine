@@ -13,6 +13,7 @@
 #include "MeshDX11.h"
 #include "TextureDX11.h"
 #include "RenderTargetDX11.h"
+#include "Singletons.h"
 
 DirectX11Common* GFXDX11::m_CurrentContext = nullptr;
 
@@ -21,7 +22,7 @@ GFXDX11::~GFXDX11() {
 }
 
 bool GFXDX11::CreateWindowSetUpAPI() {
-	m_CurrentGraphics = this;
+	_CGraphics = this;
 
 	//m_Window = new WindowDX11();
 	m_Window = new Window();
@@ -212,6 +213,20 @@ void GFXDX11::PopDebugGroup() {
 	}
 }
 
+void GFXDX11::UseRenderTarget(RenderTarget* a_Rt) {
+	a_Rt->Bind();
+
+	D3D11_VIEWPORT viewport;
+	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+
+	viewport.Width = a_Rt->GetWidth();
+	viewport.Height = a_Rt->GetHeight();
+	viewport.MaxDepth = 1.0f;
+	viewport.MinDepth = 0.0f;
+
+	GFXDX11::GetCurrentContex()->m_DevCon->RSSetViewports(1, &viewport);
+}
+
 void GFXDX11::ResetRenderTarget() {
 	m_DevCon->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 
@@ -230,6 +245,13 @@ void GFXDX11::ResetRenderTarget() {
 
 }
 
+void GFXDX11::ResetShader() {
+	_CCurrentShader = nullptr;
+	m_DevCon->IASetInputLayout(nullptr);
+
+	m_DevCon->VSSetShader(nullptr, 0, 0);
+	m_DevCon->PSSetShader(nullptr, 0, 0);
+}
 
 bool GFXDX11::InitGfx() {
 

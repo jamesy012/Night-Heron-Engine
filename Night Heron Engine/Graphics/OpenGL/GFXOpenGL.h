@@ -23,6 +23,9 @@ public:
 	virtual class Texture* CreateTexture() override;
 	virtual class RenderTarget* CreateRenderTarget(int a_Width, int a_Height) override;
 
+	virtual void UseRenderTarget(RenderTarget* a_Rt) override;
+	virtual void ResetRenderTarget() override;
+	virtual void ResetShader() override;
 
 	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;
 

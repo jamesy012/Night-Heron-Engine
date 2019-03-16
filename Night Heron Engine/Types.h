@@ -106,6 +106,14 @@ public:
 	CMString m_FileName;
 };
 
+struct CMStringHash {
+	CMStringHash(const CMString a_Text) {
+		CMString(a_Text).Hash(m_ExtenstionHash);
+	}
+	CMStringHash(const char* a_Text) : CMStringHash(CMString(a_Text)) {}
+	uchar m_ExtenstionHash[16] = { 0 };
+};
+
 template <class T>
 class CMArray : public std::vector<T> {
 public:
@@ -118,6 +126,30 @@ public:
 
 	uint Length() const {
 		return this->size();
+	}
+
+	void Add(T a_Object) {
+		this->push_back(a_Object);
+	}
+
+	//void AddList(T a_Element, uint a_Count) {
+	//	for (uint i = 0; i < a_Count; i++) {
+	//		Add(a_Element[i]);
+	//	}
+	//}
+
+	void Remove(T a_Object) {
+		uint index = -1;
+		for (int i = 0; i < Length(); i++) {
+			if (this->at(i) == a_Object) {
+				index = i;
+				break;
+			}
+		}
+		if (index == -1) {
+			return;
+		}
+		this->erase(this->begin() + index);
 	}
 
 };

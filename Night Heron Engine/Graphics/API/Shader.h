@@ -21,6 +21,8 @@ public:
 
 class Shader : public GFXObj {
 public:
+	Shader();
+	~Shader();
 
 	std::string Path;
 
@@ -38,11 +40,17 @@ public:
 	bool m_ShouldPrintCode = false;
 	bool m_ShoudRegenerateCode = false;
 
+	bool m_HasTextureForSlot[32] = { false };
+
+	CMArray<ShaderSpirvData*> m_ShaderFileObjects;
+
 protected:
 	virtual void AddBuffer_Internal(ShaderUniformBlock* a_Block, CMString a_StructName) = 0;
 	virtual void AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) = 0;
 	//virtual void AddShader_Internal(ShaderTypes a_Type, std::string a_Path) = 0;
 	virtual void Link_Internal() = 0;
+
+	CMString GetShaderTypeString(ShaderType a_Type);
 
 	//has this shader been linked yet?
 	bool m_IsLinked;
@@ -60,7 +68,9 @@ private:
 		bool m_HasBeenLoaded;
 		std::string m_Path;
 	};
-	ShaderInfo m_Shaders[(int)ShaderType::SHADERCOUNT] = { false, false, "" };
-	//glslang::TShader* m_Shaders[(int)ShaderTypes::SHADERCOUNT] = {0};
+	ShaderInfo m_ShaderObjects[(int)ShaderType::SHADERCOUNT] = { false, false, "" };
+	//glslang::TShader* m_ShaderObjects[(int)ShaderTypes::SHADERCOUNT] = {0};
 
 };
+
+extern Shader* _CCurrentShader;

@@ -52,4 +52,12 @@ private:
 	};
 
 	std::vector<DX11CBufferData> m_CBuffers;
+
+	struct ShaderCBufferListData {
+		CMString m_Name;
+		uint m_Location;
+	};
+
+	//list of how they appear in the shader
+	CMArray<ShaderCBufferListData> m_ShaderCBufferList;
 };

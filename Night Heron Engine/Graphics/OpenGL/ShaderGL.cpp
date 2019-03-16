@@ -35,14 +35,17 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 	for (auto &resource : resources.sampled_images) {
 		unsigned set = glsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
-		printf("Image %s at set = %u, binding = %u\n", resource.name.c_str(), set, binding);
+		unsigned location = glsl.get_decoration(resource.id, spv::DecorationLocation);
+		printf("Image %s at set = %u, binding = %u, location = %u\n", resource.name.c_str(), set, binding, location);
 
 		// Modify the decoration to prepare it for GLSL.
 		glsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
 		glsl.unset_decoration(resource.id, spv::DecorationBinding);
-	
+
 		// Some arbitrary remapping if we want.
 		//glsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
+
+		m_HasTextureForSlot[location] = true;
 	}
 
 	// Set some options.
@@ -51,7 +54,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 	glsl.set_common_options(options);
 
 	// Compile to GLSL, ready to give to GL driver.
-	std::string source = glsl.compile();	
+	std::string source = glsl.compile();
 
 	if (m_ShouldPrintCode) {
 		printf("Final Source: glsl (TYPE:%i)\n%s\n", a_Type, source.c_str());
@@ -64,7 +67,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 
 	glShaderSource(index, 1, shaderCodePtr, 0);
 	glCompileShader(index);
-	
+
 
 	GLint success;
 	glGetShaderiv(index, GL_COMPILE_STATUS, &success);
@@ -95,7 +98,7 @@ void ShaderGL::Link_Internal() {
 		GLchar infoLog[512];
 		glGetShaderInfoLog(m_Program, 512, NULL, infoLog);
 		if (infoLog[0] == -52) {
-			memcpy(infoLog,"No useful data.",16);
+			memcpy(infoLog, "No useful data.", 16);
 		}
 		printf("ERROR::SHADER::_%u_::%s\n%s\n", m_Program, "Linking ERROR", infoLog);
 		DeleteShaders();
@@ -132,6 +135,7 @@ void ShaderGL::Link_Internal() {
 
 void ShaderGL::Use() {
 	if (m_Program != 0 && m_IsLinked) {
+		_CCurrentShader = this;
 		glUseProgram(m_Program);
 	}
 }
@@ -163,7 +167,8 @@ void ShaderGL::SetDebugObjName_Internal() {
 }
 
 void ShaderGL::BindTexture(std::string a_Name, unsigned int a_Index) {
-	glUniform1i(glGetUniformLocation(m_Program, a_Name.c_str()), a_Index); // set it manually
+	const GLuint uniformID = glGetUniformLocation(m_Program, a_Name.c_str());
+	glUniform1i(uniformID, a_Index); // set it manually
 }
 
 ShaderUniformBlockGL::~ShaderUniformBlockGL() {

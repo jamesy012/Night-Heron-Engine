@@ -1,6 +1,7 @@
 #include "Window.h"
 
 #include "Graphics/API/GFXAPI.h"
+#include "Singletons.h"
 
 #include <Dependency/ImGui/imgui.h>
 #include <Dependency/ImGui/examples\imgui_impl_win32.h>
@@ -21,16 +22,16 @@ LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM  wParam, LPARAM  lParam) {
 			return 0;
 		case WM_SIZE:
 			{
-				if (m_CurrentGraphics == nullptr) {
+				if (_CGraphics == nullptr) {
 					return 1;
 				}
 				int width = LOWORD(lParam);
 				int height = HIWORD(lParam);
 
-				m_CurrentGraphics->ResizeWindow(width, height);
+				_CGraphics->ResizeWindow(width, height);
 
-				m_CurrentGraphics->m_Window->m_WindowWidth = width;
-				m_CurrentGraphics->m_Window->m_WindowHeight = height;
+				_CGraphics->m_Window->m_WindowWidth = width;
+				_CGraphics->m_Window->m_WindowHeight = height;
 			}
 			return 0;
 		case WM_CLOSE:

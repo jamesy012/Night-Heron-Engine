@@ -11,12 +11,12 @@ layout (std140) uniform shader_data {
 	vec4 color;
 } testBlock;
 
-layout (std140, binding = 1) uniform CommonData {
+layout (std140) uniform CommonData {
 	float time;
 	vec3 pad;
 } commonData;
 
-layout (location = 1) uniform sampler2D textureTest;
+layout (location = 0) uniform sampler2D textureTest;
  
 void main() { 
 	//fragColor = vVertColor;

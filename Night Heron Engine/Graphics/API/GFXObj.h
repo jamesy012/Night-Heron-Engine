@@ -10,6 +10,6 @@ public:
 	};
 
 protected:
-	virtual void SetDebugObjName_Internal() = 0;
+	virtual void SetDebugObjName_Internal() {};
 	CMString m_DebugName;
 };

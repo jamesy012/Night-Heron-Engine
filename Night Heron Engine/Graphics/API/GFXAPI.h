@@ -38,6 +38,9 @@ public:
 	virtual void BindTexture(Texture* a_Tex, uint a_Slot) = 0;
 	virtual void UnbindTexture(uint a_Slot) = 0;
 
+	virtual void UseRenderTarget(RenderTarget* a_Rt) = 0;
+	virtual void ResetRenderTarget() = 0;
+	virtual void ResetShader() = 0;
 
 	virtual void PushDebugGroup(CMString a_Name) = 0;
 	virtual void PopDebugGroup() = 0;
@@ -58,7 +61,3 @@ protected:
 	Texture* m_TextureSlots[NUM_OF_TEXTURE_SLOTS] = {nullptr};
 
 };
-
-//namespace Constants {
-	extern GFX* m_CurrentGraphics;
-//}

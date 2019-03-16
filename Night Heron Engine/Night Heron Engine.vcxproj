@@ -179,6 +179,7 @@
     <ClCompile Include="Graphics\DX11\RenderTargetDX11.cpp" />
     <ClCompile Include="Graphics\DX11\ShaderDX11.cpp" />
     <ClCompile Include="Graphics\DX11\TextureDX11.cpp" />
+    <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\OpenGL\MeshGL.cpp" />
     <ClCompile Include="Graphics\OpenGL\RenderTargetGL.cpp" />
     <ClCompile Include="Graphics\OpenGL\ShaderGL.cpp" />
@@ -186,6 +187,10 @@
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\ShaderSpirvData.cpp" />
     <ClCompile Include="Graphics\ShaderManager.cpp" />
+    <ClCompile Include="Manager.cpp" />
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Singletons.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Types.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -194,8 +199,13 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\ShaderSpirvData.h" />
     <ClInclude Include="Graphics\ShaderManager.h" />
+    <ClInclude Include="Manager.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="Singletons.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Dependency\ImGui\examples\imgui_impl_dx11.h" />
     <ClInclude Include="Dependency\ImGui\examples\imgui_impl_opengl3.h" />

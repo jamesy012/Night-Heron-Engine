@@ -12,7 +12,7 @@
 void RenderTargetDX11::SetSize(unsigned int a_Width, unsigned int a_Height) {
 	//need resize on texture
 }
-
+/*
 void RenderTargetDX11::Use() {
 	GFXDX11::GetCurrentContex()->m_DevCon->OMSetRenderTargets(1, &m_RenderTarget, m_DepthStencil);
 
@@ -33,8 +33,9 @@ void RenderTargetDX11::Use() {
 }
 
 void RenderTargetDX11::Reset() {
-	((GFXDX11*)m_CurrentGraphics)->ResetRenderTarget();
+	((GFXDX11*)_CGraphics)->ResetRenderTarget();
 }
+*/
 
 void RenderTargetDX11::SetupRenderTarget_Internal() {
 
@@ -79,6 +80,12 @@ void RenderTargetDX11::SetDebugObjName_Internal() {
 		CMString temp = m_DebugName + " Depth Stencil View";
 		m_DepthStencil->SetPrivateData(WKPDID_D3DDebugObjectName, temp.Size(), temp.Get());
 	}
+}
+
+void RenderTargetDX11::Bind() {
+	GFXDX11::GetCurrentContex()->m_DevCon->OMSetRenderTargets(1, &m_RenderTarget, m_DepthStencil);
+	GFXDX11::GetCurrentContex()->m_CurrentBoundRenderTarget = m_RenderTarget;
+	GFXDX11::GetCurrentContex()->m_CurrentBoundDepthStencilView = m_DepthStencil;
 }
 
 Texture * RenderTargetDX11::GetTexture() {
