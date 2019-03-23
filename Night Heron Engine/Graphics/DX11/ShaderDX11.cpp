@@ -81,7 +81,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 			printf("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
 		}
 
-		m_ShaderCBufferList.push_back({ GetShaderTypeString(a_Type) + resource.name, location});
+		m_ShaderCBufferList.Add({ GetShaderTypeString(a_Type) + resource.name, location});
 	}
 
 
@@ -193,9 +193,9 @@ void ShaderDX11::AddBuffer_Internal(ShaderUniformBlock* a_Block, CMString a_Stru
 	//bd.m_Data = a_Slot;
 	bd.m_Uniform = (ShaderUniformBlockDX11*)a_Block;
 
-	ID3D11ShaderReflection* reflector;
-	D3D11_SHADER_DESC shaderDesc;
-	D3D11_SHADER_BUFFER_DESC desc;
+	//ID3D11ShaderReflection* reflector;
+	//D3D11_SHADER_DESC shaderDesc;
+	//D3D11_SHADER_BUFFER_DESC desc;
 	if (VS_Buffer) {
 		//D3DReflect(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflector);
 		//ZeroMemory(&shaderDesc, sizeof(D3D11_SHADER_DESC));

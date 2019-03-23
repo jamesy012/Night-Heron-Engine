@@ -13,6 +13,9 @@ public:
 	virtual void DestroyMainWindow() = 0;
 
 	void ImGuiInit();
+
+	void SetUpGraphics();
+
 	virtual void ImGuiDraw() = 0;
 	virtual void ImGuiNewFrame() = 0;
 
@@ -49,6 +52,8 @@ public:
 	virtual SimpleVec2 GetImGuiImageUV1() = 0;
 
 	Window* m_Window;
+
+	Texture* m_WhiteTexture;
 protected:
 	virtual bool InitGfx() = 0;
 	virtual void InitImGui_Internal() = 0;
@@ -61,3 +66,5 @@ protected:
 	Texture* m_TextureSlots[NUM_OF_TEXTURE_SLOTS] = {nullptr};
 
 };
+
+extern class GFX* _CGraphics;

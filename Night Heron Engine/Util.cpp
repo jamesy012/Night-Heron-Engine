@@ -15,3 +15,7 @@ CMString Util::LoadTextFromPath(CMString a_Path) {
 	fileBuffer << textFile.rdbuf();//get text from file into buffer
 	return fileBuffer.str();
 }
+
+bool Util::IsANumber(char a_Char) {
+	return a_Char >= '0' && a_Char <= '9';
+}

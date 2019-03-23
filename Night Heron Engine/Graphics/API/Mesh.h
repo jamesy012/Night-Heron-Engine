@@ -22,8 +22,8 @@ typedef unsigned int MeshIndicesType;
 class Mesh : public GFXObj {
 public:
 
-	std::vector<MeshVerticesType> m_Vertices;
-	std::vector<MeshIndicesType> m_Indices;
+	CMArray<MeshVerticesType> m_Vertices;
+	CMArray<MeshIndicesType> m_Indices;
 
 	virtual void Bind() = 0;
 

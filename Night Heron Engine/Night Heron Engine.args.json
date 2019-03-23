@@ -5,6 +5,10 @@
     {
       "Id": "ec869b4d-1ef8-45c1-a933-cb08132405e4",
       "Command": "-DX11"
+    },
+    {
+      "Id": "09890f6b-a0fb-41c0-8514-a36e1a0c8ac1",
+      "Command": "-res 640x400"
     }
   ]
 }

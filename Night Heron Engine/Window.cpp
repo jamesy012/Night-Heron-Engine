@@ -16,7 +16,7 @@ LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM  wParam, LPARAM  lParam) {
 		case WM_KEYDOWN:
 			if (wParam == VK_ESCAPE) {
 				if (MessageBox(NULL, "Are you sure you want to exit?", "Exit", MB_YESNO | MB_ICONQUESTION) == IDYES) {
-					DestroyWindow(hWnd);
+					PostQuitMessage(0);
 				}
 			}
 			return 0;
@@ -50,6 +50,10 @@ void Window::ImGuiNewFrame() {
 	ImGui_ImplWin32_NewFrame();
 }
 
+
+Window::Window() {
+	_CMainWindow = this;
+}
 
 bool Window::CreateMainWindow() {
 

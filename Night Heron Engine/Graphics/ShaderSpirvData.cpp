@@ -5,9 +5,6 @@
 #include <glslang-master/SPIRV/disassemble.h>
 #include <glslang-master/SPIRV/GlslangToSpv.h>
 
-#include <Windows.h>
-#include <wincrypt.h>
-
 #include "Debug.h"
 #include "Util.h"
 
@@ -20,6 +17,8 @@
 
 #include "Singletons.h"
 #include "API/GFXAPI.h"
+
+#include <windows.h>
 
 #define ShaderCachePath "ShaderCache\\"
 
@@ -148,19 +147,7 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 		return ShaderLoadRes::SHADERLOAD_ERROR;
 	}
 	
-	HCRYPTPROV hProv;
-	HCRYPTHASH hHash;
-	CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
-	CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash);
-	CryptHashData(hHash, (BYTE*)shaderFile.c_str(), shaderFile.length(), 0);
-	DWORD cbHash = HASH_LENGTH;
-	uchar rgbHash[HASH_LENGTH];
-	CryptGetHashParam(hHash, HP_HASHVAL, rgbHash, &cbHash, 0);
-	CryptDestroyHash(hHash);
-	CryptReleaseContext(hProv, 0);
-	memcpy(m_Hash, rgbHash, HASH_LENGTH);
-	
-
+	shaderFile.Hash(m_Hash);
 
 	std::string infoFile = Util::LoadTextFromPath(ShaderCachePath + m_FilePath.m_FilePath + ".info");
 	if (infoFile.size() != 0) {
@@ -222,7 +209,7 @@ ShaderLoadRes ShaderSpirvData::Reload() {
 }
 
 void ShaderSpirvData::AddShader(Shader * a_Shader) {
-	m_AttachedShaders.push_back(a_Shader);
+	m_AttachedShaders.Add(a_Shader);
 }
 
 void ShaderSpirvData::GetTypeFromFilePath() {

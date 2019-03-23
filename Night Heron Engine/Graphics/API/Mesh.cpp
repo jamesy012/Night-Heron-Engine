@@ -57,8 +57,8 @@ void Mesh::CreateSquare() {
 	};
 	unsigned int indexSize = sizeof(indexData) / sizeof(unsigned int);
 
-	m_Vertices.reserve(indexSize);
-	m_Indices.reserve(indexSize);
+	m_Vertices.Reserve(indexSize);
+	m_Indices.Reserve(indexSize);
 	for (unsigned int i = 0; i < indexSize; i += 3) {
 		Vertex vert;
 		vert.m_Pos = vertPos[indexData[i] - 1];
@@ -66,8 +66,8 @@ void Mesh::CreateSquare() {
 		vert.m_UV = texCoords[indexData[i + 1] - 1];
 		//vert.normal = normals[indexData[i + 2] - 1];
 
-		m_Vertices.push_back(vert);
-		m_Indices.push_back(i / 3);
+		m_Vertices.Add(vert);
+		m_Indices.Add(i / 3);
 	}
 
 	SetDebugObjName("Square");

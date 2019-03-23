@@ -28,10 +28,10 @@ void MeshGL::Bind() {
 
 	//bind data
 	glBindBuffer(GL_ARRAY_BUFFER, m_Vbo);
-	glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(MeshVerticesType), &m_Vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_Vertices.Length() * sizeof(MeshVerticesType), &m_Vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(MeshIndicesType), &m_Indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.Length() * sizeof(MeshIndicesType), &m_Indices[0], GL_STATIC_DRAW);
 
 	//position
 	glEnableVertexAttribArray(0);
@@ -56,7 +56,7 @@ void MeshGL::Bind() {
 
 void MeshGL::Draw() {
 	glBindVertexArray(m_Vao);
-	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, m_Indices.Length(), GL_UNSIGNED_INT, 0);
 	//glBindVertexArray(0);
 }
 

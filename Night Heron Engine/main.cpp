@@ -14,6 +14,8 @@
 #include "Window.h"
 #include "Graphics/Model.h"
 #include "Graphics/Material.h"
+#include "Util.h"
+#include "Camera.h"
 
 #include "Graphics/ShaderManager.h"
 #include "Manager.h"
@@ -66,7 +68,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	AllocConsole();
 	freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 
-	std::string arguments = lpCmdLine;
+	CMString arguments = lpCmdLine;
 
 	//pick graphics api
 	GFX* graphics = nullptr;
@@ -83,11 +85,42 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 		//graphics = new GFXDX11();
 	}
 
+	if (arguments.find("-res ") != std::string::npos) {
+		int index = arguments.find("-res ") + 5;
+		char width[5];
+		char height[5];
+		bool findWidth = true;
+		int charIndex = 0;
+		for (int i = index; i < 15 && i < arguments.Size() && charIndex < 5; i++) {
+			char num = arguments.At(i);
+			if (Util::IsANumber(num)) {
+				if (findWidth) {
+					width[charIndex++] = num;
+				} else {
+					height[charIndex++] = num;
+				}
+			} else {
+				if (!findWidth) {
+					height[charIndex++] = '\0';
+					break;
+				} else {
+					width[charIndex++] = '\0';
+					findWidth = false;
+				}
+				charIndex = 0;
+			}
+		}
+		sscanf_s(width, "%i", &_CMainWindow->m_WindowWidth);
+		sscanf_s(height, "%i", &_CMainWindow->m_WindowHeight);
+	}
+
 	if (!graphics->CreateWindowSetUpAPI()) {
 		return -1;
 	}
 
 	SingletonManager::CreateSingletons();
+
+	_CGraphics->SetUpGraphics();
 
 	Shader* testShader = graphics->CreateShader();
 	Shader* treeShader = graphics->CreateShader();
@@ -97,8 +130,9 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	treeShader->m_ShouldPrintCode = true;
 	//testShader->m_ShoudRegenerateCode = true;
 	Texture* testTexture = graphics->CreateTexture();
-	Texture* whiteTexture = graphics->CreateTexture();
 	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
+
+	Camera mainCamera;
 
 	Model* squareModel = new Model();
 	squareModel->CreateSquare();
@@ -120,8 +154,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	testTexture->LoadTexture("peacock-2.jpg");
 	testTexture->SetDebugObjName("Test Texture");
 
-	whiteTexture->CreateTexture(1, 1);
-	whiteTexture->SetDebugObjName("White Texture");
+	
 
 	testShader->AddShader(_CShaderManager->GetShader("test.vert"));
 	testShader->AddShader(_CShaderManager->GetShader("test.frag"));
@@ -135,15 +168,33 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	CommonDataStruct commonPerFrameData;
 	colorTest.Color = glm::vec4(1, 0, 1, 1);
 
-	//testUniformStructObj.MatrixModelTest = glm::mat4(1.0f);
+	if (testRT) {
+		testRT->SetupRenderTarget_Internal();
+		testRT->SetDebugObjName("Test RT");
+	}
 
-	//testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0), glm::vec3(0, 1, 0));
-	//projection = glm::perspective(90.0f, (float)(graphics->m_Window->m_WindowWidth / graphics->m_Window->m_WindowHeight), 0.1f, 100.0f);
-	//testUniformStructObj.MatrixProjection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 1.0f, 100.0f);
-	//testUniformStructObj.MatrixProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.0f, 100.0f);
 
-	//testUniformStructObj.MatrixModelTest = glm::translate(testUniformStructObj.MatrixModelTest, glm::vec3(1, 1, -1));
+	Model testModel;
+	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");
+	//testModel.LoadModel("Models/nanosuit.obj");
 
+	Material treeModelMat1("Material/TreeModelMat1.mat");
+	if (!treeModelMat1.Load()) {
+		treeModelMat1.SetDebugObjName("Tree Model Mat 1");
+		treeModelMat1.m_Shader = treeShader;
+		treeModelMat1.Save();
+	}
+	Material treeModelMat2("Material/TreeModelMat2.mat");
+	if (!treeModelMat2.Load()) {
+		treeModelMat2.SetDebugObjName("Tree Model Mat 2");
+		treeModelMat2.m_Shader = testShader;
+		treeModelMat2.Save();
+	}
+	testModel.SetMaterial(&treeModelMat1, 0);
+	testModel.SetMaterial(&treeModelMat2, 1);
+	squareModel->SetMaterial(&treeModelMat2, 0);
+
+	//UNIFORMS
 	ShaderUniformBlock* testUniform = graphics->CreateBuffer(&testUniformStructObj, sizeof(TestUniformStruct));
 	testUniform->SetDebugObjName("MVP Buffer");
 	testShader->AddBuffer(testUniform, "Vertex_Data");
@@ -159,26 +210,17 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	testShader->AddBuffer(commonDataBlock, "CommonData");
 	treeShader->AddBuffer(commonDataBlock, "CommonData");
 
-	if (testRT) {
-		testRT->SetupRenderTarget_Internal();
-		testRT->SetDebugObjName("Test RT");
+	for (int i = 0; i < _CManager->m_Materials.Length(); i++) {
+		if (_CManager->m_Materials[i]->m_CreatedShader) {
+			Shader* shader = _CManager->m_Materials[i]->m_Shader;
+			shader->AddBuffer(testUniform, "Vertex_Data");
+			shader->AddBuffer(testUniform2, "shader_data");
+			shader->AddBuffer(commonDataBlock, "CommonData");
+		}
 	}
 
-
-	Model testModel;
-	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");
-	//testModel.LoadModel("Models/nanosuit.obj");
-
-	Material treeModelMat1;
-	treeModelMat1.SetDebugObjName("Tree Model Mat 1");
-	Material treeModelMat2;
-	treeModelMat2.SetDebugObjName("Tree Model Mat 2");
-	treeModelMat1.m_Shader = treeShader;
-	treeModelMat2.m_Shader = testShader;
-	
-	testModel.SetMaterial(&treeModelMat1, 0);
-	testModel.SetMaterial(&treeModelMat2, 1);
-	squareModel->SetMaterial(&treeModelMat2, 0);
+	//todo remove this
+	_CManager->tempPVMUniform = testUniform;
 
 	graphics->ImGuiInit();
 
@@ -187,6 +229,10 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	float currentTime = 0;
 
 	float fov = 90;
+
+	mainCamera.SetFov(fov);
+	mainCamera.SetAspectRatio(graphics->m_Window->GetAspect());
+
 
 	while (true) {
 		MSG msg;
@@ -230,15 +276,15 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			ImGui::Text("Current Time: %f", currentTime);
 			ImGui::Text("Delta Time: %f", deltaTime);
 			ImGui::Text("fps: %f", ImGui::GetIO().Framerate);
-			ImGui::DragFloat("FOV", &fov, 1, 0, 180);
+			if (ImGui::DragFloat("FOV", &fov, 1, 0, 180)) {
+				mainCamera.SetFov(fov);
+			}
 			if (testRT) {
 				ImGui::Image(testRT->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
 			}
 			ImGui::Checkbox("Rotate Camera", &RotateCamera);
 			ImGui::DragFloat3("Camera Pos", &CameraPos.x, 0.25f);
 			ImGui::End();
-
-			bool ShowMetrics = true;
 
 			commonPerFrameData.time = currentTime;
 			commonDataBlock->UpdateBuffer(&commonPerFrameData);
@@ -250,12 +296,14 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			float x = glm::sin(counter / 64.0f) * 5;
 			float y = glm::cos(counter / 82.0f) * 3;
 			//
-			testUniformStructObj.MatrixProjection = glm::perspective(glm::radians(fov), (float)graphics->m_Window->GetAspect(), 0.1f, 100.0f);
+			testUniformStructObj.MatrixProjection = mainCamera.GetProjection();
 
 			if (testRT) {
 				graphics->PushDebugGroup("Render Target");
-				testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(-x, y, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
-				testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
+				//testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(-x, y, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
+				mainCamera.SetLookAt(glm::vec3(-x, y, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
+				//testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
+				testUniformStructObj.MatrixPV = mainCamera.GetPV();
 
 				_CGraphics->UseRenderTarget(testRT);
 				graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
@@ -270,7 +318,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				testUniform2->UpdateBuffer(&colorTest);
 				//testMesh->Draw();
 
-				graphics->BindTexture(whiteTexture, 0);
+				graphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
 
 				testModel.Draw();
 
@@ -283,12 +331,19 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 
 
 
+			//if (RotateCamera) {
+			//	testUniformStructObj.MatrixView = glm::lookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));
+			//} else {
+			//	testUniformStructObj.MatrixView = glm::inverse(glm::translate(glm::mat4(1), CameraPos));
+			//}
+			//testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
 			if (RotateCamera) {
-				testUniformStructObj.MatrixView = glm::lookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));
+				mainCamera.SetLookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));
 			} else {
-				testUniformStructObj.MatrixView = glm::inverse(glm::translate(glm::mat4(1), CameraPos));
+				mainCamera.SetPosition(CameraPos);
+				mainCamera.SetRotation(glm::vec3(0));
 			}
-			testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
+			testUniformStructObj.MatrixPV = mainCamera.GetPV();
 			//
 			//
 			////projection = glm::perspective(counter / 128.0f, 4.0f/3.0f, 0.1f, 100.0f);
@@ -298,7 +353,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			//
 
 			graphics->PushDebugGroup("Main Render");
-			graphics->SetClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+			graphics->SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			graphics->Clear();
 			testShader->Use();
 
@@ -330,7 +385,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			testUniform2->UpdateBuffer(&colorTest);
 			squareModel->Draw();
 
-			graphics->BindTexture(whiteTexture, 0);
+			graphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
 
 			testUniformStructObj.MatrixModelTest = treeObj.m_Transform.GetModelMatrix();
 			testUniform->UpdateBuffer(&testUniformStructObj);

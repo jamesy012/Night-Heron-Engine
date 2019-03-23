@@ -19,7 +19,7 @@ void MeshDX11::Bind() {
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = m_Vertices.size() * sizeof(MeshVerticesType);
+	vertexBufferDesc.ByteWidth = m_Vertices.Length() * sizeof(MeshVerticesType);
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
@@ -27,7 +27,7 @@ void MeshDX11::Bind() {
 	D3D11_BUFFER_DESC indexBufferDesc;
 	ZeroMemory(&indexBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = m_Indices.size() * sizeof(MeshIndicesType);
+	indexBufferDesc.ByteWidth = m_Indices.Length() * sizeof(MeshIndicesType);
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBufferDesc.CPUAccessFlags = 0;
 	indexBufferDesc.MiscFlags = 0;
@@ -36,8 +36,8 @@ void MeshDX11::Bind() {
 	D3D11_SUBRESOURCE_DATA indexData;
 	ZeroMemory(&vertexData, sizeof(D3D11_SUBRESOURCE_DATA));
 	ZeroMemory(&indexData, sizeof(D3D11_SUBRESOURCE_DATA));
-	vertexData.pSysMem = &m_Vertices.front();
-	indexData.pSysMem = &m_Indices.front();
+	vertexData.pSysMem = m_Vertices.First();
+	indexData.pSysMem = m_Indices.First();
 
 	
 	HRESULT hr;
@@ -64,7 +64,7 @@ void MeshDX11::Draw() {
 	GFXDX11::GetCurrentContex()->m_DevCon->IASetVertexBuffers(0, 1, &m_VertexBuffer, &VertexStride, &VertexOffset);
 	GFXDX11::GetCurrentContex()->m_DevCon->IASetIndexBuffer(m_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	GFXDX11::GetCurrentContex()->m_DevCon->DrawIndexed(m_Indices.size(), 0, 0);
+	GFXDX11::GetCurrentContex()->m_DevCon->DrawIndexed(m_Indices.Length(), 0, 0);
 }
 
 void MeshDX11::SetDebugObjName_Internal() {

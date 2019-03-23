@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Dependency\ImGui\examples\imgui_impl_dx11.cpp" />
     <ClCompile Include="Dependency\ImGui\examples\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Dependency\ImGui\examples\imgui_impl_win32.cpp" />
@@ -199,9 +200,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\ShaderSpirvData.h" />
     <ClInclude Include="Graphics\ShaderManager.h" />
+    <ClInclude Include="Interfaces\Saveable.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Singletons.h" />

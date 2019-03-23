@@ -17,16 +17,20 @@
 
 DirectX11Common* GFXDX11::m_CurrentContext = nullptr;
 
+GFXDX11::GFXDX11() {
+	m_Window = new Window();
+	m_Window->m_WindowTitle += " - DirectX 11";
+}
+
 GFXDX11::~GFXDX11() {
 	ImGui_ImplDX11_Shutdown();
+
+	delete m_Window;
 }
 
 bool GFXDX11::CreateWindowSetUpAPI() {
 	_CGraphics = this;
 
-	//m_Window = new WindowDX11();
-	m_Window = new Window();
-	m_Window->m_WindowTitle += " - DirectX 11";
 	return m_Window->CreateMainWindow() && InitGfx();
 }
 

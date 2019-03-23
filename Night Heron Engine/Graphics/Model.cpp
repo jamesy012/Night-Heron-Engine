@@ -21,7 +21,7 @@ Model::Model() {
 
 
 Model::~Model() {
-	for (int i = 0; i < m_Meshs.size();i++) {
+	for (int i = 0; i < m_Meshs.Length();i++) {
 		delete m_Meshs[i].m_Mesh;
 	}
 	_CManager->m_Models.Remove(this);
@@ -74,8 +74,8 @@ void Model::CreateSquare() {
 
 	Mesh* mesh = _CGraphics->CreateMesh();
 
-	mesh->m_Vertices.reserve(indexSize);
-	mesh->m_Indices.reserve(indexSize);
+	mesh->m_Vertices.Reserve(indexSize);
+	mesh->m_Indices.Reserve(indexSize);
 	for (unsigned int i = 0; i < indexSize; i += 3) {
 		Vertex vert;
 		vert.m_Pos = vertPos[indexData[i] - 1];
@@ -83,16 +83,16 @@ void Model::CreateSquare() {
 		vert.m_UV = texCoords[indexData[i + 1] - 1];
 		//vert.normal = normals[indexData[i + 2] - 1];
 
-		mesh->m_Vertices.push_back(vert);
-		mesh->m_Indices.push_back(i / 3);
+		mesh->m_Vertices.Add(vert);
+		mesh->m_Indices.Add(i / 3);
 	}
 	mesh->Bind();
-	m_Meshs.push_back({ mesh, "Model_Square" });
+	m_Meshs.Add({ mesh, "Model_Square" });
 	SetDebugObjName("Square");
 }
 
 void Model::Draw() {
-	for (int i = 0; i < m_Meshs.size(); i++) {
+	for (int i = 0; i < m_Meshs.Length(); i++) {
 		if (m_Meshs[i].m_Material) {
 			m_Meshs[i].m_Material->Use();
 		}
@@ -105,7 +105,7 @@ void Model::SetMaterial(Material * a_NewMaterial, uint a_Slot) {
 }
 
 void Model::SetDebugObjName_Internal() {
-	for (int i = 0; i < m_Meshs.size(); i++) {
+	for (int i = 0; i < m_Meshs.Length(); i++) {
 		CMString index = CMString::IntToString(i);
 		CMString objName = m_DebugName + " - " + index + " - " + m_Meshs[i].m_ObjName;
 		m_Meshs[i].m_Mesh->SetDebugObjName(objName);
@@ -119,7 +119,7 @@ void Model::ProcessNode(aiNode * node, const aiScene * scene) {
 		Mesh* mesh = ProcessMesh(assimpMesh, scene);
 
 		CMString objName = assimpMesh->mName.C_Str();
-		m_Meshs.push_back({ mesh, objName });
+		m_Meshs.Add({ mesh, objName });
 	}
 
 	for (uint i = 0; i < node->mNumChildren; i++) {
@@ -222,7 +222,7 @@ Mesh * Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 			}
 		}
 
-		verties.push_back(vert);
+		verties.Add(vert);
 	}
 
 	for (uint i = 0; i < mesh->mNumFaces; i++) {
@@ -230,7 +230,7 @@ Mesh * Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 		aiFace face = mesh->mFaces[i];
 
 		for (uint j = 0; j < face.mNumIndices; j++) {
-			indices.push_back(face.mIndices[j]);
+			indices.Add(face.mIndices[j]);
 		}
 	}
 

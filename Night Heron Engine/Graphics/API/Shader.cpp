@@ -29,7 +29,7 @@ Shader::~Shader() {
 }
 
 void Shader::AddBuffer(ShaderUniformBlock * a_Block, CMString a_StructName) {
-	m_AttachedUniforms.push_back({a_Block, a_StructName});
+	m_AttachedUniforms.Add({a_Block, a_StructName});
 	AddBuffer_Internal(a_Block, a_StructName);
 }
 

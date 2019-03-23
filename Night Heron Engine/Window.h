@@ -6,6 +6,7 @@
 
 class Window {
 public:
+	Window();
 
 	virtual bool CreateMainWindow();
 	virtual void DestrowMainWindow();

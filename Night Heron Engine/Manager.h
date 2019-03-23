@@ -20,9 +20,14 @@ public:
 	bool m_ShowObjects;
 	bool m_ShowModels;
 	bool m_ShowMaterials;
+
+	//todo: remove this, get this another way
+	class ShaderUniformBlock* tempPVMUniform;
 private:
 	void ImGuiObjects();
 	void ImGuiModels();
 	void ImGuiMaterials();
+
+	class RenderTarget* m_CommonRT;
 };
 

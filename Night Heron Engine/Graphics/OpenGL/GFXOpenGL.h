@@ -4,6 +4,7 @@
 
 class GFXOpenGL : public GFX {
 public:
+	GFXOpenGL();
 	~GFXOpenGL();
 
 	bool CreateWindowSetUpAPI() override;

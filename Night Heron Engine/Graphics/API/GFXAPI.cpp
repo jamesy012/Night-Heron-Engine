@@ -3,6 +3,8 @@
 #include <Dependency/ImGui/imgui.h>
 #include <Window.h>
 
+#include "Texture.h"
+
 void GFX::ImGuiInit() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -12,6 +14,12 @@ void GFX::ImGuiInit() {
 
 	m_Window->ImGuiInit();
 	InitImGui_Internal();
+}
+
+void GFX::SetUpGraphics() {
+	m_WhiteTexture = CreateTexture();
+	m_WhiteTexture->CreateTexture(1, 1);
+	m_WhiteTexture->SetDebugObjName("White Texture");
 }
 
 void GFX::ResizeWindow(int a_Width, int a_Height) {

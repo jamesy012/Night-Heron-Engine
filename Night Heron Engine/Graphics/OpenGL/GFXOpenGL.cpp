@@ -15,15 +15,19 @@
 
 static void openGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 
+GFXOpenGL::GFXOpenGL() {
+	m_Window = new Window();
+	m_Window->m_WindowTitle += " - OpenGL";
+}
+
 GFXOpenGL::~GFXOpenGL() {
 	ImGui_ImplOpenGL3_Shutdown();
+	delete m_Window;
 }
 
 bool GFXOpenGL::CreateWindowSetUpAPI() {
 	_CGraphics = this;
 
-	m_Window = new Window();
-	m_Window->m_WindowTitle += " - OpenGL";
 	return m_Window->CreateMainWindow() && InitGfx();
 }
 

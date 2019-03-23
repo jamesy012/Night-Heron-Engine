@@ -37,3 +37,5 @@ uchar * CMString::HashAlloc() const {
 	Hash(output);
 	return output;
 }
+
+

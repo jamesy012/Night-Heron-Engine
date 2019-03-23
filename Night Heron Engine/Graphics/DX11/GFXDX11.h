@@ -15,6 +15,7 @@ class GFXDX11 : public GFX {
 private:
 	static DirectX11Common* m_CurrentContext;
 public:
+	GFXDX11();
 	~GFXDX11();
 
 	static inline DirectX11Common* GetCurrentContex() {

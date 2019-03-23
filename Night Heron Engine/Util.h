@@ -10,6 +10,7 @@ class Util {
 public:
 
 	static CMString LoadTextFromPath(CMString a_Path);
+	static bool IsANumber(char a_Text);
 
 };
 

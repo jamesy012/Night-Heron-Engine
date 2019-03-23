@@ -3,10 +3,18 @@
 #include <ImGui/imgui.h>
 #include "Singletons.h"
 
+#include "Graphics/API/GFXAPI.h"
+#include "Graphics/API/RenderTarget.h"
+#include "Graphics/API/Texture.h"
+
 #include "Object.h"
 #include "Graphics/Model.h"
 #include "Graphics/Material.h"
 #include "Graphics/API/Shader.h"
+
+#include <glm\glm.hpp>
+#include <glm\ext.hpp>
+
 
 Manager::Manager() {
 	_CManager = this;
@@ -14,9 +22,16 @@ Manager::Manager() {
 
 
 Manager::~Manager() {
+	delete m_CommonRT;
 }
 
 void Manager::ImGuiWindow() {
+	if (m_CommonRT == nullptr) {
+		m_CommonRT = _CGraphics->CreateRenderTarget(256, 256);
+		m_CommonRT->SetupRenderTarget_Internal();
+		m_CommonRT->SetDebugObjName("Manager RT");
+	}
+
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("Managers")) {
 			ImGui::MenuItem("Objects", NULL, &m_ShowObjects);
@@ -90,6 +105,42 @@ void Manager::ImGuiModels() {
 	}
 	//static int selection_mask = (1 << 2);
 	static int nodeSelected = -1;
+	static bool isRtDirty = true;
+
+	if (isRtDirty && nodeSelected != -1) {
+		struct {
+		public:
+			glm::mat4 MatrixView = glm::mat4();
+			glm::mat4 MatrixProjection = glm::mat4();
+			glm::mat4 MatrixModelTest = glm::mat4();
+			glm::mat4 MatrixPV = glm::mat4();
+		}testUniformStructObj;
+
+		_CGraphics->PushDebugGroup("Manager Render Target");
+		testUniformStructObj.MatrixProjection = glm::perspective(glm::radians(60.0f), 1.4f, 0.1f, 100.0f);
+		testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(-4, 4, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
+		testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
+		testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+
+		_CGraphics->UseRenderTarget(m_CommonRT);
+		_CGraphics->SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		_CGraphics->Clear();
+
+		tempPVMUniform->UpdateBuffer(&testUniformStructObj);
+
+		_CGraphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
+
+		m_Models[nodeSelected]->Draw();
+
+		_CGraphics->ResetRenderTarget();
+
+		_CGraphics->UnbindTexture(0);
+
+		_CGraphics->PopDebugGroup();
+		
+		isRtDirty = false;
+	}
+
 	ImGui::Begin("Model Menu", &m_ShowModels);
 
 	{
@@ -102,6 +153,7 @@ void Manager::ImGuiModels() {
 			CMString text = m_Models[i]->GetDebugObjName().Get();
 			if (ImGui::Selectable(text.Get(), nodeSelected == i)) {
 				nodeSelected = i;
+				isRtDirty = true;
 			}
 		}
 
@@ -123,14 +175,29 @@ void Manager::ImGuiModels() {
 					if (ImGui::TreeNode(CMString::IntToString(i).Get())) {
 						ImGui::Text("Mesh: %s", mmh->m_ObjName.Get());
 						ImGui::Text("Material: %i", mmh->m_Material ? mmh->m_Material->m_ID : -1);
+						int id = -1;
+						if (mmh->m_Material) {
+							id = (int)mmh->m_Material->m_ID;
+						}
+						if (ImGui::DragInt("Mat", &id, 0.1f, -1, m_Materials.Length() - 1)) {
+							if (id == -1) {
+								mmh->m_Material = nullptr;
+							} else {
+								mmh->m_Material = m_Materials.At(id);
+							}
+						}
 						ImGui::TreePop();
 					}
 				}
 			}
+
+			ImGui::Image(m_CommonRT->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
+
 		}
 
 
 		ImGui::EndChild();
+
 	}
 
 	ImGui::End();
@@ -167,7 +234,7 @@ void Manager::ImGuiMaterials() {
 			Material* material = m_Materials[nodeSelected];
 			ImGui::Text("Selected Material: %s", material->GetDebugObjName().Get());
 
-			ImGui::Text("Shader %s", material->m_Shader ? material->m_Shader->GetDebugObjName().Get() : "None");
+			ImGui::Text("Shader: %s", material->m_Shader ? material->m_Shader->GetDebugObjName().Get() : "None");
 		}
 
 		ImGui::EndChild();

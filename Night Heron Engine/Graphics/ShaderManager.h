@@ -27,5 +27,12 @@ private:
 
 	const CMArray<CMStringHash> m_ShaderFileTypes = { ".vert", ".frag" };
 	CMString m_CurrentPath = "";
+
+	void ImGuiWindowTab1();
+	void ImGuiWindowTab2();
+
+	int m_ChangeToTab = -1;
+	int m_ChangeToIndex = -1;
+
 };
 
