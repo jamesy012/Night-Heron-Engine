@@ -35,24 +35,19 @@ void Material::Use() {
 
 #include <windows.h>
 
-bool Material::Load() {
-	CMString data = Util::LoadTextFromPath(m_FilePath.m_FilePath);
-	if (data.Length() < 5) {
-		return false;
-	}
-	CMArray<CMString> splits = data.Split('\n');
-	int line = 0;
-	while (line < splits.Length()) {
+bool Material::Load_Internal(CMArray<CMString> a_Splits) {
+	uint line = 0;
+	while (line < a_Splits.Length()) {
 		line++;
 		if (line == 1) {
-			SetDebugObjName(splits[line]);
+			SetDebugObjName(a_Splits[line]);
 		}
 		if (line == 2) {
-			int shaders = CMString::StringToInt(splits[line++]);
+			int shaders = CMString::StringToInt(a_Splits[line++]);
 			m_Shader = _CGraphics->CreateShader();
 			m_Shader->SetDebugObjName("Material " + GetDebugObjName() + " Temp Shader");
 			for (int i = 0; i < shaders; i++) {
-				m_Shader->AddShader(_CShaderManager->GetShader(splits[line++]));
+				m_Shader->AddShader(_CShaderManager->GetShader(a_Splits[line++]));
 			}
 			m_Shader->LinkShaders();
 			m_CreatedShader = true;

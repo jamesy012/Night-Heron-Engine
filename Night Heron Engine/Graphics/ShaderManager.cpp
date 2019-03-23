@@ -21,7 +21,7 @@ void ShaderManager::FindAllShaders() {
 	m_CurrentPath = fs::current_path().generic_string();
 	SeachFolder(m_CurrentPath);
 
-	for (int i = 0; i < m_ShaderPaths.Length(); i++) {
+	for (uint i = 0; i < m_ShaderPaths.Length(); i++) {
 		ShaderSpirvData* ssd = new ShaderSpirvData();
 		ssd->LoadFromFile(m_ShaderPaths[i].Get());
 		m_ShaderObjects.Add(ssd);
@@ -70,7 +70,7 @@ ShaderSpirvData * ShaderManager::GetShader(CMString a_FilePath) {
 		a_FilePath = '/' + a_FilePath;
 	}
 
-	for (int i = 0; i < m_ShaderPaths.Length(); i++) {
+	for (uint i = 0; i < m_ShaderPaths.Length(); i++) {
 		if (m_ShaderPaths[i].Compare(a_FilePath)) {
 			return m_ShaderObjects[i];
 		}
@@ -97,7 +97,7 @@ bool ShaderManager::IsFileAShader(CMString a_FilePath) {
 	uchar fileHash[HASH_LENGTH] = { 0 };
 	a_FilePath.SubStrFindFromEnd('.').ToLower().Hash(fileHash);
 
-	for (int i = 0; i < m_ShaderFileTypes.Length(); i++) {
+	for (uint i = 0; i < m_ShaderFileTypes.Length(); i++) {
 		if (memcmp(m_ShaderFileTypes[i].m_ExtenstionHash, fileHash, HASH_LENGTH) == 0) {
 			return true;
 		}
@@ -156,7 +156,7 @@ void ShaderManager::ImGuiWindowTab1() {
 			ShaderSpirvData* ssd = m_ShaderObjects[nodeSelected];
 			ImGui::Text("Attached Shaders: %i", ssd->m_AttachedShaders.Length());
 			if (ImGui::TreeNode("Attached Shaders")) {
-				for (int i = 0; i < ssd->m_AttachedShaders.Length(); i++) {
+				for (uint i = 0; i < ssd->m_AttachedShaders.Length(); i++) {
 					CMString text = CMString::IntToString(i) + ": " + ssd->m_AttachedShaders[i]->GetDebugObjName().Get();
 					//ImGui::Text("%i: %s", i, ssd->m_AttachedShaders[i]->GetDebugObjName().Get());
 					if (ImGui::Selectable(text.Get())) {
@@ -203,7 +203,7 @@ void ShaderManager::ImGuiWindowTab2() {
 
 		if (ImGui::Button("Reload Shader") && nodeSelected != -1) {
 			ShaderLoadRes finalRes = ShaderLoadRes::SHADERLOAD_LOAD;
-			for (int i = 0; i < m_Shaders[nodeSelected]->m_ShaderFileObjects.Length(); i++) {
+			for (uint i = 0; i < m_Shaders[nodeSelected]->m_ShaderFileObjects.Length(); i++) {
 				ShaderLoadRes res = m_Shaders[nodeSelected]->m_ShaderFileObjects[i]->Reload();
 				if (res == ShaderLoadRes::SHADERLOAD_COMPILED && finalRes == ShaderLoadRes::SHADERLOAD_LOAD) {
 					finalRes = ShaderLoadRes::SHADERLOAD_COMPILED;
@@ -230,7 +230,7 @@ void ShaderManager::ImGuiWindowTab2() {
 		if (nodeSelected >= 0) {
 			ImGui::Text("Attached Shaders: %i", m_Shaders[nodeSelected]->m_ShaderFileObjects.Length());
 			if (ImGui::TreeNode("Attached Shaders")) {
-				for (int i = 0; i < m_Shaders[nodeSelected]->m_ShaderFileObjects.Length(); i++) {
+				for (uint i = 0; i < m_Shaders[nodeSelected]->m_ShaderFileObjects.Length(); i++) {
 					ShaderSpirvData* ssd = m_Shaders[nodeSelected]->m_ShaderFileObjects[i];
 					//ImGui::Text("%i: %s", i, ssd->m_FilePath.m_FileName.Get());
 

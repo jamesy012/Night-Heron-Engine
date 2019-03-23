@@ -14,7 +14,7 @@ public:
 
 	CMArray(std::initializer_list<T> a_Input) {
 		auto node = a_Input.begin();
-		for (int i = 0; i < a_Input.size(); i++) {
+		for (uint i = 0; i < a_Input.size(); i++) {
 			Add(*node++);
 		}
 	};
@@ -84,8 +84,9 @@ public:
 	}
 
 	uint FindElement(T a_Object) {
-		for (int i = 0; i < Length(); i++) {
+		for (uint i = 0; i < m_Size; i++) {
 			if (m_Array[i] == a_Object) {
+			//if (memcmp(a_Object, m_Array[i], sizeof(T)) == 0) {
 				return i;
 			}
 		}

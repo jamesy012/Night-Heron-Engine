@@ -198,7 +198,7 @@ ShaderLoadRes ShaderSpirvData::Reload() {
 	ShaderLoadRes res = LoadFromFile(m_FilePath.m_FilePath);
 
 	if (res != ShaderLoadRes::SHADERLOAD_ERROR) {
-		for (int i = 0; i < m_AttachedShaders.Length(); i++) {
+		for (uint i = 0; i < m_AttachedShaders.Length(); i++) {
 			m_AttachedShaders[i]->Reload();
 		}
 	}
@@ -219,7 +219,7 @@ void ShaderSpirvData::GetTypeFromFilePath() {
 
 	m_ShaderType = ShaderType::SHADERCOUNT;
 
-	for (int i = 0; i < hashs.Length(); i++) {
+	for (uint i = 0; i < hashs.Length(); i++) {
 		if (memcmp(hashs[i].m_ExtenstionHash, fileNameHash, HASH_LENGTH) == 0) {
 			m_ShaderType = (ShaderType)i;
 			break;

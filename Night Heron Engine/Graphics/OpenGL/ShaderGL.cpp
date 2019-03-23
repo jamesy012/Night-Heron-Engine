@@ -148,7 +148,7 @@ void ShaderGL::Reload() {
 	}
 	LinkShaders();
 
-	for (int i = 0; i < m_AttachedUniforms.Length(); i++) {
+	for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
 		AddBuffer_Internal(m_AttachedUniforms[i].m_Block, m_AttachedUniforms[i].m_Name);
 	}
 }

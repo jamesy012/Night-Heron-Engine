@@ -118,8 +118,8 @@ void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
 		D3D11_VIEWPORT viewport;
 		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
-		viewport.Width = a_Width;
-		viewport.Height = a_Height;
+		viewport.Width = (float)a_Width;
+		viewport.Height = (float)a_Height;
 		viewport.MaxDepth = 1.0f;
 		viewport.MinDepth = 0.0f;
 
@@ -223,8 +223,8 @@ void GFXDX11::UseRenderTarget(RenderTarget* a_Rt) {
 	D3D11_VIEWPORT viewport;
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
-	viewport.Width = a_Rt->GetWidth();
-	viewport.Height = a_Rt->GetHeight();
+	viewport.Width = (float)a_Rt->GetWidth();
+	viewport.Height = (float)a_Rt->GetHeight();
 	viewport.MaxDepth = 1.0f;
 	viewport.MinDepth = 0.0f;
 

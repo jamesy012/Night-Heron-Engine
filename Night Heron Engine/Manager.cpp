@@ -64,7 +64,7 @@ void Manager::ImGuiObjects() {
 		//ImGui::DragFloat("Size", &size, 1.0f);
 		ImGui::BeginChild("Selector", ImVec2(size, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-		for (int i = 0; i < m_Objects.Length(); i++) {
+		for (uint i = 0; i < m_Objects.Length(); i++) {
 			CMString text = m_Objects[i]->m_Name.Get();
 			if (ImGui::Selectable(text.Get(), nodeSelected == i)) {
 				nodeSelected = i;
@@ -149,7 +149,7 @@ void Manager::ImGuiModels() {
 		//ImGui::DragFloat("Size", &size, 1.0f);
 		ImGui::BeginChild("Selector", ImVec2(size, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-		for (int i = 0; i < m_Models.Length(); i++) {
+		for (uint i = 0; i < m_Models.Length(); i++) {
 			CMString text = m_Models[i]->GetDebugObjName().Get();
 			if (ImGui::Selectable(text.Get(), nodeSelected == i)) {
 				nodeSelected = i;
@@ -168,7 +168,7 @@ void Manager::ImGuiModels() {
 			ImGui::Text("Selected Model: %s", model->GetDebugObjName().Get());
 			ImGui::Text("Mesh's: %s", model->GetDebugObjName().Get());
 			if (model->NumMeshs() > 0) {
-				for (int i = 0; i < model->NumMeshs(); i++) {
+				for (uint i = 0; i < model->NumMeshs(); i++) {
 					Model::ModelMeshHolder* mmh = m_Models[nodeSelected]->GetMeshHolder(i);
 
 					ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf;
@@ -217,7 +217,7 @@ void Manager::ImGuiMaterials() {
 		//ImGui::DragFloat("Size", &size, 1.0f);
 		ImGui::BeginChild("Selector", ImVec2(size, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-		for (int i = 0; i < m_Materials.Length(); i++) {
+		for (uint i = 0; i < m_Materials.Length(); i++) {
 			CMString text = CMString::IntToString(i) + m_Materials[i]->GetDebugObjName().Get();
 			if (ImGui::Selectable(text.Get(), nodeSelected == i)) {
 				nodeSelected = i;

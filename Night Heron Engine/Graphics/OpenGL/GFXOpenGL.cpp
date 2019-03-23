@@ -68,7 +68,7 @@ void GFXOpenGL::InitImGui_Internal() {
 void GFXOpenGL::SwapBuffer() {
 	SwapBuffers(m_Window->m_HDC);
 	//simulate vsync in a painfully bad way
-	Sleep(1.0 / 60.0f * 1000);
+	Sleep((DWORD)(1.0 / 60.0f * 1000));
 }
 
 void GFXOpenGL::Clear() {

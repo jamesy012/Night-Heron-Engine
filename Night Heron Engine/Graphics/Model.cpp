@@ -21,7 +21,7 @@ Model::Model() {
 
 
 Model::~Model() {
-	for (int i = 0; i < m_Meshs.Length();i++) {
+	for (uint i = 0; i < m_Meshs.Length();i++) {
 		delete m_Meshs[i].m_Mesh;
 	}
 	_CManager->m_Models.Remove(this);
@@ -92,7 +92,7 @@ void Model::CreateSquare() {
 }
 
 void Model::Draw() {
-	for (int i = 0; i < m_Meshs.Length(); i++) {
+	for (uint i = 0; i < m_Meshs.Length(); i++) {
 		if (m_Meshs[i].m_Material) {
 			m_Meshs[i].m_Material->Use();
 		}
@@ -105,7 +105,7 @@ void Model::SetMaterial(Material * a_NewMaterial, uint a_Slot) {
 }
 
 void Model::SetDebugObjName_Internal() {
-	for (int i = 0; i < m_Meshs.Length(); i++) {
+	for (uint i = 0; i < m_Meshs.Length(); i++) {
 		CMString index = CMString::IntToString(i);
 		CMString objName = m_DebugName + " - " + index + " - " + m_Meshs[i].m_ObjName;
 		m_Meshs[i].m_Mesh->SetDebugObjName(objName);

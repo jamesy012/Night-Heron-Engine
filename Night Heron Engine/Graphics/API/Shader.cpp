@@ -34,14 +34,14 @@ void Shader::AddBuffer(ShaderUniformBlock * a_Block, CMString a_StructName) {
 }
 
 std::vector<unsigned int> Shader::loadSpirvFromPath(std::string a_Path) {
-	size_t shaderSize;
+	uint shaderSize;
 	std::vector<unsigned int> code;
 
 
 	std::ifstream is(a_Path, std::ios::binary | std::ios::in | std::ios::ate);
 
 	if (is.is_open()) {
-		shaderSize = is.tellg();
+		shaderSize = (uint)is.tellg();
 		is.seekg(0, std::ios::beg);
 		// Copy file contents into a buffer
 		code.resize(shaderSize / (sizeof(unsigned int) / sizeof(char)));

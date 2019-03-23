@@ -91,7 +91,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 		char height[5];
 		bool findWidth = true;
 		int charIndex = 0;
-		for (int i = index; i < 15 && i < arguments.Size() && charIndex < 5; i++) {
+		for (uint i = index; i < 15 && i < arguments.Size() && charIndex < 5; i++) {
 			char num = arguments.At(i);
 			if (Util::IsANumber(num)) {
 				if (findWidth) {
@@ -210,7 +210,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	testShader->AddBuffer(commonDataBlock, "CommonData");
 	treeShader->AddBuffer(commonDataBlock, "CommonData");
 
-	for (int i = 0; i < _CManager->m_Materials.Length(); i++) {
+	for (uint i = 0; i < _CManager->m_Materials.Length(); i++) {
 		if (_CManager->m_Materials[i]->m_CreatedShader) {
 			Shader* shader = _CManager->m_Materials[i]->m_Shader;
 			shader->AddBuffer(testUniform, "Vertex_Data");

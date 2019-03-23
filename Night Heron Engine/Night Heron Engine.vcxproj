@@ -188,6 +188,7 @@
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\ShaderSpirvData.cpp" />
     <ClCompile Include="Graphics\ShaderManager.cpp" />
+    <ClCompile Include="Interfaces\Saveable.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Singletons.cpp" />

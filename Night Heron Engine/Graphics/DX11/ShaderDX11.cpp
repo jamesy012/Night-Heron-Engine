@@ -146,7 +146,7 @@ void ShaderDX11::Use() {
 	GFXDX11::GetCurrentContex()->m_DevCon->IASetInputLayout(vertLayout);
 	GFXDX11::GetCurrentContex()->m_DevCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	for (int i = 0; i < m_CBuffers.size(); i++) {
+	for (uint i = 0; i < m_CBuffers.size(); i++) {
 		if (m_CBuffers[i].m_VertexSlot != -1) {
 			GFXDX11::GetCurrentContex()->m_DevCon->VSSetConstantBuffers(m_CBuffers[i].m_VertexSlot, 1, &m_CBuffers[i].m_Uniform->m_Buffer);
 		}
@@ -180,7 +180,7 @@ void ShaderDX11::Reload() {
 
 	LinkShaders();
 
-	for (int i = 0; i < m_AttachedUniforms.Length(); i++) {
+	for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
 		AddBuffer_Internal(m_AttachedUniforms[i].m_Block, m_AttachedUniforms[i].m_Name);
 	}
 }
@@ -214,7 +214,7 @@ void ShaderDX11::AddBuffer_Internal(ShaderUniformBlock* a_Block, CMString a_Stru
 		//
 		//reflector->Release();
 		CMString structName = GetShaderTypeString(SHADER_VERTEX) + a_StructName;
-		for (int i = 0; i < m_ShaderCBufferList.Length(); i++) {
+		for (uint i = 0; i < m_ShaderCBufferList.Length(); i++) {
 			if (m_ShaderCBufferList[i].m_Name == structName) {
 				bd.m_VertexSlot = m_ShaderCBufferList[i].m_Location;
 				break;
@@ -239,7 +239,7 @@ void ShaderDX11::AddBuffer_Internal(ShaderUniformBlock* a_Block, CMString a_Stru
 		//
 		//reflector->Release();
 		CMString structName = GetShaderTypeString(SHADER_FRAGMENT) + a_StructName;
-		for (int i = 0; i < m_ShaderCBufferList.Length(); i++) {
+		for (uint i = 0; i < m_ShaderCBufferList.Length(); i++) {
 			if (m_ShaderCBufferList[i].m_Name == structName) {
 				bd.m_PixelSlot = m_ShaderCBufferList[i].m_Location;
 				break;

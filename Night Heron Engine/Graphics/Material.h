@@ -14,7 +14,6 @@ public:
 
 	void Use();
 
-	bool Load() override;
 	void Save() override;
 
 	Shader* m_Shader;
@@ -31,4 +30,6 @@ public:
 
 	//temp while we cant load combined shaders from file
 	bool m_CreatedShader = false;
+protected:
+	bool Load_Internal(CMArray<CMString> a_Splits) override;
 };
