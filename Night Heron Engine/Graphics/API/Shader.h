@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "GFXObj.h"
+#include "Interfaces/Saveable.h"
 
 #include "Graphics/ShaderSpirvData.h"
 
@@ -15,11 +16,12 @@ class ShaderUniformBlock : public GFXObj {
 public:
 	//unsigned int m_Slot = 0;
 	unsigned int m_Size = 0;
+	bool m_Registered = false;
 
 	virtual void UpdateBuffer(void* a_Object) = 0;
 };
 
-class Shader : public GFXObj {
+class Shader : public GFXObj, public Saveable {
 public:
 	Shader();
 	~Shader();
@@ -34,6 +36,9 @@ public:
 
 	virtual void AddBuffer(ShaderUniformBlock* a_Block, CMString a_StructName);
 	virtual void BindTexture(std::string a_Name, unsigned int a_Index) = 0;
+
+	//if there were any uniforms added where we couldnt find a registered uniform for it
+	void FindUnlinkedUniforms();
 
 	std::vector<unsigned int> loadSpirvFromPath(std::string a_Path);
 
@@ -50,6 +55,9 @@ protected:
 	//virtual void AddShader_Internal(ShaderTypes a_Type, std::string a_Path) = 0;
 	virtual void Link_Internal() = 0;
 
+	bool Load_Internal(CMArray<CMString> a_Splits) override;
+	CMString GetData_Internal() override;
+
 	CMString GetShaderTypeString(ShaderType a_Type);
 
 	//has this shader been linked yet?
@@ -58,6 +66,7 @@ protected:
 	struct UniformBufferObject {
 		ShaderUniformBlock* m_Block;
 		CMString m_Name;
+		bool m_HasLinked;
 	};
 
 	CMArray<UniformBufferObject> m_AttachedUniforms;

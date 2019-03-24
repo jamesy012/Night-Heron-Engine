@@ -47,6 +47,22 @@ void Manager::ImGuiWindow() {
 	ImGuiMaterials();
 }
 
+void Manager::RegisterShaderUniform(ShaderUniformBlock * a_Uniform, CMString a_SlotName) {
+	if (GetShaderUniform(a_SlotName) == nullptr) {
+		a_Uniform->m_Registered = true;
+		m_ShaderUniforms.Add({ a_Uniform, a_SlotName});
+	}
+}
+
+ShaderUniformBlock * Manager::GetShaderUniform(CMString a_SlotName) {
+	for (int i = 0; i < m_ShaderUniforms.Length(); i++) {
+		if (m_ShaderUniforms[i].a_Name == a_SlotName) {
+			return m_ShaderUniforms[i].a_Block;
+		}
+	}
+	return nullptr;
+}
+
 void Manager::ImGuiObjects() {
 	if (!m_ShowObjects) {
 		return;

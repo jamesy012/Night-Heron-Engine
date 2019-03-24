@@ -65,7 +65,7 @@ void ShaderManager::ImGuiWindow(bool* a_Open) {
 	ImGui::End();
 }
 
-ShaderSpirvData * ShaderManager::GetShader(CMString a_FilePath) {
+ShaderSpirvData * ShaderManager::GetShaderPart(CMString a_FilePath) {
 	if (a_FilePath.Length() > 2 && a_FilePath.At(0) != '/') {
 		a_FilePath = '/' + a_FilePath;
 	}
@@ -73,6 +73,16 @@ ShaderSpirvData * ShaderManager::GetShader(CMString a_FilePath) {
 	for (uint i = 0; i < m_ShaderPaths.Length(); i++) {
 		if (m_ShaderPaths[i].Compare(a_FilePath)) {
 			return m_ShaderObjects[i];
+		}
+	}
+
+	return nullptr;
+}
+
+Shader * ShaderManager::GetShader(CMString a_FilePath) {
+	for (uint i = 0; i < m_Shaders.Length(); i++) {
+		if (m_Shaders[i]->m_FilePath.m_FilePath.Compare(a_FilePath)) {
+			return m_Shaders[i];
 		}
 	}
 
@@ -198,36 +208,47 @@ void ShaderManager::ImGuiWindowTab2() {
 	ImGui::SameLine();
 	{
 		ImGui::BeginChild("Details", ImVec2(0, 0), true);
+		Shader* selected = m_Shaders[nodeSelected];
 
-		ImGui::Text("Selected shader: %i (%s)", nodeSelected, nodeSelected >= 0 ? m_Shaders[nodeSelected]->GetDebugObjName().Get() : "None");
+		if (selected && nodeSelected != -1) {
 
-		if (ImGui::Button("Reload Shader") && nodeSelected != -1) {
-			ShaderLoadRes finalRes = ShaderLoadRes::SHADERLOAD_LOAD;
-			for (uint i = 0; i < m_Shaders[nodeSelected]->m_ShaderFileObjects.Length(); i++) {
-				ShaderLoadRes res = m_Shaders[nodeSelected]->m_ShaderFileObjects[i]->Reload();
-				if (res == ShaderLoadRes::SHADERLOAD_COMPILED && finalRes == ShaderLoadRes::SHADERLOAD_LOAD) {
-					finalRes = ShaderLoadRes::SHADERLOAD_COMPILED;
+			ImGui::Text("Selected shader: %i (%s)", nodeSelected, selected->GetDebugObjName().Get());
+
+			if (selected->m_FilePath.m_FilePath != "") {
+				if (ImGui::Button("Save")) {
+					selected->Save();
 				}
-				if (res == ShaderLoadRes::SHADERLOAD_ERROR) {
-					finalRes = ShaderLoadRes::SHADERLOAD_ERROR;
+				ImGui::SameLine();
+				ImGui::Text("%s", selected->m_FilePath.m_FilePath.Get());
+			}
+
+
+			if (ImGui::Button("Reload Shader")) {
+				ShaderLoadRes finalRes = ShaderLoadRes::SHADERLOAD_LOAD;
+				for (uint i = 0; i < m_Shaders[nodeSelected]->m_ShaderFileObjects.Length(); i++) {
+					ShaderLoadRes res = m_Shaders[nodeSelected]->m_ShaderFileObjects[i]->Reload();
+					if (res == ShaderLoadRes::SHADERLOAD_COMPILED && finalRes == ShaderLoadRes::SHADERLOAD_LOAD) {
+						finalRes = ShaderLoadRes::SHADERLOAD_COMPILED;
+					}
+					if (res == ShaderLoadRes::SHADERLOAD_ERROR) {
+						finalRes = ShaderLoadRes::SHADERLOAD_ERROR;
+					}
+				}
+				switch (finalRes) {
+					case ShaderLoadRes::SHADERLOAD_COMPILED:
+						ShaderCompileInfo = "Compiled from source";
+						break;
+					case ShaderLoadRes::SHADERLOAD_ERROR:
+						ShaderCompileInfo = "Error compiling";
+						break;
+					case ShaderLoadRes::SHADERLOAD_LOAD:
+						ShaderCompileInfo = "shader unchanged";
+						break;
 				}
 			}
-			switch (finalRes) {
-				case ShaderLoadRes::SHADERLOAD_COMPILED:
-					ShaderCompileInfo = "Compiled from source";
-					break;
-				case ShaderLoadRes::SHADERLOAD_ERROR:
-					ShaderCompileInfo = "Error compiling";
-					break;
-				case ShaderLoadRes::SHADERLOAD_LOAD:
-					ShaderCompileInfo = "shader unchanged";
-					break;
-			}
-		}
-		ImGui::SameLine();
-		ImGui::Text(ShaderCompileInfo.Get());
+			ImGui::SameLine();
+			ImGui::Text(ShaderCompileInfo.Get());
 
-		if (nodeSelected >= 0) {
 			ImGui::Text("Attached Shaders: %i", m_Shaders[nodeSelected]->m_ShaderFileObjects.Length());
 			if (ImGui::TreeNode("Attached Shaders")) {
 				for (uint i = 0; i < m_Shaders[nodeSelected]->m_ShaderFileObjects.Length(); i++) {
@@ -242,7 +263,7 @@ void ShaderManager::ImGuiWindowTab2() {
 					}
 				}
 				ImGui::TreePop();
-			}
+				}
 		}
 
 		ImGui::EndChild();

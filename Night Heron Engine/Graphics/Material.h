@@ -14,7 +14,6 @@ public:
 
 	void Use();
 
-	void Save() override;
 
 	Shader* m_Shader;
 
@@ -32,4 +31,5 @@ public:
 	bool m_CreatedShader = false;
 protected:
 	bool Load_Internal(CMArray<CMString> a_Splits) override;
+	CMString GetData_Internal() override;
 };

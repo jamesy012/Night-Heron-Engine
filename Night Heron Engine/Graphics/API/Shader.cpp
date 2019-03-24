@@ -13,6 +13,7 @@
 #include <wincrypt.h>
 
 #include "Graphics/ShaderManager.h"
+#include "Manager.h"
 
 #define ShaderCachePath "ShaderCache\\"
 
@@ -29,8 +30,24 @@ Shader::~Shader() {
 }
 
 void Shader::AddBuffer(ShaderUniformBlock * a_Block, CMString a_StructName) {
-	m_AttachedUniforms.Add({a_Block, a_StructName});
-	AddBuffer_Internal(a_Block, a_StructName);
+	if (a_Block != nullptr) {
+		m_AttachedUniforms.Add({ a_Block, a_StructName, true });
+		AddBuffer_Internal(a_Block, a_StructName);
+	} else {
+		m_AttachedUniforms.Add({ a_Block, a_StructName, false });
+	}
+}
+
+void Shader::FindUnlinkedUniforms() {
+	for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
+		if (!m_AttachedUniforms[i].m_HasLinked) {
+			ShaderUniformBlock* block = _CManager->GetShaderUniform(m_AttachedUniforms[i].m_Name);
+			if (block) {
+				AddBuffer_Internal(block, m_AttachedUniforms[i].m_Name);
+				m_AttachedUniforms[i].m_HasLinked = true;
+			}
+		}
+	}
 }
 
 std::vector<unsigned int> Shader::loadSpirvFromPath(std::string a_Path) {
@@ -51,6 +68,58 @@ std::vector<unsigned int> Shader::loadSpirvFromPath(std::string a_Path) {
 	}
 
 	return code;
+}
+
+bool Shader::Load_Internal(CMArray<CMString> a_Splits) {
+	uint line = 0;
+	uint stage = 0;
+	while (line < a_Splits.Length() - 1) {
+		stage++;
+		if (stage == 1) {
+			SetDebugObjName(a_Splits[line++]);
+		}
+		if (stage == 2) {
+			int shaders = CMString::StringToInt(a_Splits[line++]);
+			for (int i = 0; i < shaders; i++) {
+				AddShader(_CShaderManager->GetShaderPart(a_Splits[line++]));
+			}
+			LinkShaders();
+		}
+		if (stage == 3) {
+			int uniforms = CMString::StringToInt(a_Splits[line++]);
+			for (int i = 0; i < uniforms; i++) {
+				ShaderUniformBlock* uniform = _CManager->GetShaderUniform(a_Splits[line]);
+				AddBuffer(uniform, a_Splits[line++]);
+			}
+		}
+	}
+	return true;
+}
+
+CMString Shader::GetData_Internal() {
+	CMString data;
+
+	data += m_DebugName + "\n";
+	{
+		data += CMString::IntToString(m_ShaderFileObjects.Length()) + '\n';
+		for (uint i = 0; i < m_ShaderFileObjects.Length(); i++) {
+			data += m_ShaderFileObjects[i]->m_FilePath.m_FilePath + '\n';
+		}
+	}
+	{
+		CMString uniformData = "";
+		int numUniforms = 0;
+		for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
+			if (m_AttachedUniforms[i].m_HasLinked && (m_AttachedUniforms[i].m_Block && m_AttachedUniforms[i].m_Block->m_Registered)) {
+				uniformData += m_AttachedUniforms[i].m_Name + '\n';
+				numUniforms++;
+			}
+		}
+		data += CMString::IntToString(numUniforms) + '\n';
+		data += uniformData;
+	}
+
+	return data;
 }
 
 CMString Shader::GetShaderTypeString(ShaderType a_Type) {

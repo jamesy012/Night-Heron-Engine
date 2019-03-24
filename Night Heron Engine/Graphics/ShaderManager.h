@@ -15,7 +15,9 @@ public:
 
 	void ImGuiWindow(bool* a_Open);
 
-	ShaderSpirvData* GetShader(CMString a_FilePath);
+	ShaderSpirvData* GetShaderPart(CMString a_FilePath);
+	Shader* GetShader(CMString a_FilePath);
+
 
 	CMArray<Shader*> m_Shaders;
 private:

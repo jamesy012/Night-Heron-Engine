@@ -195,6 +195,10 @@ public:
 		return compare(a_Other) == 0;
 	}
 
+	bool IsEmpty() {
+		return Length() == 0;
+	}
+
 	CMString ToLower();
 
 	void Hash(uchar* a_Output) const;
@@ -251,6 +255,10 @@ public:
 	}
 
 	CMFilePath(CMString a_Input) {
+		SetPath(a_Input);
+	}
+
+	CMFilePath(const char* a_Input) {
 		SetPath(a_Input);
 	}
 

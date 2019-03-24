@@ -29,58 +29,55 @@ void Material::Use() {
 	//}
 }
 
-#include <fstream> //std::ifstream
-#include <sstream> //std::stringstream
-#include <string> //std::string
-
-#include <windows.h>
-
 bool Material::Load_Internal(CMArray<CMString> a_Splits) {
 	uint line = 0;
-	while (line < a_Splits.Length()) {
-		line++;
-		if (line == 1) {
-			SetDebugObjName(a_Splits[line]);
+	uint stage = 0;
+	while (line < a_Splits.Length() - 1) {
+		stage++;
+		if (stage == 1) {
+			SetDebugObjName(a_Splits[line++]);
 		}
-		if (line == 2) {
-			int shaders = CMString::StringToInt(a_Splits[line++]);
-			m_Shader = _CGraphics->CreateShader();
-			m_Shader->SetDebugObjName("Material " + GetDebugObjName() + " Temp Shader");
-			for (int i = 0; i < shaders; i++) {
-				m_Shader->AddShader(_CShaderManager->GetShader(a_Splits[line++]));
+		if (stage == 2) {
+			CMString path = a_Splits[line++];
+			if (!path.IsEmpty()) {
+				m_Shader = _CShaderManager->GetShader(path);
 			}
-			m_Shader->LinkShaders();
-			m_CreatedShader = true;
+		}
+		if (stage == 3) {
+			int shaders = CMString::StringToInt(a_Splits[line++]);
+			if (m_Shader == nullptr) {
+				m_Shader = _CGraphics->CreateShader();
+				m_Shader->SetDebugObjName("Material " + GetDebugObjName() + " Temp Shader");
+				for (int i = 0; i < shaders; i++) {
+					m_Shader->AddShader(_CShaderManager->GetShaderPart(a_Splits[line++]));
+				}
+				m_Shader->LinkShaders();
+				m_CreatedShader = true;
+			} else {
+				line += shaders;
+			}
 		}
 	}
 	
 	return true;
 }
 
-void Material::Save() {
-	CreateDirectory(m_FilePath.m_FileLocation.Get(), NULL);
-	std::ofstream infoFile(m_FilePath.m_FilePath);
+CMString Material::GetData_Internal() {
 	CMString data;
-	if (infoFile.is_open()) {
-
-		data += m_DebugName += "\n";
-		if (m_Shader) {
+	data += m_DebugName + "\n";
+	if (m_Shader) {
+		if (!m_Shader->m_FilePath.m_FilePath.IsEmpty()) {
+			data += m_Shader->m_FilePath.m_FilePath + '\n';
+			data += "0\n";
+		} else {
+			data += "" + '\n';
 			data += CMString::IntToString(m_Shader->m_ShaderFileObjects.Length()) + '\n';
 			for (uint i = 0; i < m_Shader->m_ShaderFileObjects.Length(); i++) {
 				data += m_Shader->m_ShaderFileObjects[i]->m_FilePath.m_FilePath + '\n';
 			}
-		} else {
-			data += '0';
 		}
-		data += "\n";
-
-		data.Hash(m_Hash);
-		for (int q = 0; q < HASH_LENGTH; q++) {
-			infoFile << m_Hash[q];
-		}
-		infoFile << "\n";
-		infoFile << data;
-		infoFile.close();
+	} else {
+		data += "\n0\n";
 	}
-	
+	return data;
 }

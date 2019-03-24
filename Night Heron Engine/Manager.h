@@ -5,6 +5,7 @@
 class Object;
 class Model;
 class Material;
+class ShaderUniformBlock;
 
 class Manager {
 public:
@@ -12,6 +13,9 @@ public:
 	~Manager();
 
 	void ImGuiWindow();
+	
+	void RegisterShaderUniform(ShaderUniformBlock* a_Uniform, CMString a_SlotName);
+	ShaderUniformBlock* GetShaderUniform(CMString a_SlotName);
 
 	CMArray<Object*> m_Objects;
 	CMArray<Model*> m_Models;
@@ -29,5 +33,14 @@ private:
 	void ImGuiMaterials();
 
 	class RenderTarget* m_CommonRT;
+
+	struct ShaderUniform {
+		ShaderUniformBlock* a_Block;
+		CMString a_Name;
+	};
+
+	CMArray<ShaderUniform> m_ShaderUniforms;
+
 };
 
+extern class Manager* _CManager;

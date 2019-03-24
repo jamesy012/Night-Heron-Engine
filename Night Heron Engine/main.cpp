@@ -122,13 +122,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 
 	_CGraphics->SetUpGraphics();
 
-	Shader* testShader = graphics->CreateShader();
-	Shader* treeShader = graphics->CreateShader();
-	testShader->SetDebugObjName("Test Shader");
-	testShader->m_ShouldPrintCode = true;
-	treeShader->SetDebugObjName("tree Shader");
-	treeShader->m_ShouldPrintCode = true;
-	//testShader->m_ShoudRegenerateCode = true;
 	Texture* testTexture = graphics->CreateTexture();
 	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 
@@ -154,19 +147,54 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	testTexture->LoadTexture("peacock-2.jpg");
 	testTexture->SetDebugObjName("Test Texture");
 
-	
-
-	testShader->AddShader(_CShaderManager->GetShader("test.vert"));
-	testShader->AddShader(_CShaderManager->GetShader("test.frag"));
-	treeShader->AddShader(_CShaderManager->GetShader("test2.vert"));
-	treeShader->AddShader(_CShaderManager->GetShader("test2.frag"));
-	testShader->LinkShaders();
-	treeShader->LinkShaders();
-
+	//UNIFORMS
 	TestUniformStruct testUniformStructObj;
 	TestUniformStruct2 colorTest;
 	CommonDataStruct commonPerFrameData;
 	colorTest.Color = glm::vec4(1, 0, 1, 1);
+	ShaderUniformBlock* testUniform = graphics->CreateBuffer(&testUniformStructObj, sizeof(TestUniformStruct));
+	testUniform->SetDebugObjName("MVP Buffer");
+	_CManager->RegisterShaderUniform(testUniform, "Vertex_Data");
+	ShaderUniformBlock* testUniform2 = graphics->CreateBuffer(&colorTest, sizeof(TestUniformStruct2));
+	testUniform2->SetDebugObjName("Color Test Buffer");
+	_CManager->RegisterShaderUniform(testUniform2, "shader_data");
+	ShaderUniformBlock* commonDataBlock = graphics->CreateBuffer(&commonPerFrameData, sizeof(CommonDataStruct));
+	commonDataBlock->SetDebugObjName("Common Data Buffer");
+	_CManager->RegisterShaderUniform(commonDataBlock, "CommonData");
+
+	
+	Shader* testShader = graphics->CreateShader();
+	testShader->m_FilePath = "Shaders/TestShader.shader";
+	Shader* treeShader = graphics->CreateShader();
+	treeShader->m_FilePath = "Shaders/Tree.shader";
+
+	if (!testShader->Load()) {
+		testShader->SetDebugObjName("Test Shader");
+		testShader->m_ShouldPrintCode = true;
+		testShader->AddShader(_CShaderManager->GetShaderPart("test.vert"));
+		testShader->AddShader(_CShaderManager->GetShaderPart("test.frag"));
+		testShader->LinkShaders();
+
+		testShader->AddBuffer(testUniform, "Vertex_Data");
+		testShader->AddBuffer(testUniform2, "shader_data");
+		testShader->AddBuffer(commonDataBlock, "CommonData");
+
+		testShader->Save();
+	}
+
+	if (!treeShader->Load()) {
+		treeShader->SetDebugObjName("tree Shader");
+		treeShader->m_ShouldPrintCode = true;
+		treeShader->AddShader(_CShaderManager->GetShaderPart("test2.vert"));
+		treeShader->AddShader(_CShaderManager->GetShaderPart("test2.frag"));
+		treeShader->LinkShaders();
+
+		treeShader->AddBuffer(testUniform, "Vertex_Data");
+		treeShader->AddBuffer(testUniform2, "shader_data");
+		treeShader->AddBuffer(commonDataBlock, "CommonData");
+		
+		treeShader->Save();
+	}
 
 	if (testRT) {
 		testRT->SetupRenderTarget_Internal();
@@ -193,22 +221,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	testModel.SetMaterial(&treeModelMat1, 0);
 	testModel.SetMaterial(&treeModelMat2, 1);
 	squareModel->SetMaterial(&treeModelMat2, 0);
-
-	//UNIFORMS
-	ShaderUniformBlock* testUniform = graphics->CreateBuffer(&testUniformStructObj, sizeof(TestUniformStruct));
-	testUniform->SetDebugObjName("MVP Buffer");
-	testShader->AddBuffer(testUniform, "Vertex_Data");
-	treeShader->AddBuffer(testUniform, "Vertex_Data");
-
-	ShaderUniformBlock* testUniform2 = graphics->CreateBuffer(&colorTest, sizeof(TestUniformStruct2));
-	testUniform2->SetDebugObjName("Color Test Buffer");
-	testShader->AddBuffer(testUniform2, "shader_data");
-	treeShader->AddBuffer(testUniform2, "shader_data");
-
-	ShaderUniformBlock* commonDataBlock = graphics->CreateBuffer(&commonPerFrameData, sizeof(CommonDataStruct));
-	commonDataBlock->SetDebugObjName("Common Data Buffer");
-	testShader->AddBuffer(commonDataBlock, "CommonData");
-	treeShader->AddBuffer(commonDataBlock, "CommonData");
 
 	for (uint i = 0; i < _CManager->m_Materials.Length(); i++) {
 		if (_CManager->m_Materials[i]->m_CreatedShader) {
