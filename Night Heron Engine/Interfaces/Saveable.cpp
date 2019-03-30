@@ -12,8 +12,12 @@ bool Saveable::Load() {
 	if (data.Length() < 5) {
 		return false;
 	}
+	if (data.Length() < 16) {
+		data = &data[data.Length()];
 
-	data = data.SubStr(17, data.Length() - 17);
+	} else {
+		data = data.SubStr(17, data.Length() - 17);
+	}
 	CMArray<CMString> splits = data.Split('\n');
 
 

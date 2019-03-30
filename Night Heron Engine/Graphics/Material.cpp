@@ -4,10 +4,11 @@
 #include "Graphics/API/Texture.h"
 
 #include "Singletons.h"
-#include "Manager.h"
 
 #include "Graphics/API/GFXAPI.h"
-#include "Graphics/ShaderManager.h"
+
+#include "Managers/ShaderManager.h"
+#include "Managers/Manager.h"
 
 Material::Material(CMString a_FilePath) : Saveable(a_FilePath) {
 	_CManager->m_Materials.Add(this);

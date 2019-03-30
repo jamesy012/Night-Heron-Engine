@@ -2,6 +2,7 @@
 
 #include <ImGui/imgui.h>
 #include "Singletons.h"
+#include "TextureManager.h"
 
 #include "Graphics/API/GFXAPI.h"
 #include "Graphics/API/RenderTarget.h"
@@ -37,6 +38,7 @@ void Manager::ImGuiWindow() {
 			ImGui::MenuItem("Objects", NULL, &m_ShowObjects);
 			ImGui::MenuItem("Models", NULL, &m_ShowModels);
 			ImGui::MenuItem("Materials", NULL, &m_ShowMaterials);
+			ImGui::MenuItem("Textures", NULL, &m_ShowTextures);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
@@ -45,6 +47,7 @@ void Manager::ImGuiWindow() {
 	ImGuiObjects();
 	ImGuiModels();
 	ImGuiMaterials();
+	_CTextureManager->ImGuiWindow(&m_ShowTextures);
 }
 
 void Manager::RegisterShaderUniform(ShaderUniformBlock * a_Uniform, CMString a_SlotName) {
@@ -61,6 +64,10 @@ ShaderUniformBlock * Manager::GetShaderUniform(CMString a_SlotName) {
 		}
 	}
 	return nullptr;
+}
+
+void Manager::FindAllTextures() {
+
 }
 
 void Manager::ImGuiObjects() {

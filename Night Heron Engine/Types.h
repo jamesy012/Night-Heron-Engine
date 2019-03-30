@@ -19,10 +19,23 @@ public:
 		}
 	};
 
-	//~CMArray() {
-	//	//todo work this out..
-	//	delete[] m_Array;
-	//}
+	CMArray(const CMArray<T>& a_Input) {
+		m_Size = a_Input.m_Size;
+		m_ArraySize = a_Input.m_ArraySize;
+		m_Array = new T[m_ArraySize];
+		for (uint i = 0; i < m_Size; i++) {
+			m_Array[i] = a_Input.m_Array[i];
+		}
+	};
+
+	//CMArray & operator=(const CMArray& a) { return *this; }
+
+	~CMArray() {
+		//todo work this out..
+		if (m_Array) {
+			delete[] m_Array;
+		}
+	}
 
 	uint Length() const {
 		return m_Size;
@@ -93,7 +106,7 @@ public:
 		return -1;
 	}
 
-	const T &operator=(const T &);
+	CMArray<T> &operator=(const CMArray<T> &);
 	T &operator[](int);
 	T operator[](int) const;
 
@@ -102,16 +115,39 @@ private:
 	void ResizeIfNeeded(int a_NumElements);
 	void ResizeForElements();
 
-	T* m_Array;
-	uint m_Size;
-	uint m_ArraySize;
+	T* m_Array = nullptr;
+	uint m_Size = 0;
+	uint m_ArraySize = 0;
 
 };
 
+/*
+T& operator=(const T& other) // copy assignment
+{
+	if (this != &other) { // self-assignment check expected
+		if (other.size != size) {         // storage cannot be reused
+			delete[] mArray;              // destroy storage in this
+			size = 0;
+			mArray = nullptr;             // preserve invariants in case next line throws
+			mArray = new int[other.size]; // create storage in this
+			size = other.size;
+		}
+		std::copy(other.mArray, other.mArray + other.size, mArray);
+	}
+	return *this;
+}
+*/
 
 template<typename T>
-const T & CMArray<T>::operator=(const T &) {
-	// TODO: insert return statement here
+CMArray<T> & CMArray<T>::operator=(const CMArray<T>  &a_Input) {
+	m_Size = a_Input.m_Size;
+	m_ArraySize = a_Input.m_ArraySize;
+	m_Array = new T[m_ArraySize];
+	//for (uint i = 0; i < m_Size; i++) {
+	//	m_Array[i] = a_Input.m_Array[i];
+	//}
+	memcpy(m_Array, a_Input.m_Array, sizeof(T) * m_Size);
+	return *this;
 }
 
 template<typename T>
@@ -301,3 +337,4 @@ struct CMStringHash {
 	CMStringHash(const char* a_Text) : CMStringHash(CMString(a_Text)) {}
 	uchar m_ExtenstionHash[16] = { 0 };
 };
+

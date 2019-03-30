@@ -14,3 +14,20 @@ public:
 
 };
 
+
+class HashHolder {
+public:
+	HashHolder() {};
+	HashHolder(HashHolder& a_Other) {
+		memcpy(m_Hash, a_Other.m_Hash, HASH_LENGTH);
+	};
+	HashHolder(uchar* a_Other) {
+		memcpy(m_Hash, a_Other, HASH_LENGTH);
+	};
+
+	bool Comp(HashHolder a_Other) {
+		return memcmp(m_Hash, &a_Other.m_Hash[0], HASH_LENGTH) == 0;
+	}
+
+	uchar* m_Hash[HASH_LENGTH] = { 0 };
+};

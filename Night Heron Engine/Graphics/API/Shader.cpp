@@ -12,8 +12,8 @@
 #include <Windows.h>
 #include <wincrypt.h>
 
-#include "Graphics/ShaderManager.h"
-#include "Manager.h"
+#include "Managers/ShaderManager.h"
+#include "Managers/Manager.h"
 
 #define ShaderCachePath "ShaderCache\\"
 
@@ -141,6 +141,16 @@ void Shader::AddShader(ShaderSpirvData * a_Shader) {
 
 	a_Shader->AddShader(this);
 	m_ShaderFileObjects.Add(a_Shader);
+}
+
+void Shader::RemoveShader(ShaderSpirvData * a_Shader) {
+	ShaderInfo* info = &m_ShaderObjects[a_Shader->m_ShaderType];
+	info->m_Path = "";
+	info->m_HasBeenLoaded = false;
+	info->m_IsUsed = false;
+
+	a_Shader->RemoveShader(this);
+	m_ShaderFileObjects.Remove(a_Shader);
 }
 
 void Shader::LinkShaders() {

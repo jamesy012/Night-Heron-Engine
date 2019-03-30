@@ -4,8 +4,6 @@ in vec2 vTexCoord;
 in vec4 vVertColor;	
 						
 out vec4 fragColor; 
- 
-//uniform vec4 color = vec4(1,1,1,1); 
 
 layout (std140) uniform shader_data {
 	vec4 color;
@@ -17,7 +15,9 @@ layout (std140) uniform CommonData {
 } commonData;
 
 layout (location = 0) uniform sampler2D textureTest;
- 
+
+//uniform vec4 color = vec4(1,1,1,1);  
+
 void main() { 
 	//fragColor = vVertColor;
 	//fragColor = testBlock.color * vVertColor; 

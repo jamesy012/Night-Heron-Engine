@@ -17,8 +17,8 @@
 #include "Util.h"
 #include "Camera.h"
 
-#include "Graphics/ShaderManager.h"
-#include "Manager.h"
+#include "Managers/ShaderManager.h"
+#include "Managers/Manager.h"
 #include "Singletons.h"
 
 #include <glm\glm.hpp>

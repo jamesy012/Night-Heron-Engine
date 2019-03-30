@@ -17,6 +17,8 @@ public:
 	void RegisterShaderUniform(ShaderUniformBlock* a_Uniform, CMString a_SlotName);
 	ShaderUniformBlock* GetShaderUniform(CMString a_SlotName);
 
+	void FindAllTextures();
+
 	CMArray<Object*> m_Objects;
 	CMArray<Model*> m_Models;
 	CMArray<Material*> m_Materials;
@@ -24,6 +26,7 @@ public:
 	bool m_ShowObjects;
 	bool m_ShowModels;
 	bool m_ShowMaterials;
+	bool m_ShowTextures;
 
 	//todo: remove this, get this another way
 	class ShaderUniformBlock* tempPVMUniform;

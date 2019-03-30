@@ -8,7 +8,7 @@
 #include "SimpleMath.h"
 
 #include "Singletons.h"
-#include "Manager.h"
+#include "Managers/Manager.h"
 
 #include <Graphics/API/GFXAPI.h>
 #include <Graphics/API/Mesh.h>

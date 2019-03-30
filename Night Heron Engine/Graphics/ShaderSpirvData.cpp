@@ -212,6 +212,10 @@ void ShaderSpirvData::AddShader(Shader * a_Shader) {
 	m_AttachedShaders.Add(a_Shader);
 }
 
+void ShaderSpirvData::RemoveShader(Shader * a_Shader) {
+	m_AttachedShaders.Remove(a_Shader);
+}
+
 void ShaderSpirvData::GetTypeFromFilePath() {
 	const CMArray<CMStringHash> hashs = { ".vert", ".frag" };
 

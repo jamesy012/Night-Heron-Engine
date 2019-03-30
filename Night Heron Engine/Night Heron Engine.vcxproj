@@ -187,9 +187,11 @@
     <ClCompile Include="Graphics\OpenGL\TextureGL.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\ShaderSpirvData.cpp" />
-    <ClCompile Include="Graphics\ShaderManager.cpp" />
+    <ClCompile Include="Managers\ManagerBase.cpp" />
+    <ClCompile Include="Managers\ShaderManager.cpp" />
     <ClCompile Include="Interfaces\Saveable.cpp" />
-    <ClCompile Include="Manager.cpp" />
+    <ClCompile Include="Managers\Manager.cpp" />
+    <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Singletons.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -204,9 +206,11 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\ShaderSpirvData.h" />
-    <ClInclude Include="Graphics\ShaderManager.h" />
+    <ClInclude Include="Managers\ManagerBase.h" />
+    <ClInclude Include="Managers\ShaderManager.h" />
     <ClInclude Include="Interfaces\Saveable.h" />
-    <ClInclude Include="Manager.h" />
+    <ClInclude Include="Managers\Manager.h" />
+    <ClInclude Include="Managers\TextureManager.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Singletons.h" />
     <ClInclude Include="Transform.h" />

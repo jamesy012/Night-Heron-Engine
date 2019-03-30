@@ -34,6 +34,7 @@ public:
 	ShaderType m_ShaderType;
 
 	void AddShader(Shader* a_Shader);
+	void RemoveShader(Shader* a_Shader);
 
 	bool m_HasBeenLoaded = false;
 
