@@ -81,6 +81,9 @@ void TextureManager::ImGuiWindow(bool * a_Open) {
 	ImGui::End();
 }
 
+void TextureManager::ImGuiData() {
+}
+
 void TextureManager::AddTexture(Texture * a_Texture) {
 	m_Textures.Add({ a_Texture, true, a_Texture->GetDebugObjName() });
 }

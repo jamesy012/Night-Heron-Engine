@@ -138,6 +138,9 @@
     <ClCompile Include="Managers\TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Managers\ShaderSpirvManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\OpenGL\GFXOpenGL.h">
@@ -255,6 +258,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Managers\ManagerBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ShaderSpirvManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

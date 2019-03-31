@@ -18,6 +18,7 @@
 #include "Camera.h"
 
 #include "Managers/ShaderManager.h"
+#include "Managers/ShaderSpirvManager.h"
 #include "Managers/Manager.h"
 #include "Singletons.h"
 
@@ -163,38 +164,48 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	_CManager->RegisterShaderUniform(commonDataBlock, "CommonData");
 
 	
-	Shader* testShader = graphics->CreateShader();
-	testShader->m_FilePath = "Shaders/TestShader.shader";
-	Shader* treeShader = graphics->CreateShader();
-	treeShader->m_FilePath = "Shaders/Tree.shader";
 
-	if (!testShader->Load()) {
-		testShader->SetDebugObjName("Test Shader");
-		testShader->m_ShouldPrintCode = true;
-		testShader->AddShader(_CShaderManager->GetShaderPart("test.vert"));
-		testShader->AddShader(_CShaderManager->GetShaderPart("test.frag"));
-		testShader->LinkShaders();
+	Shader* testShader = _CShaderManager->GetShader("Shaders/TestShader.shader");
+	if (testShader == nullptr) {
+		testShader = graphics->CreateShader();
+		testShader->m_FilePath = "Shaders/TestShader.shader";
 
-		testShader->AddBuffer(testUniform, "Vertex_Data");
-		testShader->AddBuffer(testUniform2, "shader_data");
-		testShader->AddBuffer(commonDataBlock, "CommonData");
+		if (!testShader->Load()) {
+			testShader->SetDebugObjName("Test Shader");
+			testShader->m_ShouldPrintCode = true;
+			testShader->AddShader(_CShaderSpirvManager->GetShaderPart("test.vert"));
+			testShader->AddShader(_CShaderSpirvManager->GetShaderPart("test.frag"));
+			testShader->LinkShaders();
 
-		testShader->Save();
+			testShader->AddBuffer(testUniform, "Vertex_Data");
+			testShader->AddBuffer(testUniform2, "shader_data");
+			testShader->AddBuffer(commonDataBlock, "CommonData");
+
+			testShader->Save();
+		}
 	}
 
-	if (!treeShader->Load()) {
-		treeShader->SetDebugObjName("tree Shader");
-		treeShader->m_ShouldPrintCode = true;
-		treeShader->AddShader(_CShaderManager->GetShaderPart("test2.vert"));
-		treeShader->AddShader(_CShaderManager->GetShaderPart("test2.frag"));
-		treeShader->LinkShaders();
+	Shader* treeShader = _CShaderManager->GetShader("Shaders/Tree.shader");
+	if (treeShader == nullptr) {
+		treeShader = graphics->CreateShader();
+		treeShader->m_FilePath = "Shaders/Tree.shader";
+		if (!treeShader->Load()) {
+			treeShader->SetDebugObjName("tree Shader");
+			treeShader->m_ShouldPrintCode = true;
+			treeShader->AddShader(_CShaderSpirvManager->GetShaderPart("test2.vert"));
+			treeShader->AddShader(_CShaderSpirvManager->GetShaderPart("test2.frag"));
+			treeShader->LinkShaders();
 
-		treeShader->AddBuffer(testUniform, "Vertex_Data");
-		treeShader->AddBuffer(testUniform2, "shader_data");
-		treeShader->AddBuffer(commonDataBlock, "CommonData");
-		
-		treeShader->Save();
+			treeShader->AddBuffer(testUniform, "Vertex_Data");
+			treeShader->AddBuffer(testUniform2, "shader_data");
+			treeShader->AddBuffer(commonDataBlock, "CommonData");
+
+			treeShader->Save();
+		}
 	}
+
+	testShader->FindUnlinkedUniforms();
+	treeShader->FindUnlinkedUniforms();
 
 	if (testRT) {
 		testRT->SetupRenderTarget_Internal();
@@ -365,7 +376,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			//
 
 			graphics->PushDebugGroup("Main Render");
-			graphics->SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			graphics->SetClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			graphics->Clear();
 			testShader->Use();
 

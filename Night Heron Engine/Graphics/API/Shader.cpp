@@ -12,7 +12,7 @@
 #include <Windows.h>
 #include <wincrypt.h>
 
-#include "Managers/ShaderManager.h"
+#include "Managers/ShaderSpirvManager.h"
 #include "Managers/Manager.h"
 
 #define ShaderCachePath "ShaderCache\\"
@@ -21,12 +21,10 @@ extern Shader* _CCurrentShader = nullptr;
 
 
 Shader::Shader() {
-	_CShaderManager->m_Shaders.Add(this);
 }
 
 
 Shader::~Shader() {
-	_CShaderManager->m_Shaders.Remove(this);
 }
 
 void Shader::AddBuffer(ShaderUniformBlock * a_Block, CMString a_StructName) {
@@ -44,6 +42,7 @@ void Shader::FindUnlinkedUniforms() {
 			ShaderUniformBlock* block = _CManager->GetShaderUniform(m_AttachedUniforms[i].m_Name);
 			if (block) {
 				AddBuffer_Internal(block, m_AttachedUniforms[i].m_Name);
+				m_AttachedUniforms[i].m_Block = block;
 				m_AttachedUniforms[i].m_HasLinked = true;
 			}
 		}
@@ -81,7 +80,7 @@ bool Shader::Load_Internal(CMArray<CMString> a_Splits) {
 		if (stage == 2) {
 			int shaders = CMString::StringToInt(a_Splits[line++]);
 			for (int i = 0; i < shaders; i++) {
-				AddShader(_CShaderManager->GetShaderPart(a_Splits[line++]));
+				AddShader(_CShaderSpirvManager->GetShaderPart(a_Splits[line++]));
 			}
 			LinkShaders();
 		}

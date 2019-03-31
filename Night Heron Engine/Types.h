@@ -71,21 +71,20 @@ public:
 		ResizeIfNeeded(a_Size);
 	}
 
-	void Remove(T a_Object) {
-		uint index = FindElement(a_Object);
-		if (index == -1) {
+	void RemoveAt(uint a_Index) {
+		if (a_Index == -1) {
 			return;
 		}
 
 		T* newArray = new T[m_ArraySize];
 
 
-		//memcpy(newArray, m_Array, sizeof(T) * index);
-		//memcpy(newArray[index], m_Array[index], sizeof(T) * ((m_Size - index)));
-		for (uint i = 0; i < index; i++) {
+		//memcpy(newArray, m_Array, sizeof(T) * a_Index);
+		//memcpy(newArray[index], m_Array[index], sizeof(T) * ((m_Size - a_Index)));
+		for (uint i = 0; i < a_Index; i++) {
 			newArray[i] = m_Array[i];
 		}
-		for (uint i = index + 1; i < m_Size; i++) {
+		for (uint i = a_Index + 1; i < m_Size; i++) {
 			newArray[i - 1] = m_Array[i];
 		}
 
@@ -94,6 +93,10 @@ public:
 		}
 		m_Array = newArray;
 		m_Size--;
+	}
+
+	void Remove(T a_Object) {
+		RemoveAt(FindElement(a_Object));
 	}
 
 	uint FindElement(T a_Object) {

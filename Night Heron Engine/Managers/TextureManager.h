@@ -14,6 +14,8 @@ public:
 
 
 	void ImGuiWindow(bool* a_Open) override;
+	void ImGuiData();
+
 
 	void AddTexture(Texture* a_Texture);
 private:

@@ -191,6 +191,7 @@
     <ClCompile Include="Managers\ShaderManager.cpp" />
     <ClCompile Include="Interfaces\Saveable.cpp" />
     <ClCompile Include="Managers\Manager.cpp" />
+    <ClCompile Include="Managers\ShaderSpirvManager.cpp" />
     <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Singletons.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Managers\ShaderManager.h" />
     <ClInclude Include="Interfaces\Saveable.h" />
     <ClInclude Include="Managers\Manager.h" />
+    <ClInclude Include="Managers\ShaderSpirvManager.h" />
     <ClInclude Include="Managers\TextureManager.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Singletons.h" />

@@ -26,8 +26,6 @@ public:
 	Shader();
 	~Shader();
 
-	std::string Path;
-
 	void AddShader(ShaderSpirvData* a_Shader);
 	void RemoveShader(ShaderSpirvData* a_Shader);
 	void LinkShaders();

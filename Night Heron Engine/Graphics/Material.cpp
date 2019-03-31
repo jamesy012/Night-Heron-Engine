@@ -8,6 +8,7 @@
 #include "Graphics/API/GFXAPI.h"
 
 #include "Managers/ShaderManager.h"
+#include "Managers/ShaderSpirvManager.h"
 #include "Managers/Manager.h"
 
 Material::Material(CMString a_FilePath) : Saveable(a_FilePath) {
@@ -50,7 +51,7 @@ bool Material::Load_Internal(CMArray<CMString> a_Splits) {
 				m_Shader = _CGraphics->CreateShader();
 				m_Shader->SetDebugObjName("Material " + GetDebugObjName() + " Temp Shader");
 				for (int i = 0; i < shaders; i++) {
-					m_Shader->AddShader(_CShaderManager->GetShaderPart(a_Splits[line++]));
+					m_Shader->AddShader(_CShaderSpirvManager->GetShaderPart(a_Splits[line++]));
 				}
 				m_Shader->LinkShaders();
 				m_CreatedShader = true;

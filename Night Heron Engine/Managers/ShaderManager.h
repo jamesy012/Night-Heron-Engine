@@ -7,6 +7,8 @@
 class ShaderSpirvData;
 class Shader;
 
+class ShaderSpirvManager;
+
 extern class ShaderManager* _CShaderManager;
 
 class ShaderManager : public ManagerBase {
@@ -16,26 +18,35 @@ public:
 
 
 	void ImGuiWindow(bool* a_Open) override;
+	void ImGuiData();
 
-	ShaderSpirvData* GetShaderPart(CMString a_FilePath);
 	Shader* GetShader(CMString a_FilePath);
 
+	void AddShader(Shader* a_Shader);
+	void RemoveShader(Shader* a_Shader);
 
-	CMArray<Shader*> m_Shaders;
+protected:
+	friend ShaderSpirvManager;
+
+	struct ShaderHolder {
+		Shader* m_Shader;
+		bool m_PassedThrough;
+	};
+
+	uint FindShader(Shader* a_Shader);
+
+
+	CMArray<ShaderHolder> m_Shaders;
+	int m_ChangeToTab = -1;
+	int m_NodeSelected = -1;
+	int m_ChangeToIndex = -1;
 private:
 	bool IsFileAOurType(CMString a_FilePath) override;
 	void AddFromPath_Internal(CMString a_FilePath) override;
 
-	CMArray<ShaderSpirvData*> m_ShaderObjects;
-
-	const CMArray<CMStringHash> m_ShaderFileTypes = { ".vert", ".frag" };
-
-	void ImGuiWindowTab1();
-	void ImGuiWindowTab2();
-
-	int m_ChangeToTab = -1;
-	int m_ChangeToIndex = -1;
+	const CMArray<CMStringHash> m_FileTypes = { ".shader" };
 
 	CMArray<bool> m_UnsavedShaders;
 };
+
 
