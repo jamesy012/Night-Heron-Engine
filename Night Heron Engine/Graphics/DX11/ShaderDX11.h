@@ -13,7 +13,7 @@ public:
 
 	struct ID3D11Buffer* m_Buffer;
 
-	virtual void UpdateBuffer(void * a_Object) override;
+	virtual void UpdateBuffer(void* a_Object) override;
 private:
 	virtual void SetDebugObjName_Internal() override;
 };
@@ -26,7 +26,6 @@ public:
 	//virtual void AddShader_Internal(ShaderTypes a_Type, std::string a_Path) = 0;
 
 	virtual void BindTexture(std::string a_Name, unsigned int a_Index) override;
-
 
 	void Link_Internal() override;
 	void Use() override;

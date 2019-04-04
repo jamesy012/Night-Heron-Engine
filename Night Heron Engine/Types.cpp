@@ -28,14 +28,12 @@ void CMString::Hash(uchar* a_Output) const {
 	CryptGetHashParam(hHash, HP_HASHVAL, rgbHash, &cbHash, 0);
 	CryptDestroyHash(hHash);
 	CryptReleaseContext(hProv, 0);
-	
+
 	memcpy(a_Output, rgbHash, HASH_LENGTH);
 }
 
-uchar * CMString::HashAlloc() const {
+uchar* CMString::HashAlloc() const {
 	uchar* output = new uchar[HASH_LENGTH];
 	Hash(output);
 	return output;
 }
-
-

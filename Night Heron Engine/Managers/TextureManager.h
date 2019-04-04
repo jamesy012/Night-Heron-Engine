@@ -14,7 +14,6 @@ public:
 	//TextureManager();
 	//~TextureManager();
 
-
 	void ImGuiWindow(bool* a_Open) override;
 	void ImGuiData();
 
@@ -36,5 +35,4 @@ private:
 	};
 
 	CMArray<TextureRef> m_Textures;
-
 };

@@ -8,7 +8,7 @@ public:
 	unsigned int m_ID = 0;
 	unsigned int m_SlotID = 0;
 
-	virtual void UpdateBuffer(void * a_Object) override;
+	virtual void UpdateBuffer(void* a_Object) override;
 private:
 	virtual void SetDebugObjName_Internal() override;
 };
@@ -37,5 +37,4 @@ private:
 	void DeleteShaders();
 
 	unsigned int m_Program = 0;
-
 };

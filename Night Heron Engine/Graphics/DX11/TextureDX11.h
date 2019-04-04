@@ -13,7 +13,7 @@ public:
 		return m_TextureRef;
 	}
 
-	struct ID3D11ShaderResourceView * GetTextureSRV() const {
+	struct ID3D11ShaderResourceView* GetTextureSRV() const {
 		return m_TextureSRV;
 	};
 	struct ID3D11SamplerState* GetSamplerRef() const {
@@ -33,5 +33,4 @@ private:
 	struct ID3D11Texture2D* m_TextureRef;
 	struct ID3D11ShaderResourceView* m_TextureSRV;
 	struct ID3D11SamplerState* m_SamplerRef;
-
 };

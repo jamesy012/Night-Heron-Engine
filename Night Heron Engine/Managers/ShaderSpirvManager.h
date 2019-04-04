@@ -16,7 +16,6 @@ public:
 	ShaderSpirvManager();
 	~ShaderSpirvManager();
 
-
 	void ImGuiData() override;
 
 	uint FindElement(CMString a_FilePath) override;
@@ -33,8 +32,5 @@ private:
 	bool IsFileAOurType(CMString a_FilePath) override;
 	void AddFromPath_Internal(CMString a_FilePath) override;
 
-
 	const CMArray<CMStringHash> m_FileTypes = { ".vert", ".frag" };
-
 };
-

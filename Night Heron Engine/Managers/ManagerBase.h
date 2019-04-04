@@ -19,7 +19,7 @@ public:
 protected:
 	virtual bool IsFileAOurType(CMString a_FilePath) = 0;
 	virtual void AddFromPath_Internal(CMString a_FilePath) = 0;
-	
+
 	CMArray<CMString> m_Paths;
 
 	CMString m_WindowName = "Manager";
@@ -27,5 +27,4 @@ private:
 	virtual void SeachFolder(CMString a_Path);
 
 	CMString m_CurrentPath = "";
-
 };

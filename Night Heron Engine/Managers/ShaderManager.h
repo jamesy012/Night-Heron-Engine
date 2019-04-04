@@ -16,7 +16,6 @@ public:
 	ShaderManager();
 	~ShaderManager();
 
-
 	void ImGuiWindow(bool* a_Open) override;
 	void ImGuiData();
 
@@ -28,7 +27,7 @@ public:
 	void AddShader(Shader* a_Shader);
 	void RemoveShader(Shader* a_Shader);
 
-	void ImGuiSelector(uint* a_ID, SimpleVec2 a_Size = SimpleVec2(0,100));
+	void ImGuiSelector(uint* a_ID, SimpleVec2 a_Size = SimpleVec2(0, 100));
 
 protected:
 	friend ShaderSpirvManager;
@@ -52,5 +51,3 @@ private:
 
 	CMArray<bool> m_UnsavedShaders;
 };
-
-

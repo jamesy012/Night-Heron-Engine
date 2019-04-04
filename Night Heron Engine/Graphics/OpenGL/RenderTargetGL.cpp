@@ -68,7 +68,6 @@ void RenderTargetGL::SetDebugObjName_Internal() {
 	if (m_RenderBuffer) {
 		CMString temp = m_DebugName + " Render Buffer View";
 		glObjectLabel(GL_RENDERBUFFER, m_RenderBuffer, -1, temp.Get());
-
 	}
 }
 
@@ -76,6 +75,6 @@ void RenderTargetGL::Bind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_Fbo);
 }
 
-Texture * RenderTargetGL::GetTexture() {
+Texture* RenderTargetGL::GetTexture() {
 	return m_Texture;
 }

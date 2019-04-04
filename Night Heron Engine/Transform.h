@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-
 typedef glm::vec3 Vector3;
 typedef glm::mat4 Matrix;
 
@@ -11,7 +10,7 @@ class Transform {
 public:
 	Transform();
 	~Transform();
-	
+
 	void SetPosition(Vector3 a_NewPosition);
 	void SetRotation(Vector3 a_NewRotation);
 	void SetRotation(glm::quat a_NewRotation);

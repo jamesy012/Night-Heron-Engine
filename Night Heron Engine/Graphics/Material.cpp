@@ -35,7 +35,7 @@ void Material::Use() {
 
 	LastMaterial = this;
 
-	if (_CCurrentShader != m_Shader){
+	if (_CCurrentShader != m_Shader) {
 		m_Shader->Use();
 	}
 
@@ -44,7 +44,7 @@ void Material::Use() {
 	}
 }
 
-void Material::AddTexture(Texture * a_Texture, uint a_Slot) {
+void Material::AddTexture(Texture* a_Texture, uint a_Slot) {
 	for (int i = 0; i < m_TextureOverloads.Length(); i++) {
 		if (m_TextureOverloads[i].m_Slot == a_Slot) {
 			CMASSERT_MSG(true, "Texture already in slot");
@@ -95,10 +95,9 @@ bool Material::Load_Internal(CMArray<CMString> a_Splits) {
 				}
 				AddTexture(tex, slot);
 			}
-
 		}
 	}
-	
+
 	return true;
 }
 

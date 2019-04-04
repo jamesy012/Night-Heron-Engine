@@ -1,6 +1,5 @@
 #include "Saveable.h"
 
-
 #include <fstream> //std::ifstream
 #include <sstream> //std::stringstream
 #include <string> //std::string
@@ -22,7 +21,6 @@ bool Saveable::Load() {
 	data = data.SubStr(cut, data.Length() - cut);
 	CMArray<CMString> splits = data.Split('\n');
 
-
 	return Load_Internal(splits);
 }
 
@@ -31,7 +29,6 @@ void Saveable::Save() {
 	std::ofstream infoFile(m_FilePath.m_FilePath);
 	CMString data;
 	if (infoFile.is_open()) {
-
 		data = GetData_Internal();
 
 		//data.Hash(m_Hash);

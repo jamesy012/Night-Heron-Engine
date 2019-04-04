@@ -78,7 +78,6 @@ private:
 	};
 	ShaderInfo m_ShaderObjects[(int)ShaderType::SHADERCOUNT] = { false, false, "" };
 	//glslang::TShader* m_ShaderObjects[(int)ShaderTypes::SHADERCOUNT] = {0};
-
 };
 
 extern Shader* _CCurrentShader;

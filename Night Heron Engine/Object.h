@@ -13,4 +13,3 @@ public:
 	CMString m_Name;
 	Transform m_Transform;
 };
-

@@ -14,18 +14,15 @@
 ShaderManager::ShaderManager() {
 }
 
-
 ShaderManager::~ShaderManager() {
 	for (uint i = 0; i < m_Shaders.Length(); i++) {
 		if (!m_Shaders[i].m_PassedThrough) {
 			delete m_Shaders[i].m_Shader;
 		}
-
 	}
 }
 
-
-uint ShaderManager::FindShader(Shader * a_Shader) {
+uint ShaderManager::FindShader(Shader* a_Shader) {
 	for (uint i = 0; i < m_Shaders.Length(); i++) {
 		if (m_Shaders[i].m_Shader == a_Shader) {
 			return i;
@@ -72,7 +69,7 @@ void ShaderManager::AddFromPath_Internal(CMString a_FilePath) {
 	}
 }
 
-Shader * ShaderManager::GetShader(CMString a_FilePath) {
+Shader* ShaderManager::GetShader(CMString a_FilePath) {
 	for (uint i = 0; i < m_Shaders.Length(); i++) {
 		if (m_Shaders[i].m_Shader->m_FilePath.m_FilePath.Compare(a_FilePath)) {
 			return m_Shaders[i].m_Shader;
@@ -82,15 +79,15 @@ Shader * ShaderManager::GetShader(CMString a_FilePath) {
 	return nullptr;
 }
 
-Shader * ShaderManager::GetShader(uint a_Index) {
+Shader* ShaderManager::GetShader(uint a_Index) {
 	return m_Shaders[a_Index].m_Shader;
 }
 
-void ShaderManager::AddShader(Shader * a_Shader) {
-	m_Shaders.Add({a_Shader, true});
+void ShaderManager::AddShader(Shader* a_Shader) {
+	m_Shaders.Add({ a_Shader, true });
 }
 
-void ShaderManager::RemoveShader(Shader * a_Shader) {
+void ShaderManager::RemoveShader(Shader* a_Shader) {
 	for (uint i = 0; i < m_Shaders.Length(); i++) {
 		if (m_Shaders[i].m_Shader == a_Shader) {
 			m_Shaders.RemoveAt(i);
@@ -98,7 +95,7 @@ void ShaderManager::RemoveShader(Shader * a_Shader) {
 	}
 }
 
-void ShaderManager::ImGuiSelector(uint * a_ID, SimpleVec2 a_Size) {
+void ShaderManager::ImGuiSelector(uint* a_ID, SimpleVec2 a_Size) {
 	ImGui::BeginChild("Selector", a_Size, false, ImGuiWindowFlags_HorizontalScrollbar);
 	for (uint q = 0; q < m_Paths.Length(); q++) {
 		CMString text = m_Paths[q];
@@ -118,7 +115,6 @@ void ShaderManager::ImGuiWindow(bool* a_Open) {
 	ImGui::Begin("Shader Menu", a_Open);
 
 	if (ImGui::BeginTabBar("Tab Bar", ImGuiTabBarFlags_None)) {
-
 		if (ImGui::BeginTabItem("Shader Objects", 0, (m_ChangeToTab == 1) ? ImGuiTabItemFlags_SetSelected : 0)) {
 			if (m_ChangeToTab != -1) {
 				m_ChangeToTab = -1;
@@ -185,7 +181,6 @@ void ShaderManager::ImGuiData() {
 		Shader* selected = m_Shaders[m_NodeSelected].m_Shader;
 
 		if (selected && m_NodeSelected != -1) {
-
 			ImGui::Text("Selected shader: %i (%s)", m_NodeSelected, selected->GetDebugObjName().Get());
 
 			bool forceReload = false;
@@ -202,7 +197,6 @@ void ShaderManager::ImGuiData() {
 				ImGui::SameLine();
 				ImGui::Text("%s", selected->m_FilePath.m_FilePath.Get());
 			}
-
 
 			if (ImGui::Button("Reload Shader") || forceReload) {
 				ShaderLoadRes finalRes = ShaderLoadRes::SHADERLOAD_LOAD;
@@ -236,11 +230,9 @@ void ShaderManager::ImGuiData() {
 				static uint ChangingNode = -1;
 				static ImGuiTextFilter popupFilter;
 
-
 				ImGui::Text("Attached Shaders: %i", selected->m_ShaderFileObjects.Length());
 				if (ImGui::TreeNode("Attached Shaders")) {
 					for (uint i = 0; i < selected->m_ShaderFileObjects.Length(); i++) {
-
 						ImGui::PushID(i);
 						ShaderSpirvData* ssd = selected->m_ShaderFileObjects[i];
 						//ImGui::Text("%i: %s", i, ssd->m_FilePath.m_FileName.Get());
@@ -265,9 +257,7 @@ void ShaderManager::ImGuiData() {
 
 						//popup selector
 						if (ChangingNode == i && ImGui::BeginPopupModal("Change Shader", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-
 							ImGui::Text("Current: %s", selected->m_ShaderFileObjects[ChangingNode]->m_FilePath.m_FileName.Get());
-
 
 							static float size = 150;
 
@@ -305,7 +295,6 @@ void ShaderManager::ImGuiData() {
 				}
 
 				//
-
 			}
 		}
 

@@ -14,7 +14,7 @@ public:
 	~Manager();
 
 	void ImGuiWindow();
-	
+
 	void RegisterShaderUniform(ShaderUniformBlock* a_Uniform, CMString a_SlotName);
 	ShaderUniformBlock* GetShaderUniform(CMString a_SlotName);
 
@@ -48,7 +48,7 @@ private:
 	CMArray<ShaderUniform> m_ShaderUniforms;
 
 	bool m_IsRtDirty = true;
-	SimpleVec3 m_RTPos = SimpleVec3(4,-4,10);
+	SimpleVec3 m_RTPos = SimpleVec3(4, -4, 10);
 	float m_RTFov = 20.0f;
 };
 

@@ -18,11 +18,9 @@
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
 
-
 Manager::Manager() {
 	_CManager = this;
 }
-
 
 Manager::~Manager() {
 	delete m_CommonRT;
@@ -52,14 +50,14 @@ void Manager::ImGuiWindow() {
 	_CTextureManager->ImGuiWindow(&m_ShowTextures);
 }
 
-void Manager::RegisterShaderUniform(ShaderUniformBlock * a_Uniform, CMString a_SlotName) {
+void Manager::RegisterShaderUniform(ShaderUniformBlock* a_Uniform, CMString a_SlotName) {
 	if (GetShaderUniform(a_SlotName) == nullptr) {
 		a_Uniform->m_Registered = true;
-		m_ShaderUniforms.Add({ a_Uniform, a_SlotName});
+		m_ShaderUniforms.Add({ a_Uniform, a_SlotName });
 	}
 }
 
-ShaderUniformBlock * Manager::GetShaderUniform(CMString a_SlotName) {
+ShaderUniformBlock* Manager::GetShaderUniform(CMString a_SlotName) {
 	for (int i = 0; i < m_ShaderUniforms.Length(); i++) {
 		if (m_ShaderUniforms[i].a_Name == a_SlotName) {
 			return m_ShaderUniforms[i].a_Block;
@@ -69,7 +67,6 @@ ShaderUniformBlock * Manager::GetShaderUniform(CMString a_SlotName) {
 }
 
 void Manager::FindAllTextures() {
-
 }
 
 void Manager::ImGuiObjects() {
@@ -117,7 +114,6 @@ void Manager::ImGuiObjects() {
 			}
 		}
 
-
 		ImGui::EndChild();
 	}
 
@@ -130,7 +126,6 @@ void Manager::ImGuiModels() {
 	}
 	//static int selection_mask = (1 << 2);
 	static int nodeSelected = -1;
-
 
 	if (m_IsRtDirty && nodeSelected != -1) {
 		struct {
@@ -158,7 +153,7 @@ void Manager::ImGuiModels() {
 		_CGraphics->ResetRenderTarget();
 
 		_CGraphics->PopDebugGroup();
-		
+
 		m_IsRtDirty = false;
 	}
 
@@ -214,12 +209,9 @@ void Manager::ImGuiModels() {
 			}
 
 			ImGui::Image(m_CommonRT->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
-
 		}
 
-
 		ImGui::EndChild();
-
 	}
 
 	ImGui::End();
@@ -279,10 +271,9 @@ void Manager::ImGuiMaterials() {
 				}
 
 				if (ImGui::BeginPopupModal("Change Material Shader", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-
 					ImGui::Text(material->m_Shader->GetDebugObjName().Get());
 
-					_CShaderManager->ImGuiSelector(&CurrShader, SimpleVec2(300,150));
+					_CShaderManager->ImGuiSelector(&CurrShader, SimpleVec2(300, 150));
 
 					if (ImGui::Button("OK")) {
 						unsaved.Add(nodeSelected);
@@ -316,23 +307,22 @@ void Manager::ImGuiMaterials() {
 				}
 
 				if (ImGui::BeginPopupModal("Change Material Texture", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-
 					ImGui::DragInt("Slot:", &SlotID, 1, 0, 32);
 
 					ImGui::BeginChild("Selector", ImVec2(0, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
 					for (uint q = 0; q < _CTextureManager->m_Paths.Length(); q++) {
 						CMString text = _CTextureManager->m_Paths[q];
 						//if (popupFilter.PassFilter(text.Get())) {
-							if (ImGui::Selectable(text.Get(), CurrTex == q)) {
-								CurrTex = q;
-							}
+						if (ImGui::Selectable(text.Get(), CurrTex == q)) {
+							CurrTex = q;
+						}
 						//}
 					}
 					ImGui::EndChild();
 
 					if (ImGui::Button("OK")) {
 						unsaved.Add(nodeSelected);
-						
+
 						material->m_TextureOverloads[TextureID].m_Slot = SlotID;
 						material->m_TextureOverloads[TextureID].m_Tex = _CTextureManager->m_Textures[CurrTex].m_Texture;
 						ImGui::CloseCurrentPopup();
@@ -344,7 +334,6 @@ void Manager::ImGuiMaterials() {
 					ImGui::EndPopup();
 				}
 			}
-		
 		}
 
 		ImGui::EndChild();
@@ -355,7 +344,6 @@ void Manager::ImGuiMaterials() {
 
 void Manager::InlineImGoiRenderTargetSettings() {
 	if (ImGui::TreeNode("Render Target Settings")) {
-
 		if (ImGui::DragFloat3("Position", &m_RTPos.v1)) {
 			m_IsRtDirty = true;
 		}
@@ -366,4 +354,3 @@ void Manager::InlineImGoiRenderTargetSettings() {
 		ImGui::TreePop();
 	}
 }
-

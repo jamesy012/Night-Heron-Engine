@@ -19,15 +19,13 @@
 
 extern Shader* _CCurrentShader = nullptr;
 
-
 Shader::Shader() {
 }
-
 
 Shader::~Shader() {
 }
 
-void Shader::AddBuffer(ShaderUniformBlock * a_Block, CMString a_StructName) {
+void Shader::AddBuffer(ShaderUniformBlock* a_Block, CMString a_StructName) {
 	if (a_Block != nullptr) {
 		m_AttachedUniforms.Add({ a_Block, a_StructName, true });
 		AddBuffer_Internal(a_Block, a_StructName);
@@ -53,7 +51,6 @@ std::vector<unsigned int> Shader::loadSpirvFromPath(std::string a_Path) {
 	uint shaderSize;
 	std::vector<unsigned int> code;
 
-
 	std::ifstream is(a_Path, std::ios::binary | std::ios::in | std::ios::ate);
 
 	if (is.is_open()) {
@@ -61,7 +58,7 @@ std::vector<unsigned int> Shader::loadSpirvFromPath(std::string a_Path) {
 		is.seekg(0, std::ios::beg);
 		// Copy file contents into a buffer
 		code.resize(shaderSize / (sizeof(unsigned int) / sizeof(char)));
-		is.read((char*)&code[0], shaderSize);
+		is.read((char*)& code[0], shaderSize);
 		is.close();
 		assert(shaderSize > 0);
 	}
@@ -130,7 +127,6 @@ CMString Shader::GetShaderTypeString(ShaderType a_Type) {
 	}
 	return CMString();
 }
-
 
 void Shader::AddShader(ShaderSpirvData * a_Shader) {
 	ShaderInfo* info = &m_ShaderObjects[a_Shader->m_ShaderType];

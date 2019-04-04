@@ -2,7 +2,6 @@
 
 #include "..\API\Mesh.h"
 
-
 class MeshDX11 : public Mesh {
 public:
 	~MeshDX11();
@@ -17,5 +16,4 @@ private:
 
 	struct ID3D11Buffer* m_VertexBuffer;
 	struct ID3D11Buffer* m_IndexBuffer;
-
 };

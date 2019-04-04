@@ -29,5 +29,4 @@ void GFX::ResizeWindow(int a_Width, int a_Height) {
 	ResizeWindow_Internal(a_Width, a_Height);
 
 	//callbacks
-
 }

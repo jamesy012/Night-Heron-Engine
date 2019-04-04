@@ -15,7 +15,7 @@ public:
 
 	void SwapBuffer() override;
 	void Clear() override;
-	void SetClearColor(float R, float G,float B, float A) override;
+	void SetClearColor(float R, float G, float B, float A) override;
 
 	virtual void ResizeWindow_Internal(int a_Width, int a_Height) override;
 
@@ -28,7 +28,7 @@ public:
 	virtual void ResetRenderTarget() override;
 	virtual void ResetShader() override;
 
-	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;
+	virtual ShaderUniformBlock* CreateBuffer(void* a_Object, unsigned int a_Size) override;
 
 	virtual void BindTexture(Texture* a_Tex, uint a_Slot) override;
 	virtual void UnbindTexture(uint a_Slot) override;
@@ -43,11 +43,9 @@ public:
 		return SimpleVec2(1, 0);
 	};
 
-
 protected:
 	virtual void InitImGui_Internal() override;
 
 private:
 	bool InitGfx() override;
-
 };

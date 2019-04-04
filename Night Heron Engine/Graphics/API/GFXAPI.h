@@ -8,7 +8,6 @@ class Window;
 
 #define NUM_OF_TEXTURE_SLOTS 32
 
-
 class GFX {
 public:
 	virtual bool CreateWindowSetUpAPI() = 0;
@@ -20,7 +19,6 @@ public:
 
 	virtual void ImGuiDraw() = 0;
 	virtual void ImGuiNewFrame() = 0;
-
 
 	virtual void SwapBuffer() = 0;
 	virtual void Clear() = 0;
@@ -64,8 +62,7 @@ protected:
 	float m_ClearR = 0, m_ClearG = 0, m_ClearB = 0, m_ClearA = 1;
 
 	//reference to hold which textures are in each slot
-	Texture* m_TextureSlots[NUM_OF_TEXTURE_SLOTS] = {nullptr};
-
+	Texture* m_TextureSlots[NUM_OF_TEXTURE_SLOTS] = { nullptr };
 };
 
 extern class GFX* _CGraphics;

@@ -30,5 +30,4 @@ public:
 	virtual void Draw() = 0;
 
 	void CreateSquare();
-
 };

@@ -6,7 +6,6 @@ namespace fs = std::experimental::filesystem;
 
 #include "ImGui/imgui.h"
 
-
 void ManagerBase::FindAllInFiles() {
 	m_CurrentPath = fs::current_path().generic_string();
 	SeachFolder(m_CurrentPath);
@@ -16,7 +15,7 @@ void ManagerBase::FindAllInFiles() {
 	}
 }
 
-void ManagerBase::ImGuiWindow(bool * a_Open) {
+void ManagerBase::ImGuiWindow(bool* a_Open) {
 	if (!a_Open) {
 		return;
 	}
@@ -29,7 +28,7 @@ void ManagerBase::ImGuiWindow(bool * a_Open) {
 }
 
 void ManagerBase::SeachFolder(CMString a_Path) {
-	for (const fs::v1::directory_entry & entry : fs::directory_iterator(a_Path)) {
+	for (const fs::v1::directory_entry& entry : fs::directory_iterator(a_Path)) {
 		CMString filePath = entry.path().generic_string();
 		if (fs::is_directory(entry.status())) {
 			SeachFolder(filePath);

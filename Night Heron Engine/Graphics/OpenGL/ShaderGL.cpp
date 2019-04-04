@@ -7,7 +7,6 @@
 
 #include <SPIRV-Cross-master/spirv_glsl.hpp>
 
-
 unsigned int getOpenglShaderType(ShaderType a_Type) {
 	switch (a_Type) {
 		case ShaderType::SHADER_VERTEX:
@@ -32,7 +31,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 
 	spirv_cross::ShaderResources resources = glsl.get_shader_resources();
 	// Get all sampled images in the shader.
-	for (auto &resource : resources.sampled_images) {
+	for (auto& resource : resources.sampled_images) {
 		unsigned set = glsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned location = glsl.get_decoration(resource.id, spv::DecorationLocation);
@@ -63,11 +62,10 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 	unsigned int index = glCreateShader(getOpenglShaderType(a_Type));
 
 	const char* shaderCode = source.c_str();
-	const char* const * shaderCodePtr = &shaderCode;
+	const char* const* shaderCodePtr = &shaderCode;
 
 	glShaderSource(index, 1, shaderCodePtr, 0);
 	glCompileShader(index);
-
 
 	GLint success;
 	glGetShaderiv(index, GL_COMPILE_STATUS, &success);
@@ -82,7 +80,6 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 
 void ShaderGL::Link_Internal() {
 	m_Program = glCreateProgram();
-
 
 	for (int i = 0; i < ShaderType::SHADERCOUNT; i++) {
 		if (m_GLShaderIndex[i] != 0) {
@@ -106,8 +103,6 @@ void ShaderGL::Link_Internal() {
 		glUseProgram(0);
 		return;
 	}
-
-
 
 	GLint count;
 
@@ -180,7 +175,7 @@ ShaderUniformBlockGL::~ShaderUniformBlockGL() {
 	}
 }
 
-void ShaderUniformBlockGL::UpdateBuffer(void * a_Object) {
+void ShaderUniformBlockGL::UpdateBuffer(void* a_Object) {
 	glBindBuffer(GL_UNIFORM_BUFFER, m_ID);
 	glBufferData(GL_UNIFORM_BUFFER, m_Size, a_Object, GL_STATIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);

@@ -6,7 +6,7 @@
 #include "Graphics/API/GFXAPI.h"
 #include "Graphics/API/Texture.h"
 
-void TextureManager::ImGuiWindow(bool * a_Open) {
+void TextureManager::ImGuiWindow(bool* a_Open) {
 	if (!a_Open) {
 		return;
 	}
@@ -66,17 +66,13 @@ void TextureManager::ImGuiWindow(bool * a_Open) {
 				}
 			}
 
-
 			if (texture != nullptr) {
 				ImGui::Image(texture->getTexturePtr(), ImVec2(200, 200), ImVec2(0, 0), ImVec2(1, 1));
 			}
-			
 		}
-
 
 		ImGui::EndChild();
 	}
-
 
 	ImGui::End();
 }
@@ -93,7 +89,7 @@ uint TextureManager::FindElement(CMString a_FilePath) {
 	return -1;
 }
 
-Texture * TextureManager::GetTexture(CMString a_Path) {
+Texture* TextureManager::GetTexture(CMString a_Path) {
 	if (a_Path[0] != '/') {
 		a_Path = '/' + a_Path;
 	}
@@ -101,7 +97,7 @@ Texture * TextureManager::GetTexture(CMString a_Path) {
 		if (m_Paths[i].Compare(a_Path)) {
 			if (m_Textures[i].m_Texture == nullptr) {
 				Texture* tex = m_Textures[i].m_Texture = _CGraphics->CreateTexture();
-				tex->LoadTexture(m_Textures[i].m_FilePath);				
+				tex->LoadTexture(m_Textures[i].m_FilePath);
 			}
 			return m_Textures[i].m_Texture;
 		}
@@ -109,7 +105,7 @@ Texture * TextureManager::GetTexture(CMString a_Path) {
 	return nullptr;
 }
 
-void TextureManager::AddTexture(Texture * a_Texture) {
+void TextureManager::AddTexture(Texture* a_Texture) {
 	m_Textures.Add({ a_Texture, true, a_Texture->GetDebugObjName() });
 	if (a_Texture->GetPath()[0] != '/') {
 		m_Paths.Add("/" + a_Texture->GetPath());

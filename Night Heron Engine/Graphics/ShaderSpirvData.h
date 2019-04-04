@@ -24,7 +24,6 @@ namespace glslang {
 	class TProgram;
 };
 
-
 class ShaderSpirvData {
 public:
 	ShaderSpirvData();
@@ -54,5 +53,4 @@ private:
 	glslang::TProgram* m_Program;
 
 	unsigned char m_Hash[16];
-
 };

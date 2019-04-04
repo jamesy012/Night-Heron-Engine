@@ -12,7 +12,6 @@ extern ShaderSpirvManager* _CShaderSpirvManager = nullptr;
 extern TextureManager* _CTextureManager = nullptr;
 extern Window* _CMainWindow = nullptr;
 
-
 extern void SingletonManager::CreateSingletons() {
 	_CManager = new Manager();
 	_CShaderSpirvManager = new ShaderSpirvManager();

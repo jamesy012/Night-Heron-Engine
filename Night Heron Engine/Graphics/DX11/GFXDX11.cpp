@@ -85,7 +85,7 @@ void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
 		m_SwapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 
 		ID3D11Texture2D* backbuffer;
-		hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
+		hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)& backbuffer);
 		if (FAILED(hr)) {
 			MessageBox(NULL, "Error GetBuffer SwapChain", "Error", MB_OK | MB_ICONERROR);
 			return;
@@ -110,10 +110,7 @@ void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
 		m_Device->CreateTexture2D(&depthStencilDesc, NULL, &m_DepthStencilBuffer);
 		m_Device->CreateDepthStencilView(m_DepthStencilBuffer, NULL, &m_DepthStencilView);
 
-
 		m_DevCon->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
-
-
 
 		D3D11_VIEWPORT viewport;
 		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
@@ -137,23 +134,23 @@ void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
 	}
 }
 
-Shader * GFXDX11::CreateShader() {
+Shader* GFXDX11::CreateShader() {
 	return new ShaderDX11();
 }
 
-Mesh * GFXDX11::CreateMesh() {
+Mesh* GFXDX11::CreateMesh() {
 	return new MeshDX11();
 }
 
-Texture * GFXDX11::CreateTexture() {
+Texture* GFXDX11::CreateTexture() {
 	return new TextureDX11();
 }
 
-RenderTarget * GFXDX11::CreateRenderTarget(int a_Width, int a_Height) {
+RenderTarget* GFXDX11::CreateRenderTarget(int a_Width, int a_Height) {
 	return new RenderTargetDX11(a_Width, a_Height);
 }
 
-ShaderUniformBlock* GFXDX11::CreateBuffer(void * a_Object, unsigned int a_Size) {
+ShaderUniformBlock* GFXDX11::CreateBuffer(void* a_Object, unsigned int a_Size) {
 	HRESULT hr;
 	ShaderUniformBlockDX11* sub = new ShaderUniformBlockDX11();
 	sub->m_Size = a_Size;
@@ -217,7 +214,7 @@ void GFXDX11::PopDebugGroup() {
 	}
 }
 
-void GFXDX11::UseRenderTarget(RenderTarget* a_Rt) {
+void GFXDX11::UseRenderTarget(RenderTarget * a_Rt) {
 	a_Rt->Bind();
 
 	D3D11_VIEWPORT viewport;
@@ -245,8 +242,7 @@ void GFXDX11::ResetRenderTarget() {
 	m_DevCon->RSSetViewports(1, &viewport);
 
 	m_CurrentContext->m_CurrentBoundRenderTarget = m_RenderTargetView;
-	m_CurrentContext->m_CurrentBoundDepthStencilView= m_DepthStencilView;
-
+	m_CurrentContext->m_CurrentBoundDepthStencilView = m_DepthStencilView;
 }
 
 void GFXDX11::ResetShader() {
@@ -258,7 +254,6 @@ void GFXDX11::ResetShader() {
 }
 
 bool GFXDX11::InitGfx() {
-
 	m_CurrentContext = new DirectX11Common();
 	HRESULT hr;
 
@@ -291,7 +286,7 @@ bool GFXDX11::InitGfx() {
 		return false;
 	}
 	ID3D11Texture2D* backbuffer;
-	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
+	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)& backbuffer);
 	if (FAILED(hr)) {
 		MessageBox(NULL, "Error GetBuffer SwapChain", "Error", MB_OK | MB_ICONERROR);
 		return false;
@@ -304,7 +299,7 @@ bool GFXDX11::InitGfx() {
 		return false;
 	}
 
-	hr = m_DevCon->QueryInterface(__uuidof(ID3DUserDefinedAnnotation), (void **)&m_PerfDebug);
+	hr = m_DevCon->QueryInterface(__uuidof(ID3DUserDefinedAnnotation), (void**)& m_PerfDebug);
 	hr = m_Device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&m_DebugContext));
 
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
@@ -326,7 +321,6 @@ bool GFXDX11::InitGfx() {
 
 	ResetRenderTarget();
 
-
 	D3D11_RASTERIZER_DESC rasterizerDesc;
 	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
@@ -336,7 +330,6 @@ bool GFXDX11::InitGfx() {
 	hr = m_Device->CreateRasterizerState(&rasterizerDesc, &m_MainRasterState);
 
 	m_DevCon->RSSetState(m_MainRasterState);
-
 
 	m_CurrentContext->m_DevCon = m_DevCon;
 	m_CurrentContext->m_Device = m_Device;

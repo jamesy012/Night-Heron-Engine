@@ -8,7 +8,6 @@
 #include <fstream>
 #include <SPIRV-Cross-master/spirv_hlsl.hpp>
 
-
 //D3D11_INPUT_ELEMENT_DESC VertexLayout[] = {
 //	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 //{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -19,7 +18,6 @@ D3D11_INPUT_ELEMENT_DESC VertexLayout[] = {
 { "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 UINT numVertexLayoutElements = ARRAYSIZE(VertexLayout);
-
 
 ShaderDX11::~ShaderDX11() {
 	if (VS_Buffer) {
@@ -41,12 +39,11 @@ ShaderDX11::~ShaderDX11() {
 }
 
 void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
-
 	spirv_cross::CompilerHLSL hlsl(a_Code);
 
 	spirv_cross::ShaderResources resources = hlsl.get_shader_resources();
 	//// Get all sampled images in the shader.
-	for (auto &resource : resources.sampled_images) {
+	for (auto& resource : resources.sampled_images) {
 		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
@@ -62,7 +59,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		m_HasTextureForSlot[location] = true;
 	}
 
-	for (auto &resource : resources.uniform_buffers) {
+	for (auto& resource : resources.uniform_buffers) {
 		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
@@ -81,9 +78,8 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 			printf("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
 		}
 
-		m_ShaderCBufferList.Add({ GetShaderTypeString(a_Type) + resource.name, location});
+		m_ShaderCBufferList.Add({ GetShaderTypeString(a_Type) + resource.name, location });
 	}
-
 
 	// Set some options.
 	spirv_cross::CompilerHLSL::Options options;
@@ -125,7 +121,6 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 				return;
 			}
 			return;
-
 	}
 }
 
@@ -153,7 +148,6 @@ void ShaderDX11::Use() {
 		if (m_CBuffers[i].m_PixelSlot != -1) {
 			GFXDX11::GetCurrentContex()->m_DevCon->PSSetConstantBuffers(m_CBuffers[i].m_PixelSlot, 1, &m_CBuffers[i].m_Uniform->m_Buffer);
 		}
-
 	}
 
 	GFXDX11::GetCurrentContex()->m_DevCon->VSSetShader(VS, 0, 0);
@@ -248,7 +242,6 @@ void ShaderDX11::AddBuffer_Internal(ShaderUniformBlock* a_Block, CMString a_Stru
 	}
 
 	m_CBuffers.push_back(bd);
-
 }
 
 void ShaderDX11::SetDebugObjName_Internal() {
@@ -269,14 +262,13 @@ void ShaderDX11::SetDebugObjName_Internal() {
 void ShaderDX11::BindTexture(std::string a_Name, unsigned int a_Index) {
 }
 
-
 ShaderUniformBlockDX11::~ShaderUniformBlockDX11() {
 	if (m_Buffer) {
 		m_Buffer->Release();
 	}
 }
 
-void ShaderUniformBlockDX11::UpdateBuffer(void * a_Object) {
+void ShaderUniformBlockDX11::UpdateBuffer(void* a_Object) {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 

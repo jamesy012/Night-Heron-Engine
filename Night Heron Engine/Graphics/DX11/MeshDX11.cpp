@@ -4,7 +4,6 @@
 
 #include <d3d11.h>
 
-
 MeshDX11::~MeshDX11() {
 	if (m_VertexBuffer) {
 		m_VertexBuffer->Release();
@@ -15,7 +14,6 @@ MeshDX11::~MeshDX11() {
 }
 
 void MeshDX11::Bind() {
-
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -39,7 +37,6 @@ void MeshDX11::Bind() {
 	vertexData.pSysMem = m_Vertices.First();
 	indexData.pSysMem = m_Indices.First();
 
-	
 	HRESULT hr;
 
 	hr = GFXDX11::GetCurrentContex()->m_Device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_VertexBuffer);
@@ -57,7 +54,6 @@ void MeshDX11::Bind() {
 }
 
 void MeshDX11::Draw() {
-
 	const UINT VertexStride = sizeof(Vertex);
 	const UINT VertexOffset = 0;
 

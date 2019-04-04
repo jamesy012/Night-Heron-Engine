@@ -25,5 +25,4 @@ protected:
 	int m_Height;
 	int m_ImageFormat;
 	CMString m_Path;
-
 };

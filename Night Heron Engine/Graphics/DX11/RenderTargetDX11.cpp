@@ -8,7 +8,6 @@
 
 // https://stackoverflow.com/questions/13326715/rendertargetview-to-shaderresourceview
 
-
 void RenderTargetDX11::SetSize(unsigned int a_Width, unsigned int a_Height) {
 	//need resize on texture
 }
@@ -26,10 +25,8 @@ void RenderTargetDX11::Use() {
 
 	GFXDX11::GetCurrentContex()->m_DevCon->RSSetViewports(1, &viewport);
 
-
 	GFXDX11::GetCurrentContex()->m_CurrentBoundRenderTarget = m_RenderTarget;
 	GFXDX11::GetCurrentContex()->m_CurrentBoundDepthStencilView = m_DepthStencil;
-
 }
 
 void RenderTargetDX11::Reset() {
@@ -38,7 +35,6 @@ void RenderTargetDX11::Reset() {
 */
 
 void RenderTargetDX11::SetupRenderTarget_Internal() {
-
 	TextureDX11* tex2D;
 	m_Texture = tex2D = new TextureDX11();
 	tex2D->m_DesiredFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -53,7 +49,6 @@ void RenderTargetDX11::SetupRenderTarget_Internal() {
 	depthStencil->m_IsShaderResource = false;
 	depthStencil->m_ShouldCreateSampler = false;
 	depthStencil->CreateTexture(m_Width, m_Height);
-
 
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	renderTargetViewDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -88,6 +83,6 @@ void RenderTargetDX11::Bind() {
 	GFXDX11::GetCurrentContex()->m_CurrentBoundDepthStencilView = m_DepthStencil;
 }
 
-Texture * RenderTargetDX11::GetTexture() {
+Texture* RenderTargetDX11::GetTexture() {
 	return m_Texture;
 }

@@ -61,9 +61,8 @@ void TextureDX11::createData() {
 		srvd.TextureCube.MostDetailedMip = 0;
 
 		hr = GFXDX11::GetCurrentContex()->m_Device->CreateShaderResourceView(m_TextureRef, &srvd, &m_TextureSRV);
-
 	}
-	if(m_ShouldCreateSampler) {
+	if (m_ShouldCreateSampler) {
 		D3D11_SAMPLER_DESC samplerDesc;
 		ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -76,5 +75,4 @@ void TextureDX11::createData() {
 
 		hr = GFXDX11::GetCurrentContex()->m_Device->CreateSamplerState(&samplerDesc, &m_SamplerRef);
 	}
-
 }

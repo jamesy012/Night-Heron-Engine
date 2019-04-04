@@ -1,6 +1,5 @@
 #include "Model.h"
 
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -19,9 +18,8 @@ Model::Model() {
 	_CManager->m_Models.Add(this);
 }
 
-
 Model::~Model() {
-	for (uint i = 0; i < m_Meshs.Length();i++) {
+	for (uint i = 0; i < m_Meshs.Length(); i++) {
 		delete m_Meshs[i].m_Mesh;
 	}
 	_CManager->m_Models.Remove(this);
@@ -127,7 +125,7 @@ void Model::ProcessNode(aiNode * node, const aiScene * scene) {
 	}
 }
 
-Mesh * Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
+Mesh* Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 	/*
 	// Data to fill
 	vector<VERTEX> vertices;
@@ -187,7 +185,7 @@ Mesh * Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 	if (mesh->mMaterialIndex >= 0) {
 		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 		aiColor4D col;
-		mat->Get(AI_MATKEY_COLOR_DIFFUSE,col);
+		mat->Get(AI_MATKEY_COLOR_DIFFUSE, col);
 		matColor.x = col.r;
 		matColor.y = col.g;
 		matColor.z = col.b;
@@ -226,14 +224,12 @@ Mesh * Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 	}
 
 	for (uint i = 0; i < mesh->mNumFaces; i++) {
-
 		aiFace face = mesh->mFaces[i];
 
 		for (uint j = 0; j < face.mNumIndices; j++) {
 			indices.Add(face.mIndices[j]);
 		}
 	}
-
 
 	Mesh* newMesh = _CGraphics->CreateMesh();
 	newMesh->m_Vertices = verties;

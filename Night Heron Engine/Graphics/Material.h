@@ -16,7 +16,6 @@ public:
 
 	void Use();
 
-
 	Shader* m_Shader;
 
 	uint m_ID;

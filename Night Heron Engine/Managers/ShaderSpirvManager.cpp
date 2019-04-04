@@ -76,13 +76,12 @@ void ShaderSpirvManager::ImGuiData() {
 					CMString text = CMString::IntToString(i) + ": " + selected->m_AttachedShaders[i]->GetDebugObjName().Get();
 					//ImGui::Text("%i: %s", i, ssd->m_AttachedShaders[i]->GetDebugObjName().Get());
 					if (ImGui::Selectable(text.Get())) {
-						_CShaderManager->m_NodeSelected =_CShaderManager->FindShader(selected->m_AttachedShaders[i]);
+						_CShaderManager->m_NodeSelected = _CShaderManager->FindShader(selected->m_AttachedShaders[i]);
 						_CShaderManager->m_ChangeToTab = 1;
 					}
 				}
 				ImGui::TreePop();
 			}
-
 		}
 
 		ImGui::EndChild();
@@ -94,7 +93,7 @@ uint ShaderSpirvManager::FindElement(CMString a_FilePath) {
 	return -1;
 }
 
-ShaderSpirvData * ShaderSpirvManager::GetShaderPart(CMString a_FilePath) {
+ShaderSpirvData* ShaderSpirvManager::GetShaderPart(CMString a_FilePath) {
 	if (a_FilePath.Length() > 2 && a_FilePath.At(0) != '/') {
 		a_FilePath = '/' + a_FilePath;
 	}

@@ -4,12 +4,10 @@
 //#include <vector>
 #include "SimpleMath.h"
 
-
 template <typename  T>
 class CMArray /*: public std::vector<T>*/ {
 public:
 	CMArray() {
-
 	};
 
 	CMArray(std::initializer_list<T> a_Input) {
@@ -78,7 +76,6 @@ public:
 
 		T* newArray = new T[m_ArraySize];
 
-
 		//memcpy(newArray, m_Array, sizeof(T) * a_Index);
 		//memcpy(newArray[index], m_Array[index], sizeof(T) * ((m_Size - a_Index)));
 		for (uint i = 0; i < a_Index; i++) {
@@ -102,15 +99,15 @@ public:
 	uint FindElement(T a_Object) {
 		for (uint i = 0; i < m_Size; i++) {
 			if (m_Array[i] == a_Object) {
-			//if (memcmp(a_Object, m_Array[i], sizeof(T)) == 0) {
+				//if (memcmp(a_Object, m_Array[i], sizeof(T)) == 0) {
 				return i;
 			}
 		}
 		return -1;
 	}
 
-	CMArray<T> &operator=(const CMArray<T> &);
-	T &operator[](int);
+	CMArray<T>& operator=(const CMArray<T>&);
+	T& operator[](int);
 	T operator[](int) const;
 
 private:
@@ -121,7 +118,6 @@ private:
 	T* m_Array = nullptr;
 	uint m_Size = 0;
 	uint m_ArraySize = 0;
-
 };
 
 /*
@@ -142,7 +138,7 @@ T& operator=(const T& other) // copy assignment
 */
 
 template<typename T>
-CMArray<T> & CMArray<T>::operator=(const CMArray<T>  &a_Input) {
+CMArray<T>& CMArray<T>::operator=(const CMArray<T>& a_Input) {
 	m_Size = a_Input.m_Size;
 	m_ArraySize = a_Input.m_ArraySize;
 	m_Array = new T[m_ArraySize];
@@ -154,7 +150,7 @@ CMArray<T> & CMArray<T>::operator=(const CMArray<T>  &a_Input) {
 }
 
 template<typename T>
-T & CMArray<T>::operator[](int a_Index) {
+T& CMArray<T>::operator[](int a_Index) {
 	return m_Array[a_Index];
 }
 
@@ -199,7 +195,7 @@ inline void CMArray<T>::ResizeForElements() {
 //todo use own thing here
 class CMString : public std::string {
 public:
-	CMString()  {
+	CMString() {
 	};
 
 	CMString(const char* a_Input) : std::string(a_Input) {
@@ -273,7 +269,7 @@ public:
 			if (nextChar == npos) {
 				break;
 			}
-			splits.Add(SubStr(index, nextChar- index));
+			splits.Add(SubStr(index, nextChar - index));
 			index = nextChar + 1;
 		}
 		splits.Add(SubStr(index, Length() - index));
@@ -294,7 +290,6 @@ public:
 class CMFilePath {
 public:
 	CMFilePath() {
-
 	}
 
 	CMFilePath(CMString a_Input) {
@@ -321,7 +316,6 @@ public:
 
 		m_FileLocation = m_FilePath.SubStr(0, lastFolderIndex);
 		m_FileName = m_FilePath.SubStr(lastFolderIndex, m_FilePath.Size() - lastFolderIndex);
-		
 	}
 
 	//Full Path
@@ -344,4 +338,3 @@ struct CMStringHash {
 	CMStringHash(const char* a_Text) : CMStringHash(CMString(a_Text)) {}
 	uchar m_ExtenstionHash[16] = { 0 };
 };
-

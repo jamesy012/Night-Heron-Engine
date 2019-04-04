@@ -1,5 +1,4 @@
-
-#define NOMINMAX 
+#define NOMINMAX
 #include <Windows.h>
 #include <stdio.h>
 #include <iostream>
@@ -58,8 +57,6 @@ public:
 	glm::vec3 pad;
 };
 
-
-
 int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				   HINSTANCE   hPrevInstance,              // Previous Instance
 				   LPSTR       lpCmdLine,              // Command Line Parameters
@@ -68,7 +65,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 {
 	//create console
 	AllocConsole();
-	freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+	freopen_s((FILE * *)stdout, "CONOUT$", "w", stdout);
 
 	CMString arguments = lpCmdLine;
 
@@ -145,7 +142,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	_CManager->m_Objects.Add(&square4);
 	_CManager->m_Objects.Add(&treeObj);
 
-	Texture* testTexture = _CTextureManager->GetTexture("peacock-2.jpg");
+	Texture * testTexture = _CTextureManager->GetTexture("peacock-2.jpg");
 	if (testTexture == nullptr) {
 		testTexture = graphics->CreateTexture();
 		testTexture->LoadTexture("peacock-2.jpg");
@@ -166,8 +163,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	ShaderUniformBlock* commonDataBlock = graphics->CreateBuffer(&commonPerFrameData, sizeof(CommonDataStruct));
 	commonDataBlock->SetDebugObjName("Common Data Buffer");
 	_CManager->RegisterShaderUniform(commonDataBlock, "CommonData");
-
-	
 
 	Shader* testShader = _CShaderManager->GetShader("Shaders/TestShader.shader");
 	if (testShader == nullptr) {
@@ -216,7 +211,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 		testRT->SetDebugObjName("Test RT");
 	}
 
-
 	Model testModel;
 	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");
 	//testModel.LoadModel("Models/nanosuit.obj");
@@ -262,7 +256,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	mainCamera.SetFov(fov);
 	mainCamera.SetAspectRatio(graphics->m_Window->GetAspect());
 
-
 	while (true) {
 		MSG msg;
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -280,7 +273,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 
 			static bool DemoWindow = false;
 			static bool ShaderMenu = true;
-
 
 			if (ImGui::BeginMainMenuBar()) {
 				if (ImGui::BeginMenu("Windows")) {
@@ -358,8 +350,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				graphics->PopDebugGroup();
 			}
 
-
-
 			//if (RotateCamera) {
 			//	testUniformStructObj.MatrixView = glm::lookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));
 			//} else {
@@ -385,7 +375,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			graphics->SetClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			graphics->Clear();
 			testShader->Use();
-
 
 			//graphics->BindTexture(testTexture, 0);
 			//testShader->BindTexture("textureTest", 1);
@@ -433,7 +422,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			auto timerEnd = timer.now();
 			deltaTime = std::chrono::duration_cast<std::chrono::duration<float, std::ratio<1, 1>>>(timerEnd - timerStart).count();
 		}
-
 	}
 
 	graphics->DestroyMainWindow();

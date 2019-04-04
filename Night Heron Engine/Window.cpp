@@ -50,13 +50,11 @@ void Window::ImGuiNewFrame() {
 	ImGui_ImplWin32_NewFrame();
 }
 
-
 Window::Window() {
 	_CMainWindow = this;
 }
 
 bool Window::CreateMainWindow() {
-
 	unsigned int      PixelFormat;                        // Holds The Results After Searching For A Match
 	WNDCLASS    wc;                         // Windows Class Structure
 	DWORD       dwExStyle;                      // Window Extended Style
@@ -129,8 +127,6 @@ bool Window::CreateMainWindow() {
 		return FALSE;                           // Return FALSE
 	}
 
-
-
 	static  PIXELFORMATDESCRIPTOR pfd =                  // pfd Tells Windows How We Want Things To Be
 	{
 		sizeof(PIXELFORMATDESCRIPTOR),                  // Size Of This Pixel Format Descriptor
@@ -175,19 +171,16 @@ bool Window::CreateMainWindow() {
 		return FALSE;                           // Return FALSE
 	}
 
-
 	//SetWindowLongPtr(m_HWnd, GWLP_USERDATA, (LONG_PTR)ourWindow);
 
 	ShowWindow(m_HWnd, SW_SHOW);
 	SetForegroundWindow(m_HWnd);
 	SetFocus(m_HWnd);
 
-
 	return true;
 }
 
 void Window::DestrowMainWindow() {
-
 	if (m_HDC && !ReleaseDC(m_HWnd, m_HDC)) {
 		//failed
 		MessageBox(NULL, "Release Device Context Failed.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);

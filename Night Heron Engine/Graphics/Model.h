@@ -24,7 +24,7 @@ public:
 	void Draw();
 
 	void SetMaterial(Material* a_NewMaterial, uint a_Slot);
-	
+
 	uint NumMeshs() {
 		return m_Meshs.Length();
 	}
@@ -32,7 +32,6 @@ public:
 	ModelMeshHolder* GetMeshHolder(uint a_Index) {
 		return &m_Meshs[a_Index];
 	}
-	
 
 private:
 	virtual void SetDebugObjName_Internal() override;
@@ -40,8 +39,5 @@ private:
 	void ProcessNode(struct aiNode* node, const struct aiScene* scene);
 	class Mesh* ProcessMesh(struct aiMesh* mesh, const struct aiScene* scene);
 
-
-
 	CMArray<ModelMeshHolder> m_Meshs;
 };
-

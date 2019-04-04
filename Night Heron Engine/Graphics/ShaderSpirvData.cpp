@@ -128,7 +128,6 @@ const TBuiltInResource DefaultTBuiltInResource = {
 	/* .generalConstantMatrixVectorIndexing = */ 1,
 } };
 
-
 ShaderSpirvData::ShaderSpirvData() {
 }
 
@@ -146,12 +145,11 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 		SaveInfoFile(true);
 		return ShaderLoadRes::SHADERLOAD_ERROR;
 	}
-	
+
 	shaderFile.Hash(m_Hash);
 
 	std::string infoFile = Util::LoadTextFromPath(ShaderCachePath + m_FilePath.m_FilePath + ".info");
 	if (infoFile.size() != 0) {
-
 		int res = memcmp(m_Hash, &infoFile[0], HASH_LENGTH);
 
 		if (res == 0) {
@@ -204,7 +202,7 @@ ShaderLoadRes ShaderSpirvData::Reload() {
 	}
 
 	_CGraphics->ResetShader();
-		
+
 	return res;
 }
 
@@ -305,12 +303,12 @@ bool ShaderSpirvData::GenerateSpirvData() {
 	spvOptions.validate = true;
 	spvOptions.optimizeSize = true;
 	glslang::GlslangToSpv(*shaderStage, spirv, &logger, &spvOptions);
-	
+
 	if (logger.getAllMessages().size() != 0) {
 		std::cout << "Logger Messages:" << logger.getAllMessages() << std::endl;
 		didFail = true;
 	}
-	
+
 	if (!didFail) {
 		//spv::Disassemble(std::cout, spirv);
 		CMString folderPath = (CMString(ShaderCachePath) + m_FilePath.m_FileLocation);
@@ -318,7 +316,6 @@ bool ShaderSpirvData::GenerateSpirvData() {
 		std::ofstream infoFile(folderPath + m_FilePath.m_FileName + ".info");
 
 		glslang::OutputSpvBin(spirv, (folderPath + m_FilePath.m_FileName + ".spirv").c_str());
-	
 	}
 
 	SaveInfoFile(didFail);

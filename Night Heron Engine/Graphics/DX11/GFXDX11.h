@@ -8,7 +8,6 @@ struct DirectX11Common {
 
 	struct ID3D11RenderTargetView* m_CurrentBoundRenderTarget;
 	struct ID3D11DepthStencilView* m_CurrentBoundDepthStencilView;
-
 };
 
 class GFXDX11 : public GFX {
@@ -32,9 +31,7 @@ public:
 	virtual void ImGuiDraw() override;
 	virtual void ImGuiNewFrame() override;
 
-
 	virtual void ResizeWindow_Internal(int a_Width, int a_Height) override;
-
 
 	virtual class Shader* CreateShader() override;
 	virtual class Mesh* CreateMesh() override;
@@ -45,7 +42,7 @@ public:
 	virtual void ResetRenderTarget() override;
 	virtual void ResetShader() override;
 
-	virtual ShaderUniformBlock* CreateBuffer(void * a_Object, unsigned int a_Size) override;
+	virtual ShaderUniformBlock* CreateBuffer(void* a_Object, unsigned int a_Size) override;
 
 	virtual void BindTexture(Texture* a_Tex, uint a_Slot) override;
 	virtual void UnbindTexture(uint a_Slot) override;
@@ -60,10 +57,8 @@ public:
 		return SimpleVec2(1, 1);
 	};
 
-
 protected:
 	virtual void InitImGui_Internal() override;
-
 
 private:
 	bool InitGfx() override;
@@ -80,5 +75,4 @@ private:
 	struct ID3D11RasterizerState* m_MainRasterState;
 	struct ID3DUserDefinedAnnotation* m_PerfDebug;
 	struct ID3D11Debug* m_DebugContext;
-
 };

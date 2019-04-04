@@ -32,7 +32,6 @@ bool GFXOpenGL::CreateWindowSetUpAPI() {
 }
 
 void GFXOpenGL::DestroyMainWindow() {
-
 	//if (ourWindow->fullscreen) {
 //	ChangeDisplaySettings(NULL, 0);
 //	ShowCursor(TRUE);
@@ -84,23 +83,23 @@ void GFXOpenGL::ResizeWindow_Internal(int a_Width, int a_Height) {
 	glViewport(0, 0, a_Width, a_Height);
 }
 
-Shader * GFXOpenGL::CreateShader() {
+Shader* GFXOpenGL::CreateShader() {
 	return new ShaderGL();
 }
 
-Mesh * GFXOpenGL::CreateMesh() {
+Mesh* GFXOpenGL::CreateMesh() {
 	return new MeshGL();
 }
 
-Texture * GFXOpenGL::CreateTexture() {
+Texture* GFXOpenGL::CreateTexture() {
 	return new TextureGL();
 }
 
-RenderTarget * GFXOpenGL::CreateRenderTarget(int a_Width, int a_Height) {
+RenderTarget* GFXOpenGL::CreateRenderTarget(int a_Width, int a_Height) {
 	return new RenderTargetGL(a_Width, a_Height);
 }
 
-void GFXOpenGL::UseRenderTarget(RenderTarget* a_Rt) {
+void GFXOpenGL::UseRenderTarget(RenderTarget * a_Rt) {
 	a_Rt->Bind();
 	glViewport(0, 0, a_Rt->GetWidth(), a_Rt->GetHeight());
 }
@@ -115,8 +114,7 @@ void GFXOpenGL::ResetShader() {
 	glUseProgram(0);
 }
 
-ShaderUniformBlock* GFXOpenGL::CreateBuffer(void * a_Object, unsigned int a_Size) {
-
+ShaderUniformBlock* GFXOpenGL::CreateBuffer(void* a_Object, unsigned int a_Size) {
 	ShaderUniformBlockGL* sub = new ShaderUniformBlockGL();
 	sub->m_Size = a_Size;
 	glGenBuffers(1, &sub->m_ID);
@@ -160,7 +158,6 @@ void GFXOpenGL::PopDebugGroup() {
 }
 
 bool GFXOpenGL::InitGfx() {
-
 	m_Window->m_HRC = wglCreateContext(m_Window->m_HDC);
 	if (!(m_Window->m_HRC)) {
 		//DestroyOpenGLWindow();                         // Reset The Display
@@ -207,14 +204,12 @@ bool GFXOpenGL::InitGfx() {
 		printf("OpenGL - %s\n(%i.%i) Vender: %s, Renderer: %s\n\n", glVersion, glMajor, glMinor, glVender, glRenderer);
 	}
 
-
 	glEnable(GL_DEPTH_TEST);
 
 	return true;
 }
 
-
-void openGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar * message, const void * userParam) {
+void openGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar * message, const void* userParam) {
 	switch (id) {
 		case 131218: // NVIDIA: "shader will be recompiled due to GL state mismatches"
 			return;
@@ -291,4 +286,3 @@ void openGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severit
 	//	(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
 	//	   type, severity, message);
 }
-
