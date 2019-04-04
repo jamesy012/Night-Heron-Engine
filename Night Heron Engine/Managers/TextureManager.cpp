@@ -84,8 +84,38 @@ void TextureManager::ImGuiWindow(bool * a_Open) {
 void TextureManager::ImGuiData() {
 }
 
+uint TextureManager::FindElement(CMString a_FilePath) {
+	for (uint i = 0; i < m_Paths.Length(); i++) {
+		if (m_Paths[i].Compare(a_FilePath)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+Texture * TextureManager::GetTexture(CMString a_Path) {
+	if (a_Path[0] != '/') {
+		a_Path = '/' + a_Path;
+	}
+	for (uint i = 0; i < m_Paths.Length(); i++) {
+		if (m_Paths[i].Compare(a_Path)) {
+			if (m_Textures[i].m_Texture == nullptr) {
+				Texture* tex = m_Textures[i].m_Texture = _CGraphics->CreateTexture();
+				tex->LoadTexture(m_Textures[i].m_FilePath);				
+			}
+			return m_Textures[i].m_Texture;
+		}
+	}
+	return nullptr;
+}
+
 void TextureManager::AddTexture(Texture * a_Texture) {
 	m_Textures.Add({ a_Texture, true, a_Texture->GetDebugObjName() });
+	if (a_Texture->GetPath()[0] != '/') {
+		m_Paths.Add("/" + a_Texture->GetPath());
+	} else {
+		m_Paths.Add(a_Texture->GetPath());
+	}
 }
 
 bool TextureManager::IsFileAOurType(CMString a_FilePath) {

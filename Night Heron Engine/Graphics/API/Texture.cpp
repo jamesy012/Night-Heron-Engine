@@ -3,12 +3,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb-master/stb_image.h>
 
-void Texture::LoadTexture(std::string a_Path) {
+void Texture::LoadTexture(CMString a_Path) {
 
 	m_Path = a_Path;
 
 	//m_TextureData = stbi_load(a_Path.c_str(), &m_Width, &m_Height, &m_ImageFormat, STBI_default);
-	m_TextureData = stbi_load(a_Path.c_str(), &m_Width, &m_Height, &m_ImageFormat, STBI_rgb_alpha);
+	m_TextureData = stbi_load(a_Path.Get(), &m_Width, &m_Height, &m_ImageFormat, STBI_rgb_alpha);
 	m_ImageFormat = 4;
 
 	createData();

@@ -19,6 +19,7 @@
 
 #include "Managers/ShaderManager.h"
 #include "Managers/ShaderSpirvManager.h"
+#include "Managers/TextureManager.h"
 #include "Managers/Manager.h"
 #include "Singletons.h"
 
@@ -123,7 +124,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 
 	_CGraphics->SetUpGraphics();
 
-	Texture* testTexture = graphics->CreateTexture();
 	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 
 	Camera mainCamera;
@@ -145,8 +145,12 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	_CManager->m_Objects.Add(&square4);
 	_CManager->m_Objects.Add(&treeObj);
 
-	testTexture->LoadTexture("peacock-2.jpg");
-	testTexture->SetDebugObjName("Test Texture");
+	Texture* testTexture = _CTextureManager->GetTexture("peacock-2.jpg");
+	if (testTexture == nullptr) {
+		testTexture = graphics->CreateTexture();
+		testTexture->LoadTexture("peacock-2.jpg");
+		testTexture->SetDebugObjName("Test Texture");
+	}
 
 	//UNIFORMS
 	TestUniformStruct testUniformStructObj;
@@ -221,26 +225,28 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	if (!treeModelMat1.Load()) {
 		treeModelMat1.SetDebugObjName("Tree Model Mat 1");
 		treeModelMat1.m_Shader = treeShader;
+		treeModelMat1.AddTexture(_CGraphics->m_WhiteTexture, 0);
 		treeModelMat1.Save();
 	}
 	Material treeModelMat2("Material/TreeModelMat2.mat");
 	if (!treeModelMat2.Load()) {
 		treeModelMat2.SetDebugObjName("Tree Model Mat 2");
 		treeModelMat2.m_Shader = testShader;
+		treeModelMat2.AddTexture(testTexture, 0);
 		treeModelMat2.Save();
 	}
 	testModel.SetMaterial(&treeModelMat1, 0);
 	testModel.SetMaterial(&treeModelMat2, 1);
 	squareModel->SetMaterial(&treeModelMat2, 0);
 
-	for (uint i = 0; i < _CManager->m_Materials.Length(); i++) {
-		if (_CManager->m_Materials[i]->m_CreatedShader) {
-			Shader* shader = _CManager->m_Materials[i]->m_Shader;
-			shader->AddBuffer(testUniform, "Vertex_Data");
-			shader->AddBuffer(testUniform2, "shader_data");
-			shader->AddBuffer(commonDataBlock, "CommonData");
-		}
-	}
+	//for (uint i = 0; i < _CManager->m_Materials.Length(); i++) {
+	//	if (_CManager->m_Materials[i]->m_CreatedShader) {
+	//		Shader* shader = _CManager->m_Materials[i]->m_Shader;
+	//		shader->AddBuffer(testUniform, "Vertex_Data");
+	//		shader->AddBuffer(testUniform2, "shader_data");
+	//		shader->AddBuffer(commonDataBlock, "CommonData");
+	//	}
+	//}
 
 	//todo remove this
 	_CManager->tempPVMUniform = testUniform;
@@ -341,7 +347,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				testUniform2->UpdateBuffer(&colorTest);
 				//testMesh->Draw();
 
-				graphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
+				//graphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
 
 				testModel.Draw();
 
@@ -381,7 +387,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			testShader->Use();
 
 
-			graphics->BindTexture(testTexture, 0);
+			//graphics->BindTexture(testTexture, 0);
 			//testShader->BindTexture("textureTest", 1);
 
 			testUniformStructObj.MatrixModelTest = square1.m_Transform.GetModelMatrix();
@@ -408,7 +414,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			testUniform2->UpdateBuffer(&colorTest);
 			squareModel->Draw();
 
-			graphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
+			//graphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
 
 			testUniformStructObj.MatrixModelTest = treeObj.m_Transform.GetModelMatrix();
 			testUniform->UpdateBuffer(&testUniformStructObj);

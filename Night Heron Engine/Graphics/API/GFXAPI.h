@@ -6,6 +6,8 @@
 
 class Window;
 
+#define NUM_OF_TEXTURE_SLOTS 32
+
 
 class GFX {
 public:
@@ -61,7 +63,6 @@ protected:
 
 	float m_ClearR = 0, m_ClearG = 0, m_ClearB = 0, m_ClearA = 1;
 
-#define NUM_OF_TEXTURE_SLOTS 32
 	//reference to hold which textures are in each slot
 	Texture* m_TextureSlots[NUM_OF_TEXTURE_SLOTS] = {nullptr};
 

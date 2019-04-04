@@ -249,6 +249,10 @@ public:
 		return find_last_of(a_Character);
 	}
 
+	uint FindFromStart(char a_Character) const {
+		return find_first_of(a_Character);
+	}
+
 	CMString SubStr(uint a_From, uint a_NumCharacters) const {
 		return substr(a_From, a_NumCharacters);
 	}

@@ -12,12 +12,14 @@ bool Saveable::Load() {
 	if (data.Length() < 5) {
 		return false;
 	}
-	if (data.Length() < 16) {
-		data = &data[data.Length()];
-
-	} else {
-		data = data.SubStr(17, data.Length() - 17);
-	}
+	uint cut = data.FindFromStart('\n') + 1;
+	//if (data.Length() < 16) {
+	//	data = &data[data.Length()];
+	//
+	//} else {
+	//	data = data.SubStr(17, data.Length() - 17);
+	//}
+	data = data.SubStr(cut, data.Length() - cut);
 	CMArray<CMString> splits = data.Split('\n');
 
 
@@ -32,10 +34,10 @@ void Saveable::Save() {
 
 		data = GetData_Internal();
 
-		data.Hash(m_Hash);
-		for (int q = 0; q < HASH_LENGTH; q++) {
-			infoFile << m_Hash[q];
-		}
+		//data.Hash(m_Hash);
+		//for (int q = 0; q < HASH_LENGTH; q++) {
+		//	infoFile << m_Hash[q];
+		//}
 		infoFile << "\n";
 		infoFile << data;
 		infoFile.close();

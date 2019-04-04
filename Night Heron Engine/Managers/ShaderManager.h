@@ -20,10 +20,15 @@ public:
 	void ImGuiWindow(bool* a_Open) override;
 	void ImGuiData();
 
+	uint FindElement(CMString a_FilePath) override;
+
 	Shader* GetShader(CMString a_FilePath);
+	Shader* GetShader(uint a_Index);
 
 	void AddShader(Shader* a_Shader);
 	void RemoveShader(Shader* a_Shader);
+
+	void ImGuiSelector(uint* a_ID, SimpleVec2 a_Size = SimpleVec2(0,100));
 
 protected:
 	friend ShaderSpirvManager;
@@ -34,7 +39,6 @@ protected:
 	};
 
 	uint FindShader(Shader* a_Shader);
-
 
 	CMArray<ShaderHolder> m_Shaders;
 	int m_ChangeToTab = -1;

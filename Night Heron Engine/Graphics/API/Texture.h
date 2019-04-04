@@ -1,14 +1,21 @@
 #pragma once
 
-#include <string>
+#include "Types.h"
 #include "GFXObj.h"
 
+class GFX;
+
 class Texture : public GFXObj {
+	friend GFX;
 public:
-	void LoadTexture(std::string a_Path);
+	void LoadTexture(CMString a_Path);
 	void CreateTexture(int a_Width, int a_Height);
 
 	virtual void* getTexturePtr() = 0;
+
+	CMString GetPath() {
+		return m_Path;
+	}
 
 protected:
 	virtual void createData() = 0;
@@ -17,6 +24,6 @@ protected:
 	int m_Width;
 	int m_Height;
 	int m_ImageFormat;
-	std::string m_Path;
+	CMString m_Path;
 
 };

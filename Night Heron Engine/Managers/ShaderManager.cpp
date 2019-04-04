@@ -34,6 +34,15 @@ uint ShaderManager::FindShader(Shader * a_Shader) {
 	return -1;
 }
 
+uint ShaderManager::FindElement(CMString a_FilePath) {
+	for (uint i = 0; i < m_Shaders.Length(); i++) {
+		if (m_Shaders[i].m_Shader->m_FilePath.m_FilePath.Compare(a_FilePath)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 bool ShaderManager::IsFileAOurType(CMString a_FilePath) {
 	uchar fileHash[HASH_LENGTH] = { 0 };
 	a_FilePath.SubStrFindFromEnd('.').ToLower().Hash(fileHash);
@@ -73,6 +82,10 @@ Shader * ShaderManager::GetShader(CMString a_FilePath) {
 	return nullptr;
 }
 
+Shader * ShaderManager::GetShader(uint a_Index) {
+	return m_Shaders[a_Index].m_Shader;
+}
+
 void ShaderManager::AddShader(Shader * a_Shader) {
 	m_Shaders.Add({a_Shader, true});
 }
@@ -83,6 +96,19 @@ void ShaderManager::RemoveShader(Shader * a_Shader) {
 			m_Shaders.RemoveAt(i);
 		}
 	}
+}
+
+void ShaderManager::ImGuiSelector(uint * a_ID, SimpleVec2 a_Size) {
+	ImGui::BeginChild("Selector", a_Size, false, ImGuiWindowFlags_HorizontalScrollbar);
+	for (uint q = 0; q < m_Paths.Length(); q++) {
+		CMString text = m_Paths[q];
+		//if (popupFilter.PassFilter(text.Get())) {
+		if (ImGui::Selectable(text.Get(), (*a_ID) == q)) {
+			(*a_ID) = q;
+		}
+		//}
+	}
+	ImGui::EndChild();
 }
 
 void ShaderManager::ImGuiWindow(bool* a_Open) {

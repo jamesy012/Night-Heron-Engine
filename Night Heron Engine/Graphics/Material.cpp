@@ -9,7 +9,12 @@
 
 #include "Managers/ShaderManager.h"
 #include "Managers/ShaderSpirvManager.h"
+#include "Managers/TextureManager.h"
 #include "Managers/Manager.h"
+
+#include "Debug.h"
+
+static Material* LastMaterial = nullptr;
 
 Material::Material(CMString a_FilePath) : Saveable(a_FilePath) {
 	_CManager->m_Materials.Add(this);
@@ -22,13 +27,30 @@ Material::~Material() {
 }
 
 void Material::Use() {
+	if (LastMaterial != nullptr) {
+		for (int i = 0; i < LastMaterial->m_TextureOverloads.Length(); i++) {
+			_CGraphics->UnbindTexture(LastMaterial->m_TextureOverloads[i].m_Slot);
+		}
+	}
+
+	LastMaterial = this;
+
 	if (_CCurrentShader != m_Shader){
 		m_Shader->Use();
 	}
 
-	//for (int i = 0; i < m_TextureOverloads.size(); i++) {
-	//	m_TextureOverloads[i].
-	//}
+	for (int i = 0; i < m_TextureOverloads.Length(); i++) {
+		_CGraphics->BindTexture(m_TextureOverloads[i].m_Tex, m_TextureOverloads[i].m_Slot);
+	}
+}
+
+void Material::AddTexture(Texture * a_Texture, uint a_Slot) {
+	for (int i = 0; i < m_TextureOverloads.Length(); i++) {
+		if (m_TextureOverloads[i].m_Slot == a_Slot) {
+			CMASSERT_MSG(true, "Texture already in slot");
+		}
+	}
+	m_TextureOverloads.Add({ a_Texture, a_Slot });
 }
 
 bool Material::Load_Internal(CMArray<CMString> a_Splits) {
@@ -43,6 +65,9 @@ bool Material::Load_Internal(CMArray<CMString> a_Splits) {
 			CMString path = a_Splits[line++];
 			if (!path.IsEmpty()) {
 				m_Shader = _CShaderManager->GetShader(path);
+				if (m_Shader == nullptr) {
+					return false;
+				}
 			}
 		}
 		if (stage == 3) {
@@ -58,6 +83,19 @@ bool Material::Load_Internal(CMArray<CMString> a_Splits) {
 			} else {
 				line += shaders;
 			}
+		}
+		if (stage == 4) {
+			int textures = CMString::StringToInt(a_Splits[line++]);
+			for (int i = 0; i < textures; i++) {
+				int slot = CMString::StringToInt(a_Splits[line++]);;
+				CMString path = a_Splits[line++];
+				Texture* tex = _CTextureManager->GetTexture(path);
+				if (tex == nullptr) {
+					return false;
+				}
+				AddTexture(tex, slot);
+			}
+
 		}
 	}
 	
@@ -81,5 +119,13 @@ CMString Material::GetData_Internal() {
 	} else {
 		data += "\n0\n";
 	}
+	{
+		data += CMString::IntToString(m_TextureOverloads.Length()) + '\n';
+		for (uint i = 0; i < m_TextureOverloads.Length(); i++) {
+			data += CMString::IntToString(m_TextureOverloads[i].m_Slot) + '\n';
+			data += m_TextureOverloads[i].m_Tex->GetPath() + '\n';
+		}
+	}
+
 	return data;
 }

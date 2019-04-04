@@ -8,6 +8,8 @@
 
 #include "Managers/ShaderManager.h"
 
+#include "Debug.h"
+
 ShaderSpirvManager::ShaderSpirvManager() {
 	m_WindowName = "Shader Spirv Manager";
 }
@@ -85,6 +87,11 @@ void ShaderSpirvManager::ImGuiData() {
 
 		ImGui::EndChild();
 	}
+}
+
+uint ShaderSpirvManager::FindElement(CMString a_FilePath) {
+	CMASSERT(true);
+	return -1;
 }
 
 ShaderSpirvData * ShaderSpirvManager::GetShaderPart(CMString a_FilePath) {

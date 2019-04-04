@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.h"
+#include "SimpleMath.h"
 
 class Object;
 class Model;
@@ -35,6 +36,8 @@ private:
 	void ImGuiModels();
 	void ImGuiMaterials();
 
+	void InlineImGoiRenderTargetSettings();
+
 	class RenderTarget* m_CommonRT;
 
 	struct ShaderUniform {
@@ -44,6 +47,9 @@ private:
 
 	CMArray<ShaderUniform> m_ShaderUniforms;
 
+	bool m_IsRtDirty = true;
+	SimpleVec3 m_RTPos = SimpleVec3(4,-4,10);
+	float m_RTFov = 20.0f;
 };
 
 extern class Manager* _CManager;

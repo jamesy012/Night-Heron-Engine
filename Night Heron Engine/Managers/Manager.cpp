@@ -3,10 +3,12 @@
 #include <ImGui/imgui.h>
 #include "Singletons.h"
 #include "TextureManager.h"
+#include "ShaderManager.h"
 
 #include "Graphics/API/GFXAPI.h"
 #include "Graphics/API/RenderTarget.h"
 #include "Graphics/API/Texture.h"
+#include "Graphics/API/Shader.h"
 
 #include "Object.h"
 #include "Graphics/Model.h"
@@ -128,9 +130,9 @@ void Manager::ImGuiModels() {
 	}
 	//static int selection_mask = (1 << 2);
 	static int nodeSelected = -1;
-	static bool isRtDirty = true;
 
-	if (isRtDirty && nodeSelected != -1) {
+
+	if (m_IsRtDirty && nodeSelected != -1) {
 		struct {
 		public:
 			glm::mat4 MatrixView = glm::mat4();
@@ -140,8 +142,8 @@ void Manager::ImGuiModels() {
 		}testUniformStructObj;
 
 		_CGraphics->PushDebugGroup("Manager Render Target");
-		testUniformStructObj.MatrixProjection = glm::perspective(glm::radians(60.0f), 1.4f, 0.1f, 100.0f);
-		testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(-4, 4, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
+		testUniformStructObj.MatrixProjection = glm::perspective(glm::radians(m_RTFov), 1.4f, 0.1f, 100.0f);
+		testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(m_RTPos.v1, m_RTPos.v2, m_RTPos.v3), glm::vec3(0), glm::vec3(0, 1, 0));
 		testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
 		testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 
@@ -151,21 +153,16 @@ void Manager::ImGuiModels() {
 
 		tempPVMUniform->UpdateBuffer(&testUniformStructObj);
 
-		_CGraphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
-
 		m_Models[nodeSelected]->Draw();
 
 		_CGraphics->ResetRenderTarget();
 
-		_CGraphics->UnbindTexture(0);
-
 		_CGraphics->PopDebugGroup();
 		
-		isRtDirty = false;
+		m_IsRtDirty = false;
 	}
 
 	ImGui::Begin("Model Menu", &m_ShowModels);
-
 	{
 		//float size = ImGui::GetWindowContentRegionWidth() * 0.5f;
 		static float size = 150;
@@ -176,7 +173,7 @@ void Manager::ImGuiModels() {
 			CMString text = m_Models[i]->GetDebugObjName().Get();
 			if (ImGui::Selectable(text.Get(), nodeSelected == i)) {
 				nodeSelected = i;
-				isRtDirty = true;
+				m_IsRtDirty = true;
 			}
 		}
 
@@ -185,6 +182,7 @@ void Manager::ImGuiModels() {
 	ImGui::SameLine();
 	{
 		ImGui::BeginChild("Details", ImVec2(0, 0), true);
+		InlineImGoiRenderTargetSettings();
 
 		if (nodeSelected >= 0) {
 			Model* model = m_Models[nodeSelected];
@@ -208,6 +206,7 @@ void Manager::ImGuiModels() {
 							} else {
 								mmh->m_Material = m_Materials.At(id);
 							}
+							m_IsRtDirty = true;
 						}
 						ImGui::TreePop();
 					}
@@ -230,6 +229,7 @@ void Manager::ImGuiMaterials() {
 	if (!m_ShowMaterials) {
 		return;
 	}
+	static CMArray<uint> unsaved;
 	//static int selection_mask = (1 << 2);
 	static int nodeSelected = -1;
 	ImGui::Begin("Materials Menu", &m_ShowMaterials);
@@ -241,7 +241,12 @@ void Manager::ImGuiMaterials() {
 		ImGui::BeginChild("Selector", ImVec2(size, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
 		for (uint i = 0; i < m_Materials.Length(); i++) {
-			CMString text = CMString::IntToString(i) + m_Materials[i]->GetDebugObjName().Get();
+			CMString text = m_Materials[i]->GetDebugObjName().Get();
+			for (int q = 0; q < unsaved.Length(); q++) {
+				if (unsaved[q] == i) {
+					text += " *";
+				}
+			}
 			if (ImGui::Selectable(text.Get(), nodeSelected == i)) {
 				nodeSelected = i;
 			}
@@ -257,12 +262,108 @@ void Manager::ImGuiMaterials() {
 			Material* material = m_Materials[nodeSelected];
 			ImGui::Text("Selected Material: %s", material->GetDebugObjName().Get());
 
-			ImGui::Text("Shader: %s", material->m_Shader ? material->m_Shader->GetDebugObjName().Get() : "None");
+			if (ImGui::Button("Save")) {
+				material->Save();
+				unsaved.Remove(nodeSelected);
+			}
+			{
+				static uint CurrShader;
+
+				ImGui::Text("Shader: %s", material->m_Shader ? material->m_Shader->GetDebugObjName().Get() : "None");
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("Change...#100")) {
+					ImGui::OpenPopup("Change Material Shader");
+					CurrShader = _CShaderManager->FindElement(material->m_Shader->m_FilePath.m_FilePath.Get());
+				}
+
+				if (ImGui::BeginPopupModal("Change Material Shader", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+
+					ImGui::Text(material->m_Shader->GetDebugObjName().Get());
+
+					_CShaderManager->ImGuiSelector(&CurrShader, SimpleVec2(300,150));
+
+					if (ImGui::Button("OK")) {
+						unsaved.Add(nodeSelected);
+
+						material->m_Shader = _CShaderManager->GetShader(CurrShader);
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::SameLine();
+					if (ImGui::Button("Close")) {
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::EndPopup();
+				}
+			}
+			{
+				static uint TextureID;
+				static uint CurrTex;
+				static int SlotID;
+				ImGui::Text("Textures:");
+				for (uint i = 0; i < material->m_TextureOverloads.Length(); i++) {
+					ImGui::Text("Slot: %i, Path: %s", material->m_TextureOverloads[i].m_Slot, material->m_TextureOverloads[i].m_Tex->GetPath().Get());
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Change...#200")) {
+						ImGui::OpenPopup("Change Material Texture");
+						TextureID = i;
+						SlotID = material->m_TextureOverloads[i].m_Slot;
+						CurrTex = _CTextureManager->FindElement(material->m_TextureOverloads[i].m_Tex->GetPath());
+					}
+				}
+
+				if (ImGui::BeginPopupModal("Change Material Texture", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+
+					ImGui::DragInt("Slot:", &SlotID, 1, 0, 32);
+
+					ImGui::BeginChild("Selector", ImVec2(0, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
+					for (uint q = 0; q < _CTextureManager->m_Paths.Length(); q++) {
+						CMString text = _CTextureManager->m_Paths[q];
+						//if (popupFilter.PassFilter(text.Get())) {
+							if (ImGui::Selectable(text.Get(), CurrTex == q)) {
+								CurrTex = q;
+							}
+						//}
+					}
+					ImGui::EndChild();
+
+					if (ImGui::Button("OK")) {
+						unsaved.Add(nodeSelected);
+						
+						material->m_TextureOverloads[TextureID].m_Slot = SlotID;
+						material->m_TextureOverloads[TextureID].m_Tex = _CTextureManager->m_Textures[CurrTex].m_Texture;
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::SameLine();
+					if (ImGui::Button("Close")) {
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::EndPopup();
+				}
+			}
+		
 		}
 
 		ImGui::EndChild();
 	}
 
 	ImGui::End();
+}
+
+void Manager::InlineImGoiRenderTargetSettings() {
+	if (ImGui::TreeNode("Render Target Settings")) {
+
+		if (ImGui::DragFloat3("Position", &m_RTPos.v1)) {
+			m_IsRtDirty = true;
+		}
+		if (ImGui::DragFloat("Fov", &m_RTFov)) {
+			m_IsRtDirty = true;
+		}
+
+		ImGui::TreePop();
+	}
 }
 

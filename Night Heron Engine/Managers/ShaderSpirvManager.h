@@ -19,6 +19,8 @@ public:
 
 	void ImGuiData() override;
 
+	uint FindElement(CMString a_FilePath) override;
+
 	ShaderSpirvData* GetShaderPart(CMString a_FilePath);
 
 protected:
