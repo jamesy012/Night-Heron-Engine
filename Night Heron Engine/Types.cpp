@@ -10,7 +10,7 @@ CMString CMString::ToLower() {
 	for (uint i = 0; i < Length(); i++) {
 		char letter = this->at(i);
 		if (letter >= 'A' && letter <= 'Z') {
-			letter -= 32;
+			letter += 32;
 		}
 		newString += letter;
 	}

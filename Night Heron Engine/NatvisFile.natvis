@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="CMArray&lt;*&gt;">
+    <DisplayString>{{ size={m_Size} }}</DisplayString>
+    <Expand>
+      <Item Name="[size]" ExcludeView="simple">m_Size</Item>
+      <Item Name="[capacity]" ExcludeView="simple">m_ArraySize</Item>
+      <ArrayItems>
+        <Size>m_Size</Size>
+        <ValuePointer>m_Array</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+</AutoVisualizer>

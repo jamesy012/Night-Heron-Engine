@@ -11,6 +11,7 @@ public:
 
 	static CMString LoadTextFromPath(CMString a_Path);
 	static bool IsANumber(char a_Text);
+	static char ToLower(char a_Letter);
 };
 
 class HashHolder {

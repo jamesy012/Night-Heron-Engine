@@ -19,3 +19,10 @@ CMString Util::LoadTextFromPath(CMString a_Path) {
 bool Util::IsANumber(char a_Char) {
 	return a_Char >= '0' && a_Char <= '9';
 }
+
+char Util::ToLower(char a_Letter) {
+	if (a_Letter >= 'A' && a_Letter <= 'Z') {
+		a_Letter += 32;
+	}
+	return a_Letter;
+}

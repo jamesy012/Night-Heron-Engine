@@ -147,6 +147,9 @@ void ShaderManager::ImGuiData() {
 		m_ChangeToIndex = -1;
 	}
 
+	const uint nameMaxLength = 32;
+	static char shaderName[nameMaxLength] = "";
+
 	{
 		static ImGuiTextFilter filter;
 		//if (m_UnsavedShaders.Length() != m_Shaders.Length()) {
@@ -169,6 +172,7 @@ void ShaderManager::ImGuiData() {
 				if (ImGui::Selectable(text.Get(), m_NodeSelected == i)) {
 					m_NodeSelected = i;
 					ShaderCompileInfo = "";
+					strcpy_s(shaderName, m_Shaders[m_NodeSelected].m_Shader->GetDebugObjName().Get());
 				}
 			}
 		}
@@ -181,12 +185,16 @@ void ShaderManager::ImGuiData() {
 		Shader* selected = m_Shaders[m_NodeSelected].m_Shader;
 
 		if (selected && m_NodeSelected != -1) {
-			ImGui::Text("Selected shader: %i (%s)", m_NodeSelected, selected->GetDebugObjName().Get());
+			//ImGui::Text("Selected shader: %i (%s)", m_NodeSelected, selected->GetDebugObjName().Get());
+			if (ImGui::InputText("", shaderName, nameMaxLength)) {
+				m_UnsavedShaders[m_NodeSelected] = true;
+			}
 
 			bool forceReload = false;
 
 			if (selected->m_FilePath.m_FilePath != "") {
 				if (ImGui::Button("Save")) {
+					selected->SetDebugObjName(shaderName);
 					HashHolder temp = selected->m_Hash;
 					selected->Save();
 					m_UnsavedShaders[m_NodeSelected] = false;

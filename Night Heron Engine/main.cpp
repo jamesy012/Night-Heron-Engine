@@ -20,6 +20,7 @@
 #include "Managers/ShaderSpirvManager.h"
 #include "Managers/TextureManager.h"
 #include "Managers/Manager.h"
+#include "Managers/Arguments.h"
 #include "Singletons.h"
 
 #include <glm\glm.hpp>
@@ -63,19 +64,17 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				   int     nCmdShow)               // Window Show State
 
 {
-	//create console
-	AllocConsole();
-	freopen_s((FILE * *)stdout, "CONOUT$", "w", stdout);
 
-	CMString arguments = lpCmdLine;
+	_CArguments = new Arguments();
+	_CArguments->Generate(lpCmdLine);
 
 	//pick graphics api
 	GFX* graphics = nullptr;
 
-	if (arguments.find("-DX11") != std::string::npos) {
+	if (_CArguments->IsArgument("DX11")) {
 		graphics = new GFXDX11();
 	}
-	if (arguments.find("-OpenGL") != std::string::npos) {
+	if (_CArguments->IsArgument("OpenGL")) {
 		graphics = new GFXOpenGL();
 	}
 
@@ -84,33 +83,10 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 		//graphics = new GFXDX11();
 	}
 
-	if (arguments.find("-res ") != std::string::npos) {
-		int index = arguments.find("-res ") + 5;
-		char width[5];
-		char height[5];
-		bool findWidth = true;
-		int charIndex = 0;
-		for (uint i = index; i < 15 && i < arguments.Size() && charIndex < 5; i++) {
-			char num = arguments.At(i);
-			if (Util::IsANumber(num)) {
-				if (findWidth) {
-					width[charIndex++] = num;
-				} else {
-					height[charIndex++] = num;
-				}
-			} else {
-				if (!findWidth) {
-					height[charIndex++] = '\0';
-					break;
-				} else {
-					width[charIndex++] = '\0';
-					findWidth = false;
-				}
-				charIndex = 0;
-			}
-		}
-		sscanf_s(width, "%i", &_CMainWindow->m_WindowWidth);
-		sscanf_s(height, "%i", &_CMainWindow->m_WindowHeight);
+	if (_CArguments->IsArgument("Console")) {
+		//create console
+		AllocConsole();
+		freopen_s((FILE * *)stdout, "CONOUT$", "w", stdout);
 	}
 
 	if (!graphics->CreateWindowSetUpAPI()) {
@@ -121,7 +97,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 
 	_CGraphics->SetUpGraphics();
 
-	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 
 	Camera mainCamera;
 
@@ -206,6 +181,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	testShader->FindUnlinkedUniforms();
 	treeShader->FindUnlinkedUniforms();
 
+	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 	if (testRT) {
 		testRT->SetupRenderTarget_Internal();
 		testRT->SetDebugObjName("Test RT");
@@ -310,36 +286,26 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			commonPerFrameData.time = currentTime;
 			commonDataBlock->UpdateBuffer(&commonPerFrameData);
 
-			static int counter = 0;
-			//counter = (counter + 1) % 512;
-			counter++;
 
-			float x = glm::sin(counter / 64.0f) * 5;
-			float y = glm::cos(counter / 82.0f) * 3;
+			float x = glm::sin(currentTime * 0.423f) * 5;
+			float y = glm::cos(currentTime * 0.72f) * 3;
 			//
 			testUniformStructObj.MatrixProjection = mainCamera.GetProjection();
 
 			if (testRT) {
 				graphics->PushDebugGroup("Render Target");
-				//testUniformStructObj.MatrixView = glm::lookAt(glm::vec3(-x, y, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
 				mainCamera.SetLookAt(glm::vec3(-x, y, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
-				//testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
 				testUniformStructObj.MatrixPV = mainCamera.GetPV();
 
 				_CGraphics->UseRenderTarget(testRT);
 				graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 				graphics->Clear();
-				//treeShader->Use();
-				//treeShader->BindTexture("textureTest", 1);
 
 				testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.0f, 0));
 				testUniformStructObj.MatrixModelTest = glm::rotate(testUniformStructObj.MatrixModelTest, 90.0f, glm::vec3(0, 1, 1));
 				testUniform->UpdateBuffer(&testUniformStructObj);
 				colorTest.Color = glm::vec4(1, 1, 1, 1);
 				testUniform2->UpdateBuffer(&colorTest);
-				//testMesh->Draw();
-
-				//graphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
 
 				testModel.Draw();
 
@@ -350,12 +316,7 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				graphics->PopDebugGroup();
 			}
 
-			//if (RotateCamera) {
-			//	testUniformStructObj.MatrixView = glm::lookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));
-			//} else {
-			//	testUniformStructObj.MatrixView = glm::inverse(glm::translate(glm::mat4(1), CameraPos));
-			//}
-			//testUniformStructObj.MatrixPV = testUniformStructObj.MatrixProjection * testUniformStructObj.MatrixView;
+
 			if (RotateCamera) {
 				mainCamera.SetLookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));
 			} else {
@@ -363,21 +324,13 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				mainCamera.SetRotation(glm::vec3(0));
 			}
 			testUniformStructObj.MatrixPV = mainCamera.GetPV();
-			//
-			//
-			////projection = glm::perspective(counter / 128.0f, 4.0f/3.0f, 0.1f, 100.0f);
-			////testUniformStructObj.MatrixView = glm::translate(testUniformStructObj.MatrixView, glm::vec3(0, 0.1f, 0));
-			//
-			////testUniformStructObj.colorTest.g = (counter > 255 ? 512 - counter : counter) / 255.0f;
-			//
+
 
 			graphics->PushDebugGroup("Main Render");
 			graphics->SetClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			graphics->Clear();
 			testShader->Use();
 
-			//graphics->BindTexture(testTexture, 0);
-			//testShader->BindTexture("textureTest", 1);
 
 			testUniformStructObj.MatrixModelTest = square1.m_Transform.GetModelMatrix();
 			testUniform->UpdateBuffer(&testUniformStructObj);
@@ -403,8 +356,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			testUniform2->UpdateBuffer(&colorTest);
 			squareModel->Draw();
 
-			//graphics->BindTexture(_CGraphics->m_WhiteTexture, 0);
-
 			testUniformStructObj.MatrixModelTest = treeObj.m_Transform.GetModelMatrix();
 			testUniform->UpdateBuffer(&testUniformStructObj);
 			testModel.Draw();
@@ -412,9 +363,11 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			graphics->UnbindTexture(0);
 
 			graphics->PopDebugGroup();
-			graphics->PushDebugGroup("ImGui Render");
-			graphics->ImGuiDraw();
-			graphics->PopDebugGroup();
+			{
+				graphics->PushDebugGroup("ImGui Render");
+				graphics->ImGuiDraw();
+				graphics->PopDebugGroup();
+			}
 
 			graphics->PopDebugGroup();
 			graphics->SwapBuffer();

@@ -3,6 +3,9 @@
 #include "Graphics/API/GFXAPI.h"
 #include "Singletons.h"
 
+#include "Managers/Arguments.h"
+#include "Util.h"
+
 #include <Dependency/ImGui/imgui.h>
 #include <Dependency/ImGui/examples\imgui_impl_win32.h>
 IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -55,6 +58,36 @@ Window::Window() {
 }
 
 bool Window::CreateMainWindow() {
+
+	if (_CArguments->IsArgument("res")) {
+		CMString value = _CArguments->GetArgumentValue("res");
+		char width[5] = "400";
+		char height[5] = "400";
+		bool findWidth = true;
+		int charIndex = 0;
+		for (uint i = 0; i < value.Size() && charIndex < 5; i++) {
+			char num = value.At(i);
+			if (Util::IsANumber(num)) {
+				if (findWidth) {
+					width[charIndex++] = num;
+				} else {
+					height[charIndex++] = num;
+				}
+			} else {
+				if (!findWidth) {
+					height[charIndex++] = '\0';
+					break;
+				} else {
+					width[charIndex++] = '\0';
+					findWidth = false;
+				}
+				charIndex = 0;
+			}
+		}
+		sscanf_s(width, "%i", &m_WindowWidth);
+		sscanf_s(height, "%i", &m_WindowHeight);
+	}
+
 	unsigned int      PixelFormat;                        // Holds The Results After Searching For A Match
 	WNDCLASS    wc;                         // Windows Class Structure
 	DWORD       dwExStyle;                      // Window Extended Style
