@@ -58,15 +58,27 @@ public:
 	glm::vec3 pad;
 };
 
-int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
-				   HINSTANCE   hPrevInstance,              // Previous Instance
-				   LPSTR       lpCmdLine,              // Command Line Parameters
-				   int     nCmdShow)               // Window Show State
+#include "Generated/Objects_Night_Heron_Engine.h"
 
+ADD_OBJ(TestingOBJ)
+class TestingOBJ : public Object {
+public:
+	TestingOBJ() {
+		printf("TESTING_OBJ");
+	}
+
+};
+
+int WINAPI WinMain(_In_ HINSTANCE hInstance,
+				   _In_opt_ HINSTANCE hPrevInstance,
+				   _In_ LPSTR lpCmdLine,
+				   _In_ int nShowCmd)
 {
-
 	_CArguments = new Arguments();
 	_CArguments->Generate(lpCmdLine);
+
+
+
 
 	//pick graphics api
 	GFX* graphics = nullptr;
@@ -89,6 +101,12 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 		freopen_s((FILE * *)stdout, "CONOUT$", "w", stdout);
 	}
 
+	REGISTER_OBJ(TestingOBJ);
+	CMString loadFromFileTest = "TestingOBJ";
+	Object* obj;
+	obj = (TestingOBJ*)GET_OBJ(loadFromFileTest.Get());
+
+
 	if (!graphics->CreateWindowSetUpAPI()) {
 		return -1;
 	}
@@ -96,7 +114,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 	SingletonManager::CreateSingletons();
 
 	_CGraphics->SetUpGraphics();
-
 
 	Camera mainCamera;
 
@@ -286,7 +303,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			commonPerFrameData.time = currentTime;
 			commonDataBlock->UpdateBuffer(&commonPerFrameData);
 
-
 			float x = glm::sin(currentTime * 0.423f) * 5;
 			float y = glm::cos(currentTime * 0.72f) * 3;
 			//
@@ -316,7 +332,6 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 				graphics->PopDebugGroup();
 			}
 
-
 			if (RotateCamera) {
 				mainCamera.SetLookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));
 			} else {
@@ -325,12 +340,10 @@ int WINAPI WinMain(HINSTANCE   hInstance,              // Instance
 			}
 			testUniformStructObj.MatrixPV = mainCamera.GetPV();
 
-
 			graphics->PushDebugGroup("Main Render");
 			graphics->SetClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			graphics->Clear();
 			testShader->Use();
-
 
 			testUniformStructObj.MatrixModelTest = square1.m_Transform.GetModelMatrix();
 			testUniform->UpdateBuffer(&testUniformStructObj);

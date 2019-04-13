@@ -1,0 +1,14 @@
+{
+  "FileVersion": 2,
+  "Id": "1b5488fa-34b9-4f11-941a-7fea8378809b",
+  "Items": [
+    {
+      "Id": "0577a939-2c0d-4398-83b3-741071019e01",
+      "Command": "\"$(ProjectDir)\\\" \"$(MSBuildProjectFullPath)\" \"Generated\\\\\" \"$(ProjectName)\""
+    },
+    {
+      "Id": "5961c632-cb64-4925-b90d-b9b9b8db1b5b",
+      "Command": "\"$(TargetPath)\" \"$(ProjectDir)\\\" \"$(MSBuildProjectFullPath)\" \"Generated\\\\\" \"$(ProjectName)\""
+    }
+  ]
+}

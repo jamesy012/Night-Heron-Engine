@@ -144,6 +144,9 @@
     <ClCompile Include="Managers\Arguments.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Generated\Objects_Night_Heron_Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\OpenGL\GFXOpenGL.h">
@@ -267,6 +270,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Managers\Arguments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Generated\Hash_Night_Heron_Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Generated\Objects_Night_Heron_Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

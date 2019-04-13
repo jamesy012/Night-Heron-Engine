@@ -3,6 +3,9 @@
 #include "Types.h"
 #include "Transform.h"
 
+#include "Generated/Objects_Night_Heron_Engine.h"
+
+ADD_OBJ(Object)
 class Object {
 public:
 	Object();
