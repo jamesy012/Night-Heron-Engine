@@ -27,6 +27,15 @@ void ManagerBase::ImGuiWindow(bool* a_Open) {
 	ImGui::End();
 }
 
+uint ManagerBase::FindElement(CMString a_FilePath) {
+	for (uint i = 0; i < m_Paths.Length(); i++) {
+		if (m_Paths[i].Compare(a_FilePath)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 void ManagerBase::SeachFolder(CMString a_Path) {
 	for (const fs::v1::directory_entry& entry : fs::directory_iterator(a_Path)) {
 		CMString filePath = entry.path().generic_string();

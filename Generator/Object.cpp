@@ -109,13 +109,20 @@ struct GEN_OBJ_FACTORY
 
 extern GEN_OBJ_FACTORY* g_factory;
 
-//std::map<unsigned int,void*> OBJ_MAP = {};)";
+	//const std::map<unsigned int,char*> OBJ_MAP = {)";
 
-	//for (auto it = m_ObjectMap.begin(); it != m_ObjectMap.end(); it++) {
-	//	buf2 += "//\t_PROG_HASH_" + it->second.name + " = " + std::to_string(it->first) + ",\n";
-	//}
+	if(false){
+		bool firstRun = true;
+		for (auto it = m_ObjectMap.begin(); it != m_ObjectMap.end(); it++) {
+			if (!firstRun) {
+				buf2 += ",";
+			}
+			buf2 += "{" + std::to_string(it->first) + ", \"" + it->second.name + "\" }";
+			firstRun = false;
+		}
+	}
 
-	buf2 += R"(
+	buf2 += R"(};
 
 	unsigned int hash_c_string(const char* p);
 
@@ -131,7 +138,13 @@ std::cout << "Failed to get Object(" << a_Obj << ") from string, class is not in
 }
 //std::cout << "Get OBJ " << a_Obj << " - " << std::hash<const char*>{}(a_Obj) << " - " << (242207216 == GENERATED_OBJ::hash_c_string(a_Obj)) << "\n";
 	return obj;
-})";
+}
+
+//static char* GET_OBJ_NAME(const unsigned int a_Hash) {
+//	return GENERATED_OBJ::OBJ_MAP[a_Hash];
+//}
+
+)";
 
 	finalFile += "\n" + buf2;
 

@@ -17,8 +17,6 @@ public:
 	void ImGuiWindow(bool* a_Open) override;
 	void ImGuiData();
 
-	uint FindElement(CMString a_FilePath) override;
-
 	Texture* GetTexture(CMString a_Path);
 
 	void AddTexture(Texture* a_Texture);

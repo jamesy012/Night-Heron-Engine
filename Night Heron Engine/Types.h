@@ -249,6 +249,10 @@ public:
 		return find_first_of(a_Character);
 	}
 
+	bool Contains(CMString a_String) const {
+		return find(a_String) != std::string::npos;
+	}
+
 	CMString SubStr(uint a_From, uint a_NumCharacters) const {
 		return substr(a_From, a_NumCharacters);
 	}
@@ -281,8 +285,20 @@ public:
 		_itoa_s(a_Value, buffer, 10);
 		return CMString(buffer);
 	}
+
+	static CMString FloatToString(float a_Value) {
+		char buffer[33];
+		sprintf_s(buffer, "%f", a_Value);
+		return CMString(buffer);
+	}
+
 	static int StringToInt(CMString a_Value) {
 		int value = atoi(a_Value.Get());
+		return value;
+	}
+
+	static float StringToFloat(CMString a_Value) {
+		float value = (float)atof(a_Value.Get());
 		return value;
 	}
 };

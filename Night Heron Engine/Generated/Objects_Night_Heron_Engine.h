@@ -35,7 +35,7 @@ struct GEN_OBJ_FACTORY
 
 extern GEN_OBJ_FACTORY* g_factory;
 
-//std::map<unsigned int,void*> OBJ_MAP = {};
+	//const std::map<unsigned int,char*> OBJ_MAP = {};
 
 	unsigned int hash_c_string(const char* p);
 
@@ -45,8 +45,13 @@ extern GEN_OBJ_FACTORY* g_factory;
 static void* GET_OBJ(const char* a_Obj) {
 void* obj = GENERATED_OBJ::g_factory->construct(a_Obj);
 if(obj == nullptr){
-std::cout << "Failed to get Object from string, class is not in a .h file (if it's from cpp then please call REGISTER_OBJ on it ) " << std::endl;
+std::cout << "Failed to get Object(" << a_Obj << ") from string, class is not in a .h file (if it's from cpp then please call REGISTER_OBJ on it) " << std::endl;
 }
 //std::cout << "Get OBJ " << a_Obj << " - " << std::hash<const char*>{}(a_Obj) << " - " << (242207216 == GENERATED_OBJ::hash_c_string(a_Obj)) << "\n";
 	return obj;
 }
+
+//static char* GET_OBJ_NAME(const unsigned int a_Hash) {
+//	return GENERATED_OBJ::OBJ_MAP[a_Hash];
+//}
+

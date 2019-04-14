@@ -38,6 +38,7 @@
 
 #include "Transform.h"
 #include "Object.h"
+#include "Scene.h"
 
 struct TestUniformStruct {
 public:
@@ -58,27 +59,14 @@ public:
 	glm::vec3 pad;
 };
 
-#include "Generated/Objects_Night_Heron_Engine.h"
-
-ADD_OBJ(TestingOBJ)
-class TestingOBJ : public Object {
-public:
-	TestingOBJ() {
-		printf("TESTING_OBJ");
-	}
-
-};
-
 int WINAPI WinMain(_In_ HINSTANCE hInstance,
 				   _In_opt_ HINSTANCE hPrevInstance,
 				   _In_ LPSTR lpCmdLine,
-				   _In_ int nShowCmd)
-{
+				   _In_ int nShowCmd) {
 	_CArguments = new Arguments();
 	_CArguments->Generate(lpCmdLine);
 
-
-
+	GENERATED_OBJ::RegisterClasses();
 
 	//pick graphics api
 	GFX* graphics = nullptr;
@@ -101,11 +89,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		freopen_s((FILE * *)stdout, "CONOUT$", "w", stdout);
 	}
 
-	REGISTER_OBJ(TestingOBJ);
-	CMString loadFromFileTest = "TestingOBJ";
-	Object* obj;
-	obj = (TestingOBJ*)GET_OBJ(loadFromFileTest.Get());
-
 
 	if (!graphics->CreateWindowSetUpAPI()) {
 		return -1;
@@ -117,8 +100,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 	Camera mainCamera;
 
-	Model* squareModel = new Model();
-	squareModel->CreateSquare();
+	Scene scene;
 
 	Object square1("Square1"), square2("Square2"), square3("Square3"), square4("Square4"), treeObj("WorldTree");
 	square1.m_Transform.SetPosition(glm::vec3(-2, 0, 0));
@@ -127,6 +109,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	square4.m_Transform.SetPosition(glm::vec3(2, 2, 0));
 	treeObj.m_Transform.SetPosition(glm::vec3(-6.5f, 5.5f, -5.5f));
 	treeObj.m_Transform.SetRotation(glm::vec3(-55.0f, 0, 55.0f));
+
+	scene.m_Name = "Scene Test";
+	scene.m_FilePath = "sceneTest.scene";
+	if (!scene.Load()) {
+		scene.AddObject(&square1);
+		scene.AddObject(&square4);
+		scene.AddObject(&treeObj);
+		scene.Save();
+	} else {
+
+	}
 
 	_CManager->m_Objects.Add(&square1);
 	_CManager->m_Objects.Add(&square2);
@@ -203,6 +196,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		testRT->SetupRenderTarget_Internal();
 		testRT->SetDebugObjName("Test RT");
 	}
+
+	Model* squareModel = new Model();
+	squareModel->CreateSquare();
 
 	Model testModel;
 	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");

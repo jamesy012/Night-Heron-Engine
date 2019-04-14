@@ -80,15 +80,6 @@ void TextureManager::ImGuiWindow(bool* a_Open) {
 void TextureManager::ImGuiData() {
 }
 
-uint TextureManager::FindElement(CMString a_FilePath) {
-	for (uint i = 0; i < m_Paths.Length(); i++) {
-		if (m_Paths[i].Compare(a_FilePath)) {
-			return i;
-		}
-	}
-	return -1;
-}
-
 Texture* TextureManager::GetTexture(CMString a_Path) {
 	if (a_Path[0] != '/') {
 		a_Path = '/' + a_Path;

@@ -14,7 +14,7 @@ public:
 	//where ImGui::BeginChild... goes
 	virtual void ImGuiData() = 0;
 
-	virtual uint FindElement(CMString a_FilePath) = 0;
+	virtual uint FindElement(CMString a_FilePath);
 
 protected:
 	virtual bool IsFileAOurType(CMString a_FilePath) = 0;
