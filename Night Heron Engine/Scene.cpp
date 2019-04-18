@@ -4,64 +4,68 @@
 
 #include "Object.h"
 
-bool Scene::Load_Internal(CMArray<CMString> a_Splits) {
-	uint line = 0;
-	uint stage = 0;
-	while (line < a_Splits.Length() - 1) {
-		stage++;
-		if (stage == 1) {
-			m_Name = a_Splits[line++];
-		}
-		if (stage == 2) {
-			int objects = CMString::StringToInt(a_Splits[line++]);
-			CMArray<CMArray<CMString>> splits;
-			splits.Reserve(objects);
-			CMArray<CMString> Objects;
-			int currObject = -1;
-			int curLine = 0;
-			while (currObject != objects + 1) {
-				if (line >= a_Splits.Length()) {
-					break;
-				}
-				CMString currLine = a_Splits[line++];
-				if (currLine.Contains("Object:")) {
-					currObject++;
-					curLine = 0;
-					splits.Add(CMArray<CMString>());
-					continue;
-				}
-				curLine++;
-				splits[currObject].Add(currLine);
-				if (curLine == 2) {
-					Objects.Add(currLine);
-				}
-			}
-			currObject = 0;
-			for (int i = 0; i < objects; i++) {
-				Object* obj = (Object*)GET_OBJ(Objects[i].Get());
-				obj->Load_Internal(splits[i]);
-				m_Objects.Add(obj);
-			}
-		}
-	}
+#include "nlohmann/json.hpp"
 
+void Scene::Start() {
+	for (int i = 0; i < m_Objects.Length(); i++) {
+		m_Objects[i]->Start();
+	}
+}
+
+void Scene::Update() {
+	for (int i = 0; i < m_Objects.Length(); i++) {
+		m_Objects[i]->Update();
+	}
+}
+
+void Scene::Draw() {
+	for (int i = 0; i < m_Objects.Length(); i++) {
+		m_Objects[i]->PreDraw();
+		m_Objects[i]->Draw();
+	}
+}
+
+bool Scene::LoadData_Internal(nlohmann::json & a_Json) {
+	//j.parse(data);
+	a_Json.at("Name").get_to(m_Name);
+	nlohmann::json objects = a_Json.at("Objects");
+
+	for (nlohmann::json::iterator it = objects.begin(); it != objects.end(); ++it) {
+		auto json = *it;
+		//std::cout << it.key() << " : " << it.value() << "\n";
+		Object* obj;
+		if (json.contains("Type")) {
+			obj = (Object*)GET_OBJ(json["Type"].get<CMString>().Get());
+		} else {
+			return false;
+		}
+		//obj->m_Name = it.key();
+		if (!obj->LoadData_Internal(json)) {
+			m_Objects.Clear();
+			return false;
+		}
+		m_Objects.Add(obj);
+	}
 	return true;
 }
 
-CMString Scene::GetData_Internal() {
-	CMString data;
-	data += m_Name + "\n";
-
-	data += CMString::IntToString(m_Objects.Length()) + '\n';
+void Scene::SaveData_Internal(nlohmann::json & a_Json) {
+	a_Json["Name"] = m_Name;
+	nlohmann::json& test = a_Json["Objects"];
 	for (uint i = 0; i < m_Objects.Length(); i++) {
-		data += "Object:\n";
-		data += m_Objects[i]->GetData_Internal() + '\n';
+		m_Objects[i]->SaveData_Internal(test[i]);
 	}
-
-
-	return data;
 }
 
 void Scene::AddObject(Object* a_Object) {
 	m_Objects.Add(a_Object);
+}
+
+Object * Scene::GetObjectByName(const CMString a_Name) const {
+	for (int i = 0; i < m_Objects.Length(); i++) {
+		if (m_Objects[i]->m_Name == a_Name) {
+			return m_Objects[i];
+		}
+	}
+	return nullptr;
 }

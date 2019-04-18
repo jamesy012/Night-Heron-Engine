@@ -33,6 +33,7 @@ public:
 		return &m_Meshs[a_Index];
 	}
 
+	CMString m_FilePath;
 private:
 	virtual void SetDebugObjName_Internal() override;
 

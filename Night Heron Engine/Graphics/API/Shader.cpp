@@ -15,6 +15,9 @@
 #include "Managers/ShaderSpirvManager.h"
 #include "Managers/Manager.h"
 
+#include "nlohmann/json.hpp"
+
+
 #define ShaderCachePath "ShaderCache\\"
 
 extern Shader* _CCurrentShader = nullptr;
@@ -65,13 +68,13 @@ std::vector<unsigned int> Shader::loadSpirvFromPath(std::string a_Path) {
 
 	return code;
 }
-
+/*
 bool Shader::Load_Internal(CMArray<CMString> a_Splits) {
 	uint line = 0;
 	uint stage = 0;
 	while (line < a_Splits.Length() - 1) {
 		stage++;
-		if (stage == 1) {
+			if (stage == 1) {
 			SetDebugObjName(a_Splits[line++]);
 		}
 		if (stage == 2) {
@@ -92,7 +95,7 @@ bool Shader::Load_Internal(CMArray<CMString> a_Splits) {
 	return true;
 }
 
-CMString Shader::GetData_Internal() {
+CMString Shader::SaveData_Internal() {
 	CMString data;
 
 	data += m_DebugName + "\n";
@@ -116,6 +119,48 @@ CMString Shader::GetData_Internal() {
 	}
 
 	return data;
+}
+*/
+
+bool Shader::LoadData_Internal(nlohmann::json & a_Json) {
+	SetDebugObjName(a_Json["Debug Name"].get<CMString>());
+
+	if (a_Json.contains("Shaders")) {
+		auto shaders = a_Json["Shaders"];
+		for (nlohmann::json::iterator it = shaders.begin(); it != shaders.end(); ++it) {
+			auto obj = *it;
+			AddShader(_CShaderSpirvManager->GetShaderPart(obj.get<CMString>()));
+		}
+		LinkShaders();
+	}
+	if (a_Json.contains("Uniforms")) {
+		auto uniforms = a_Json["Uniforms"];
+		for (nlohmann::json::iterator it = uniforms.begin(); it != uniforms.end(); ++it) {
+			auto obj = *it;
+			CMString uniformName = obj.get<CMString>();
+			ShaderUniformBlock* uniform = _CManager->GetShaderUniform(uniformName);
+			AddBuffer(uniform, uniformName);
+		}
+	}
+	return true;
+}
+
+void Shader::SaveData_Internal(nlohmann::json & a_Json) {
+	a_Json["Debug Name"] = m_DebugName;
+	{
+		auto& sfo = a_Json["Shaders"];
+		for (uint i = 0; i < m_ShaderFileObjects.Length(); i++) {
+			sfo[i] = m_ShaderFileObjects[i]->m_FilePath.m_FilePath;
+		}
+	}
+	{
+		auto& uniforms = a_Json["Uniforms"];
+		for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
+			if (m_AttachedUniforms[i].m_HasLinked && (m_AttachedUniforms[i].m_Block && m_AttachedUniforms[i].m_Block->m_Registered)) {
+				uniforms[i] = m_AttachedUniforms[i].m_Name;
+			}
+		}
+	}
 }
 
 CMString Shader::GetShaderTypeString(ShaderType a_Type) {

@@ -3,10 +3,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include "Interfaces/Jsonable.h"
+
 typedef glm::vec3 Vector3;
 typedef glm::mat4 Matrix;
 
-class Transform {
+class Transform : public Jsonable {
 public:
 	Transform();
 	~Transform();
@@ -29,6 +31,10 @@ public:
 	Vector3 m_Position;
 	Vector3 m_Rotation;
 	Vector3 m_Scale;
+
+	// Inherited via Jsonable
+	virtual bool LoadData_Internal(nlohmann::json& a_Json) override;
+	virtual void SaveData_Internal(nlohmann::json& a_Json) override;
 protected:
 	virtual void UpdateModelMatrix();
 

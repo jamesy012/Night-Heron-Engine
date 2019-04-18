@@ -181,6 +181,9 @@ void ShaderManager::ImGuiData() {
 	}
 	ImGui::SameLine();
 	{
+		if (m_Shaders.Length() == 0) {
+			return;
+		}
 		ImGui::BeginChild("Details", ImVec2(0, 0), true);
 		Shader* selected = m_Shaders[m_NodeSelected].m_Shader;
 
@@ -195,12 +198,12 @@ void ShaderManager::ImGuiData() {
 			if (selected->m_FilePath.m_FilePath != "") {
 				if (ImGui::Button("Save")) {
 					selected->SetDebugObjName(shaderName);
-					HashHolder temp = selected->m_Hash;
+					//HashHolder temp = selected->m_Hash;
 					selected->Save();
 					m_UnsavedShaders[m_NodeSelected] = false;
-					if (!temp.Comp(selected->m_Hash)) {
+					//if (!temp.Comp(selected->m_Hash)) {
 						forceReload = true;
-					}
+					//}
 				}
 				ImGui::SameLine();
 				ImGui::Text("%s", selected->m_FilePath.m_FilePath.Get());

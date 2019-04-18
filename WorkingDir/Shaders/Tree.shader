@@ -1,9 +1,15 @@
-
-Tree Shader - Renamed
-2
-/test2.vert
-/test2.frag
-3
-Vertex_Data
-shader_data
-CommonData
+{
+    "Object": {
+        "Debug Name": "tree Shader",
+        "Shaders": [
+            "/test2.frag",
+            "/test2.vert"
+        ],
+        "Uniforms": [
+            "Vertex_Data",
+            "shader_data",
+            "CommonData"
+        ]
+    },
+    "Version": 1.0
+}

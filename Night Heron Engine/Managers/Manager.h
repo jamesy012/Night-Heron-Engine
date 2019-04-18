@@ -3,10 +3,10 @@
 #include "Types.h"
 #include "SimpleMath.h"
 
-class Object;
 class Model;
 class Material;
 class ShaderUniformBlock;
+class Scene;
 
 class Manager {
 public:
@@ -20,14 +20,17 @@ public:
 
 	void FindAllTextures();
 
-	CMArray<Object*> m_Objects;
 	CMArray<Model*> m_Models;
 	CMArray<Material*> m_Materials;
+	Scene* m_CurrentScene = nullptr;
 
 	bool m_ShowObjects;
 	bool m_ShowModels;
 	bool m_ShowMaterials;
 	bool m_ShowTextures;
+
+	void AddModel(Model* a_Model);
+	Model* GetModel(CMString a_FileName);
 
 	//todo: remove this, get this another way
 	class ShaderUniformBlock* tempPVMUniform;

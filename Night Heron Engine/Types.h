@@ -39,6 +39,14 @@ public:
 		return m_Size;
 	}
 
+	void Clear() {
+		if (m_Array) {
+			delete[] m_Array;
+		}
+		m_Size = m_ArraySize = 0;
+		m_Array = nullptr;
+	}
+
 	void Add(T a_Object) {
 		ResizeIfNeeded(1);
 		m_Array[m_Size] = a_Object;

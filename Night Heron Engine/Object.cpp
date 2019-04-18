@@ -1,5 +1,12 @@
 #include "Object.h"
 
+#include "nlohmann/json.hpp"
+#include "Graphics/Model.h"
+
+#include "ImGui/imgui.h"
+
+#include "Managers/Manager.h"
+
 Object::Object() {
 }
 
@@ -11,39 +18,54 @@ Object::Object(CMString a_Name) : m_Name(a_Name) {
 Object::~Object() {
 }
 
-bool Object::Load_Internal(CMArray<CMString> a_Splits) {
-	uint line = 0;
-	uint stage = 0;
-	while (line < a_Splits.Length() - 1) {
-		stage++;
-		if (stage == 1) {
-			m_Name = a_Splits[line++];
-		}
-		if (stage == 1) {
-			//object type
-			line++;
-		}
-		if (stage == 2) {
-			CMString position = a_Splits[line++];
-			CMArray<CMString> split = position.Split(',');
-			m_Transform.SetPosition(Vector3(CMString::StringToFloat(split[0]), CMString::StringToFloat(split[1]), CMString::StringToFloat(split[2])));
-		}
-		if (stage >= 3) {
-			line++;
+void Object::ImGuiExtras() {
+	float scale = 0.25f;
+	if (ImGui::DragFloat3("Position", &m_Transform.m_Position.x, scale)) {
+		m_Transform.SetDirty();
+	}
+	if (ImGui::DragFloat3("Rotation", &m_Transform.m_Rotation.x, scale)) {
+		m_Transform.SetDirty();
+	}
+	if (ImGui::DragFloat3("Scale", &m_Transform.m_Scale.x, scale)) {
+		m_Transform.SetDirty();
+	}
+	ImGui::Separator();
+}
+
+bool Object::LoadData_Internal(nlohmann::json & a_Json) {
+	//nlohmann::json& json = (*a_Json);
+	//json["Type"] = "Object";	
+	if (!m_Transform.LoadData_Internal(a_Json["Transform"])) {
+		return false;
+	}
+	if (a_Json.contains("Model")) {
+		if (a_Json["Model"].is_string()) {
+			//m_ObjectModel = new Model();
+			//m_ObjectModel->LoadModel(a_Json["Model"].get<CMString>());
+			m_ObjectModel = _CManager->GetModel(a_Json["Model"].get<CMString>());
 		}
 	}
-
+	if (a_Json.contains("Name")) {
+		m_Name = a_Json["Name"].get<CMString>();
+	}
 	return true;
 }
 
-CMString Object::GetData_Internal() {
-	CMString data;
-	data += m_Name + "\n";
-	data += GetObjectClassName() + "\n";
+void Object::SaveData_Internal(nlohmann::json & a_Json) {
+	a_Json["Type"] = GetObjectClassName();
+	m_Transform.SaveData_Internal(a_Json["Transform"]);
+	if (m_ObjectModel) {
+		if (m_ObjectModel->m_FilePath.Length() > 5) {
+			a_Json["Model"] = m_ObjectModel->m_FilePath;
+		}
+	}
+	a_Json["Name"] = m_Name;
+}
 
-	data += CMString::FloatToString(m_Transform.m_Position.x) + "," + CMString::FloatToString(m_Transform.m_Position.y) + "," + CMString::FloatToString(m_Transform.m_Position.z) + '\n';
-	data += CMString::FloatToString(m_Transform.m_Rotation.x) + "," + CMString::FloatToString(m_Transform.m_Rotation.y) + "," + CMString::FloatToString(m_Transform.m_Rotation.z) + '\n';
-	data += CMString::FloatToString(m_Transform.m_Scale.x) + "," + CMString::FloatToString(m_Transform.m_Scale.y) + "," + CMString::FloatToString(m_Transform.m_Scale.z) + '\n';
-
-	return data;
+#include "Managers/TimeManager.h"
+void SinObject::Update() {
+	float offset = glm::sin(_CTimeManager->m_CurrentTime);
+	Vector3 pos = m_Transform.m_Position;
+	pos.y = offset;
+	m_Transform.SetPosition(pos);
 }

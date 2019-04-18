@@ -35,6 +35,8 @@ void Model::LoadModel(CMString a_FileName) {
 
 	uint index = a_FileName.FindFromEnd('/') + 1;
 	SetDebugObjName(a_FileName.SubStr(index, a_FileName.Size() - index));
+
+	m_FilePath = a_FileName;
 }
 
 void Model::CreateSquare() {
@@ -87,6 +89,7 @@ void Model::CreateSquare() {
 	mesh->Bind();
 	m_Meshs.Add({ mesh, "Model_Square" });
 	SetDebugObjName("Square");
+	m_FilePath = "GENERATED/Square";
 }
 
 void Model::Draw() {

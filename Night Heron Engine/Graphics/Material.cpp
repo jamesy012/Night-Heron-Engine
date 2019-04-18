@@ -14,6 +14,8 @@
 
 #include "Debug.h"
 
+#include "nlohmann/json.hpp"
+
 static Material* LastMaterial = nullptr;
 
 Material::Material(CMString a_FilePath) : Saveable(a_FilePath) {
@@ -53,78 +55,50 @@ void Material::AddTexture(Texture* a_Texture, uint a_Slot) {
 	m_TextureOverloads.Add({ a_Texture, a_Slot });
 }
 
-bool Material::Load_Internal(CMArray<CMString> a_Splits) {
-	uint line = 0;
-	uint stage = 0;
-	while (line < a_Splits.Length() - 1) {
-		stage++;
-		if (stage == 1) {
-			SetDebugObjName(a_Splits[line++]);
+bool Material::LoadData_Internal(nlohmann::json & a_Json) {
+	CMString debugName;
+	a_Json["Debug Name"].get_to(debugName);
+	SetDebugObjName(debugName);
+
+	if (a_Json.contains("Shader")) {
+		m_Shader = _CShaderManager->GetShader(a_Json["Shader"].get<CMString>());
+		if (m_Shader == nullptr) {
+			return false;
 		}
-		if (stage == 2) {
-			CMString path = a_Splits[line++];
-			if (!path.IsEmpty()) {
-				m_Shader = _CShaderManager->GetShader(path);
-				if (m_Shader == nullptr) {
-					return false;
-				}
+	}
+	if (a_Json.contains("Textures")) {
+		auto textures = a_Json["Textures"];
+		for (nlohmann::json::iterator it = textures.begin(); it != textures.end(); ++it) {
+			auto tex = *it;
+			Texture* texture = _CTextureManager->GetTexture(tex["Path"].get<CMString>());
+			if (texture == nullptr) {
+				return false;
 			}
-		}
-		if (stage == 3) {
-			int shaders = CMString::StringToInt(a_Splits[line++]);
-			if (m_Shader == nullptr) {
-				m_Shader = _CGraphics->CreateShader();
-				m_Shader->SetDebugObjName("Material " + GetDebugObjName() + " Temp Shader");
-				for (int i = 0; i < shaders; i++) {
-					m_Shader->AddShader(_CShaderSpirvManager->GetShaderPart(a_Splits[line++]));
-				}
-				m_Shader->LinkShaders();
-				m_CreatedShader = true;
-			} else {
-				line += shaders;
-			}
-		}
-		if (stage == 4) {
-			int textures = CMString::StringToInt(a_Splits[line++]);
-			for (int i = 0; i < textures; i++) {
-				int slot = CMString::StringToInt(a_Splits[line++]);;
-				CMString path = a_Splits[line++];
-				Texture* tex = _CTextureManager->GetTexture(path);
-				if (tex == nullptr) {
-					return false;
-				}
-				AddTexture(tex, slot);
-			}
+			AddTexture(texture, tex["Slot"].get<int>());
 		}
 	}
 
 	return true;
 }
 
-CMString Material::GetData_Internal() {
-	CMString data;
-	data += m_DebugName + "\n";
+void Material::SaveData_Internal(nlohmann::json & a_Json) {
+	a_Json["Debug Name"] = m_DebugName;
 	if (m_Shader) {
 		if (!m_Shader->m_FilePath.m_FilePath.IsEmpty()) {
-			data += m_Shader->m_FilePath.m_FilePath + '\n';
-			data += "0\n";
+			a_Json["Shader"] = m_Shader->m_FilePath.m_FilePath;
 		} else {
-			data += "" + '\n';
-			data += CMString::IntToString(m_Shader->m_ShaderFileObjects.Length()) + '\n';
+			auto shaders = a_Json["Shaders"];
 			for (uint i = 0; i < m_Shader->m_ShaderFileObjects.Length(); i++) {
-				data += m_Shader->m_ShaderFileObjects[i]->m_FilePath.m_FilePath + '\n';
+				shaders[i] = m_Shader->m_ShaderFileObjects[i]->m_FilePath.m_FilePath;
 			}
 		}
-	} else {
-		data += "\n0\n";
 	}
-	{
-		data += CMString::IntToString(m_TextureOverloads.Length()) + '\n';
+	if (m_TextureOverloads.Length() != 0) {
+		auto& textures = a_Json["Textures"];
 		for (uint i = 0; i < m_TextureOverloads.Length(); i++) {
-			data += CMString::IntToString(m_TextureOverloads[i].m_Slot) + '\n';
-			data += m_TextureOverloads[i].m_Tex->GetPath() + '\n';
+			auto& tex = textures[i];
+			tex["Slot"] = m_TextureOverloads[i].m_Slot;
+			tex["Path"] = m_TextureOverloads[i].m_Tex->GetPath();
 		}
 	}
-
-	return data;
 }

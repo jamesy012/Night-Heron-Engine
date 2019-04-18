@@ -7,6 +7,7 @@ extern class ShaderSpirvManager* _CShaderSpirvManager;
 extern class TextureManager* _CTextureManager;
 extern class Window* _CMainWindow;
 extern class Arguments* _CArguments;
+extern class TimeManager* _CTimeManager;
 
 namespace SingletonManager {
 	extern void CreateSingletons();

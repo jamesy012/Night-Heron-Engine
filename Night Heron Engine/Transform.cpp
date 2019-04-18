@@ -2,6 +2,8 @@
 
 #include <glm\ext.hpp>
 
+#include "nlohmann/json.hpp"
+
 Transform::Transform() {
 	Reset();
 }
@@ -69,6 +71,46 @@ void Transform::Reset() {
 	m_Position = Vector3(0);
 	m_Rotation = Vector3(0);
 	m_Scale = Vector3(1);
+}
+
+bool Transform::LoadData_Internal(nlohmann::json & a_Json) {
+	if (a_Json.contains("Pos")) {
+		a_Json["Pos"]["x"].get_to(m_Position.x);
+		a_Json["Pos"]["y"].get_to(m_Position.y);
+		a_Json["Pos"]["z"].get_to(m_Position.z);
+	} else {
+		return false;
+	}
+	if (a_Json.contains("Rot")) {
+		a_Json["Rot"]["x"].get_to(m_Rotation.x);
+		a_Json["Rot"]["y"].get_to(m_Rotation.y);
+		a_Json["Rot"]["z"].get_to(m_Rotation.z);
+	} else {
+		return false;
+	}
+	if (a_Json.contains("Scale")) {
+		a_Json["Scale"]["x"].get_to(m_Scale.x);
+		a_Json["Scale"]["y"].get_to(m_Scale.y);
+		a_Json["Scale"]["z"].get_to(m_Scale.z);
+	} else {
+		return false;
+	}
+	SetDirty();
+	return true;
+}
+
+void Transform::SaveData_Internal(nlohmann::json & a_Json) {
+	a_Json["Pos"]["x"] = m_Position.x;
+	a_Json["Pos"]["y"] = m_Position.y;
+	a_Json["Pos"]["z"] = m_Position.z;
+
+	a_Json["Rot"]["x"] = m_Rotation.x;
+	a_Json["Rot"]["y"] = m_Rotation.y;
+	a_Json["Rot"]["z"] = m_Rotation.z;
+	
+	a_Json["Scale"]["x"] = m_Scale.x;
+	a_Json["Scale"]["y"] = m_Scale.y;
+	a_Json["Scale"]["z"] = m_Scale.z;
 }
 
 void Transform::UpdateModelMatrix() {

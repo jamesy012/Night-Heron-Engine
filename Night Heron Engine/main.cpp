@@ -23,6 +23,8 @@
 #include "Managers/Arguments.h"
 #include "Singletons.h"
 
+#include "Managers/TimeManager.h"
+
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
 
@@ -39,6 +41,8 @@
 #include "Transform.h"
 #include "Object.h"
 #include "Scene.h"
+
+#include "tests/ObjectDrawTest.h"
 
 struct TestUniformStruct {
 public:
@@ -58,6 +62,7 @@ public:
 	float time;
 	glm::vec3 pad;
 };
+
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance,
 				   _In_opt_ HINSTANCE hPrevInstance,
@@ -98,34 +103,60 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 	_CGraphics->SetUpGraphics();
 
+	Model* squareModel = new Model();
+	squareModel->CreateSquare();
+
+	Model testModel;
+	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");
+	//testModel.LoadModel("Models/nanosuit.obj");
+
 	Camera mainCamera;
 
 	Scene scene;
+	scene.m_Camera = &mainCamera;
 
-	Object square1("Square1"), square2("Square2"), square3("Square3"), square4("Square4"), treeObj("WorldTree");
-	square1.m_Transform.SetPosition(glm::vec3(-2, 0, 0));
-	square2.m_Transform.SetPosition(glm::vec3(0, 0, 0));
-	square3.m_Transform.SetPosition(glm::vec3(2, 0, 0));
-	square4.m_Transform.SetPosition(glm::vec3(2, 2, 0));
-	treeObj.m_Transform.SetPosition(glm::vec3(-6.5f, 5.5f, -5.5f));
-	treeObj.m_Transform.SetRotation(glm::vec3(-55.0f, 0, 55.0f));
+	ObjectDrawTest* square1;
+	ObjectDrawTest* square2;
+	ObjectDrawTest* square3;
+	ObjectDrawTest* square4;
+	ObjectDrawTest* treeObj;
 
 	scene.m_Name = "Scene Test";
 	scene.m_FilePath = "sceneTest.scene";
 	if (!scene.Load()) {
-		scene.AddObject(&square1);
-		scene.AddObject(&square4);
-		scene.AddObject(&treeObj);
+		square1 = new ObjectDrawTest("Square1");
+		square2 = new ObjectDrawTest("Square2");
+		square3 = new ObjectDrawTest("Square3");
+		square4 = new ObjectDrawTest("Square4");
+		treeObj = new ObjectDrawTest("WorldTree");
+
+		square1->m_Color = glm::vec4(1, 0, 0, 1);
+		square2->m_Color = glm::vec4(0, 1, 0, 1);
+		square3->m_Color = glm::vec4(0, 0, 1, 1);
+		square4->m_Color = glm::vec4(1, 1, 1, 1);
+
+		square1->m_Transform.SetPosition(glm::vec3(-2, 0, 0));
+		square2->m_Transform.SetPosition(glm::vec3(0, 0, 0));
+		square3->m_Transform.SetPosition(glm::vec3(2, 0, 0));
+		square4->m_Transform.SetPosition(glm::vec3(2, 2, 0));
+		treeObj->m_Transform.SetPosition(glm::vec3(-6.5f, 5.5f, -5.5f));
+		treeObj->m_Transform.SetRotation(glm::vec3(-55.0f, 0, 55.0f));
+
+		scene.AddObject(square1);
+		scene.AddObject(square2);
+		scene.AddObject(square3);
+		scene.AddObject(square4);
+		scene.AddObject(treeObj);
 		scene.Save();
 	} else {
-
+		square1 = (ObjectDrawTest*)scene.GetObjectByName("Square1");
+		square2 = (ObjectDrawTest*)scene.GetObjectByName("Square2");
+		square3 = (ObjectDrawTest*)scene.GetObjectByName("Square3");
+		square4 = (ObjectDrawTest*)scene.GetObjectByName("Square4");
+		treeObj = (ObjectDrawTest*)scene.GetObjectByName("WorldTree");
 	}
 
-	_CManager->m_Objects.Add(&square1);
-	_CManager->m_Objects.Add(&square2);
-	_CManager->m_Objects.Add(&square3);
-	_CManager->m_Objects.Add(&square4);
-	_CManager->m_Objects.Add(&treeObj);
+	_CManager->m_CurrentScene = &scene;
 
 	Texture * testTexture = _CTextureManager->GetTexture("peacock-2.jpg");
 	if (testTexture == nullptr) {
@@ -197,12 +228,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		testRT->SetDebugObjName("Test RT");
 	}
 
-	Model* squareModel = new Model();
-	squareModel->CreateSquare();
-
-	Model testModel;
-	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");
-	//testModel.LoadModel("Models/nanosuit.obj");
+	square1->m_ObjectModel = square2->m_ObjectModel = square3->m_ObjectModel = square4->m_ObjectModel = squareModel;
+	treeObj->m_ObjectModel = &testModel;
 
 	Material treeModelMat1("Material/TreeModelMat1.mat");
 	if (!treeModelMat1.Load()) {
@@ -245,6 +272,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	mainCamera.SetFov(fov);
 	mainCamera.SetAspectRatio(graphics->m_Window->GetAspect());
 
+	ObjectDrawTest* testObj = (ObjectDrawTest*)scene.GetObjectByName("Model/Uniform Object Test");
+	if (testObj == nullptr) {
+		testObj = new ObjectDrawTest();
+		testObj->m_Name = "Model/Uniform Object Test";
+		testObj->m_Color = Vector3(1, 0, 1);
+		testObj->m_ObjectModel = squareModel;
+		testObj->m_ModelUniform = testUniform;
+		testObj->m_ColorUniform = testUniform2;
+		scene.AddObject(testObj);
+	}
+
+	scene.Start();
+	
 	while (true) {
 		MSG msg;
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -257,6 +297,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			graphics->PushDebugGroup("Frame");
 			auto timerStart = timer.now();
 			currentTime += deltaTime;
+			_CTimeManager->m_CurrentTime = currentTime;
 
 			graphics->ImGuiNewFrame();
 
@@ -295,6 +336,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			ImGui::Checkbox("Rotate Camera", &RotateCamera);
 			ImGui::DragFloat3("Camera Pos", &CameraPos.x, 0.25f);
 			ImGui::End();
+
+
+			//UPDATE OUR SCENE
+			scene.Update();
 
 			commonPerFrameData.time = currentTime;
 			commonDataBlock->UpdateBuffer(&commonPerFrameData);
@@ -341,33 +386,35 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			graphics->Clear();
 			testShader->Use();
 
-			testUniformStructObj.MatrixModelTest = square1.m_Transform.GetModelMatrix();
-			testUniform->UpdateBuffer(&testUniformStructObj);
-			colorTest.Color = glm::vec4(1, 0, 0, 1);
-			testUniform2->UpdateBuffer(&colorTest);
-			squareModel->Draw();
+			//testUniformStructObj.MatrixModelTest = square1->m_Transform.GetModelMatrix();
+			//testUniform->UpdateBuffer(&testUniformStructObj);
+			//colorTest.Color = glm::vec4(1, 0, 0, 1);
+			//testUniform2->UpdateBuffer(&colorTest);
+			//squareModel->Draw();
+			//
+			//testUniformStructObj.MatrixModelTest = square2->m_Transform.GetModelMatrix();
+			//testUniform->UpdateBuffer(&testUniformStructObj);
+			//colorTest.Color = glm::vec4(0, 1, 0, 1);
+			//testUniform2->UpdateBuffer(&colorTest);
+			//squareModel->Draw();
+			//
+			//testUniformStructObj.MatrixModelTest = square3->m_Transform.GetModelMatrix();
+			//testUniform->UpdateBuffer(&testUniformStructObj);
+			//colorTest.Color = glm::vec4(0, 0, 1, 1);
+			//testUniform2->UpdateBuffer(&colorTest);
+			//squareModel->Draw();
+			//
+			//testUniformStructObj.MatrixModelTest = square4->m_Transform.GetModelMatrix();
+			//testUniform->UpdateBuffer(&testUniformStructObj);
+			//colorTest.Color = glm::vec4(1, 1, 1, 1);
+			//testUniform2->UpdateBuffer(&colorTest);
+			//squareModel->Draw();
+			//
+			//testUniformStructObj.MatrixModelTest = treeObj->m_Transform.GetModelMatrix();
+			//testUniform->UpdateBuffer(&testUniformStructObj);
+			//testModel.Draw();
 
-			testUniformStructObj.MatrixModelTest = square2.m_Transform.GetModelMatrix();
-			testUniform->UpdateBuffer(&testUniformStructObj);
-			colorTest.Color = glm::vec4(0, 1, 0, 1);
-			testUniform2->UpdateBuffer(&colorTest);
-			squareModel->Draw();
-
-			testUniformStructObj.MatrixModelTest = square3.m_Transform.GetModelMatrix();
-			testUniform->UpdateBuffer(&testUniformStructObj);
-			colorTest.Color = glm::vec4(0, 0, 1, 1);
-			testUniform2->UpdateBuffer(&colorTest);
-			squareModel->Draw();
-
-			testUniformStructObj.MatrixModelTest = square4.m_Transform.GetModelMatrix();
-			testUniform->UpdateBuffer(&testUniformStructObj);
-			colorTest.Color = glm::vec4(1, 1, 1, 1);
-			testUniform2->UpdateBuffer(&colorTest);
-			squareModel->Draw();
-
-			testUniformStructObj.MatrixModelTest = treeObj.m_Transform.GetModelMatrix();
-			testUniform->UpdateBuffer(&testUniformStructObj);
-			testModel.Draw();
+			scene.Draw();
 
 			graphics->UnbindTexture(0);
 

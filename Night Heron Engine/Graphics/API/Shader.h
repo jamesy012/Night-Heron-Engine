@@ -54,8 +54,9 @@ protected:
 	//virtual void AddShader_Internal(ShaderTypes a_Type, std::string a_Path) = 0;
 	virtual void Link_Internal() = 0;
 
-	bool Load_Internal(CMArray<CMString> a_Splits) override;
-	CMString GetData_Internal() override;
+	// Inherited via Saveable
+	virtual bool LoadData_Internal(nlohmann::json& a_Json) override;
+	virtual void SaveData_Internal(nlohmann::json& a_Json) override;
 
 	CMString GetShaderTypeString(ShaderType a_Type);
 

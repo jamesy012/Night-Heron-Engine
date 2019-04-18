@@ -1,7 +1,13 @@
-
-Tree Model Mat 1
-Shaders/Tree.shader
-0
-1
-0
-GEN_White Texture
+{
+    "Object": {
+        "Debug Name": "Tree Model Mat 1",
+        "Shader": "Shaders/Tree.shader",
+        "Textures": [
+            {
+                "Path": "GEN_White Texture",
+                "Slot": 0
+            }
+        ]
+    },
+    "Version": 1.0
+}

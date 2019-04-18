@@ -1,24 +1,170 @@
-
-Scene Test
-3
-Object:
-Square1
-Object
--2.000000,0.000000,0.000000
-0.000000,0.000000,0.000000
-1.000000,1.000000,1.000000
-
-Object:
-Square4
-Object
-2.000000,2.000000,0.000000
-0.000000,0.000000,0.000000
-1.000000,1.000000,1.000000
-
-Object:
-WorldTree
-Object
--6.500000,5.500000,-5.500000
--55.000000,0.000000,55.000000
-1.000000,1.000000,1.000000
-
+{
+    "Object": {
+        "Name": "Scene Test",
+        "Objects": [
+            {
+                "Model": "GENERATED/Square",
+                "Name": "Square1",
+                "Transform": {
+                    "Pos": {
+                        "x": -2.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            {
+                "Model": "GENERATED/Square",
+                "Name": "Square2",
+                "Transform": {
+                    "Pos": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                }
+            },
+            {
+                "Model": "GENERATED/Square",
+                "Name": "Square3",
+                "Transform": {
+                    "Pos": {
+                        "x": 2.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "GENERATED/Square",
+                "Name": "Square4",
+                "Transform": {
+                    "Pos": {
+                        "x": 2.0,
+                        "y": 2.0,
+                        "z": 0.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "GENERATED/Square",
+                "Name": "Model/Uniform Object Test",
+                "Transform": {
+                    "Pos": {
+                        "x": 0.0,
+                        "y": 2.0,
+                        "z": 0.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 0.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx",
+                "Name": "WorldTree",
+                "Transform": {
+                    "Pos": {
+                        "x": -6.5,
+                        "y": 5.5,
+                        "z": -5.5
+                    },
+                    "Rot": {
+                        "x": -55.0,
+                        "y": 0.0,
+                        "z": 55.0
+                    },
+                    "Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
+        ]
+    },
+    "Version": 1.0
+}

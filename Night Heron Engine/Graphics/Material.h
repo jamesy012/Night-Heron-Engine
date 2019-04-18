@@ -25,8 +25,9 @@ public:
 	//temp while we cant load combined shaders from file
 	bool m_CreatedShader = false;
 protected:
-	bool Load_Internal(CMArray<CMString> a_Splits) override;
-	CMString GetData_Internal() override;
+	// Inherited via Saveable
+	virtual bool LoadData_Internal(nlohmann::json& a_Json) override;
+	virtual void SaveData_Internal(nlohmann::json& a_Json) override;
 
 	struct TextureSlot {
 		Texture* m_Tex;

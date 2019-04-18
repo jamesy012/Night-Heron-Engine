@@ -5,7 +5,9 @@
 #include "Util.h"
 #include "Types.h"
 
-class Saveable {
+#include "Jsonable.h"
+
+class Saveable : public Jsonable {
 public:
 	Saveable() {
 	}
@@ -17,9 +19,6 @@ public:
 	virtual void Save();
 
 	CMFilePath m_FilePath;
-	//Hash of the data in the file
-	uchar m_Hash[HASH_LENGTH] = { 0 };
 protected:
-	virtual bool Load_Internal(CMArray<CMString> a_Splits) = 0;
-	virtual CMString GetData_Internal() = 0;
+	float m_Version = 1.0f;
 };

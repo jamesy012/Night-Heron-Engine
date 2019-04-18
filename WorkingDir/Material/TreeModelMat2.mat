@@ -1,7 +1,13 @@
-
-Tree Model Mat 2
-Shaders/TestShader.shader
-0
-1
-0
-peacock-2.jpg
+{
+    "Object": {
+        "Debug Name": "Tree Model Mat 2",
+        "Shader": "Shaders/TestShader.shader",
+        "Textures": [
+            {
+                "Path": "peacock-2.jpg",
+                "Slot": 0
+            }
+        ]
+    },
+    "Version": 1.0
+}

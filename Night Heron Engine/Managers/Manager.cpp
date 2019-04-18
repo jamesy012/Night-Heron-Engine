@@ -11,12 +11,17 @@
 #include "Graphics/API/Shader.h"
 
 #include "Object.h"
+#include "Scene.h"
 #include "Graphics/Model.h"
 #include "Graphics/Material.h"
 #include "Graphics/API/Shader.h"
 
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
+
+#include "Generated/Objects_Night_Heron_Engine.h"
+
+#include "nlohmann/json.hpp"
 
 Manager::Manager() {
 	_CManager = this;
@@ -69,8 +74,21 @@ ShaderUniformBlock* Manager::GetShaderUniform(CMString a_SlotName) {
 void Manager::FindAllTextures() {
 }
 
+void Manager::AddModel(Model * a_Model) {
+	m_Models.Add(a_Model);
+}
+
+Model * Manager::GetModel(CMString a_FileName) {
+	for (int i = 0; i < m_Models.Length(); i++) {
+		if (m_Models[i]->m_FilePath == a_FileName) {
+			return m_Models[i];
+		}
+	}
+	return nullptr;
+}
+
 void Manager::ImGuiObjects() {
-	if (!m_ShowObjects) {
+	if (!m_ShowObjects && m_CurrentScene != nullptr) {
 		return;
 	}
 
@@ -78,43 +96,238 @@ void Manager::ImGuiObjects() {
 
 	//static int selection_mask = (1 << 2);
 	static int nodeSelected = -1;
+
+	enum class MODALS {
+		NONE = -1,
+		CREATE = 1,
+		CHANGE_MODEL,
+		CHANGE_NAME,
+		CHANGE_TYPE,
+	};
+	static MODALS modal = MODALS::NONE;
+	static bool showingModal = false;
+
 	ImGui::Begin("Object Menu", &m_ShowObjects);
 
 	{
-		//float size = ImGui::GetWindowContentRegionWidth() * 0.5f;
 		static float size = 150;
+		ImGui::BeginChild("Objects", ImVec2(size,0));
+		//float size = ImGui::GetWindowContentRegionWidth() * 0.5f;
 		//ImGui::DragFloat("Size", &size, 1.0f);
-		ImGui::BeginChild("Selector", ImVec2(size, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+		if (ImGui::Button("Save")) {
+			m_CurrentScene->Save();
+		}
 
-		for (uint i = 0; i < m_Objects.Length(); i++) {
-			CMString text = m_Objects[i]->m_Name.Get();
+		ImGui::BeginChild("Selector", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), false, ImGuiWindowFlags_HorizontalScrollbar);
+		for (uint i = 0; i < m_CurrentScene->m_Objects.Length(); i++) {
+			CMString text = m_CurrentScene->m_Objects[i]->m_Name.Get();
 			if (ImGui::Selectable(text.Get(), nodeSelected == i)) {
 				nodeSelected = i;
 			}
 		}
+		ImGui::EndChild();
+		
+		ImGui::BeginChild("Buttons");
 
+		if (ImGui::Button("Create")) {
+			modal = MODALS::CREATE;
+		}
+
+		ImGui::EndChild();
 		ImGui::EndChild();
 	}
 	ImGui::SameLine();
 	{
 		ImGui::BeginChild("Details", ImVec2(0, 0), true);
+		if (nodeSelected >= 0) {			
 
-		if (nodeSelected >= 0) {
-			Object* obj = m_Objects[nodeSelected];
+			Object* obj = m_CurrentScene->m_Objects[nodeSelected];
 			ImGui::Text("Selected Object: %s", obj->m_Name.Get());
+			ImGui::SameLine();
 
-			if (ImGui::DragFloat3("Position", &obj->m_Transform.m_Position.x, m_Scale)) {
-				obj->m_Transform.SetDirty();
+			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			if (ImGui::Button("Change Name")) {
+				modal = MODALS::CHANGE_NAME;
 			}
-			if (ImGui::DragFloat3("Rotation", &obj->m_Transform.m_Rotation.x, m_Scale)) {
-				obj->m_Transform.SetDirty();
+			ImGui::PopItemFlag();
+			ImGui::PopStyleVar();
+			
+			ImGui::SameLine();
+
+			if (ImGui::Button("Change Model")) {
+				modal = MODALS::CHANGE_MODEL;
 			}
-			if (ImGui::DragFloat3("Scale", &obj->m_Transform.m_Scale.x, m_Scale)) {
-				obj->m_Transform.SetDirty();
+
+			if (ImGui::Button("Change Type")) {
+				modal = MODALS::CHANGE_TYPE;
 			}
+
+			obj->ImGuiExtras();
 		}
 
 		ImGui::EndChild();
+	}
+
+	//MODALS
+	{
+		static int Selected = 0;
+		static ImGuiTextFilter filter;
+		if (showingModal == false && modal != MODALS::NONE) {
+			switch (modal) {
+				case MODALS::CREATE:
+					ImGui::OpenPopup("Create Scene Object");
+					break;
+				case MODALS::CHANGE_NAME:
+					ImGui::OpenPopup("Change Object Name");
+					break;
+				case MODALS::CHANGE_MODEL:
+					ImGui::OpenPopup("Change Object Model");
+					break;
+				case MODALS::CHANGE_TYPE:
+					ImGui::OpenPopup("Change Object Type");
+					break;
+			}
+			showingModal = true;
+			Selected = -1;
+			modal = MODALS::NONE;
+		}
+
+		if (ImGui::BeginPopupModal("Create Scene Object", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			static CMString ObjectSelected;
+			ImGui::BeginChild("Selector", ImVec2(0, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
+			filter.Draw("", 100);
+			int index = 0;
+			for (auto it = GENERATED_OBJ::g_factory->m_classes.begin(); it != GENERATED_OBJ::g_factory->m_classes.end(); it++, index++) {
+				if (filter.PassFilter(it->first.c_str())) {
+					if (ImGui::Selectable(it->first.c_str(), Selected == index)) {
+						Selected = index;
+						ObjectSelected = it->first;
+					}
+				}
+			}
+			ImGui::EndChild();
+
+
+			if (ImGui::Button("Add")) {
+				if (Selected != -1) {
+					Object* obj = (Object*)GET_OBJ(ObjectSelected.Get());
+					if (obj->m_Name == "") {
+						obj->m_Name = ObjectSelected + "_" + CMString::IntToString(m_CurrentScene->m_Objects.Length());
+					}
+					m_CurrentScene->AddObject(obj);
+
+					obj->Start();
+
+					ImGui::CloseCurrentPopup();
+					showingModal = false;
+				}
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Close")) {
+				ImGui::CloseCurrentPopup();
+				showingModal = false;
+			}
+			ImGui::EndPopup();
+		}
+		if (ImGui::BeginPopupModal("Change Object Name", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			const uint nameMaxLength = 32;
+			static char name[nameMaxLength] = "";
+			static bool getNewName = true;
+
+			if (getNewName) {
+				strcpy_s(name, m_CurrentScene->m_Objects[nodeSelected]->m_Name.Get());
+				getNewName = false;
+			}
+			
+			bool EnterPressed = false;
+			if (ImGui::InputText("", name, nameMaxLength, ImGuiInputTextFlags_EnterReturnsTrue)) {
+				EnterPressed = true;
+			}
+
+			if (ImGui::Button("OK") || EnterPressed) {
+				getNewName = true;
+
+				m_CurrentScene->m_Objects[nodeSelected]->m_Name = name;
+
+				ImGui::CloseCurrentPopup();
+				showingModal = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel")) {
+				getNewName = true;
+				ImGui::CloseCurrentPopup();
+				showingModal = false;
+			}
+			ImGui::EndPopup();
+		}
+		if (ImGui::BeginPopupModal("Change Object Model", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			static CMString ObjectSelected;
+			ImGui::BeginChild("Selector", ImVec2(400, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
+			filter.Draw("", 100);
+			for (int i = 0; i < m_Models.Length();i++) {
+				if (filter.PassFilter(m_Models[i]->m_FilePath.c_str())) {
+					if (ImGui::Selectable(m_Models[i]->m_FilePath.c_str(), Selected == i)) {
+						Selected = i;
+					}
+				}
+			}
+			ImGui::EndChild();
+
+
+			if (ImGui::Button("Change")) {
+				if (Selected != -1) {
+					m_CurrentScene->m_Objects[nodeSelected]->m_ObjectModel = m_Models[Selected];
+
+					ImGui::CloseCurrentPopup();
+					showingModal = false;
+				}
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Close")) {
+				ImGui::CloseCurrentPopup();
+				showingModal = false;
+			}
+			ImGui::EndPopup();
+		}
+		if (ImGui::BeginPopupModal("Change Object Type", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			static CMString ObjectSelected;
+			ImGui::BeginChild("Selector", ImVec2(0, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
+			filter.Draw("", 100);
+			int index = 0;
+			for (auto it = GENERATED_OBJ::g_factory->m_classes.begin(); it != GENERATED_OBJ::g_factory->m_classes.end(); it++, index++) {
+				if (filter.PassFilter(it->first.c_str())) {
+					if (ImGui::Selectable(it->first.c_str(), Selected == index)) {
+						Selected = index;
+						ObjectSelected = it->first;
+					}
+				}
+			}
+			ImGui::EndChild();
+
+
+			if (ImGui::Button("OK")) {
+				if (Selected != -1) {
+					Object* obj = (Object*)GET_OBJ(ObjectSelected.Get());
+					nlohmann::json j;
+					m_CurrentScene->m_Objects[nodeSelected]->SaveData_Internal(j);
+					obj->LoadData_Internal(j);
+					m_CurrentScene->m_Objects.RemoveAt(nodeSelected);
+					m_CurrentScene->AddObject(obj);
+
+					obj->Start();
+
+					ImGui::CloseCurrentPopup();
+					showingModal = false;
+				}
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Close")) {
+				ImGui::CloseCurrentPopup();
+				showingModal = false;
+			}
+			ImGui::EndPopup();
+		}
 	}
 
 	ImGui::End();

@@ -5,6 +5,7 @@
 #include "Managers/ShaderSpirvManager.h"
 #include "Managers/TextureManager.h"
 #include "Managers/Arguments.h"
+#include "Managers/TimeManager.h"
 
 extern Manager* _CManager = nullptr;
 extern GFX* _CGraphics = nullptr;
@@ -13,7 +14,7 @@ extern ShaderSpirvManager* _CShaderSpirvManager = nullptr;
 extern TextureManager* _CTextureManager = nullptr;
 extern Window* _CMainWindow = nullptr;
 extern Arguments* _CArguments = nullptr;
-
+extern TimeManager* _CTimeManager = nullptr;
 
 extern void SingletonManager::CreateSingletons() {
 	_CManager = new Manager();
@@ -23,4 +24,6 @@ extern void SingletonManager::CreateSingletons() {
 	_CShaderManager->FindAllInFiles();
 	_CTextureManager = new TextureManager();
 	_CTextureManager->FindAllInFiles();
+
+	_CTimeManager = new TimeManager();
 }

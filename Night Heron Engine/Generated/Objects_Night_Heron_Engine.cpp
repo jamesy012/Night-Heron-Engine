@@ -1,7 +1,9 @@
 //Do not edit - automated file
 #include "Objects_Night_Heron_Engine.h"
 
+#include "Tests\ObjectDrawTest.h" //ObjectDrawTest 
 #include "Object.h" //Object 
+#include "Object.h" //SinObject 
 
 namespace GENERATED_OBJ{
 
@@ -20,7 +22,9 @@ namespace GENERATED_OBJ{
 	}
 
 	void RegisterClasses() {
+REGISTER_OBJ(ObjectDrawTest);
 REGISTER_OBJ(Object);
+REGISTER_OBJ(SinObject);
 
 	}
 

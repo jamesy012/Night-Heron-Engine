@@ -6,37 +6,34 @@
 
 #include <windows.h>
 
+#include "nlohmann/json.hpp"
+
 bool Saveable::Load() {
 	CMString data = Util::LoadTextFromPath(m_FilePath.m_FilePath);
 	if (data.Length() < 5) {
 		return false;
 	}
-	uint cut = data.FindFromStart('\n') + 1;
-	//if (data.Length() < 16) {
-	//	data = &data[data.Length()];
-	//
-	//} else {
-	//	data = data.SubStr(17, data.Length() - 17);
-	//}
-	data = data.SubStr(cut, data.Length() - cut);
-	CMArray<CMString> splits = data.Split('\n');
 
-	return Load_Internal(splits);
+	nlohmann::json j = nlohmann::json::parse(data);
+
+	if (j["Version"] != m_Version) {
+		return false;
+	}
+
+	return LoadData_Internal(j["Object"]);
 }
 
 void Saveable::Save() {
 	CreateDirectory(m_FilePath.m_FileLocation.Get(), NULL);
 	std::ofstream infoFile(m_FilePath.m_FilePath);
-	CMString data;
+	//CMString data;
+	nlohmann::json j;
+	j["Version"] = m_Version;
 	if (infoFile.is_open()) {
-		data = GetData_Internal();
 
-		//data.Hash(m_Hash);
-		//for (int q = 0; q < HASH_LENGTH; q++) {
-		//	infoFile << m_Hash[q];
-		//}
-		infoFile << "\n";
-		infoFile << data;
+		SaveData_Internal(j["Object"]);
+
+		infoFile << j.dump(4);
 		infoFile.close();
 	}
 }
