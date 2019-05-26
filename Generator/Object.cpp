@@ -35,7 +35,6 @@ void Object::GetFromFile(std::string fileName, std::string& fileData) {
 		}
 		posFile += m_DefineName.size() + 1;
 		size_t size = (fileData.find(')', posFile) - posFile);
-
 		std::string hashText = fileData.substr(posFile, size);
 		//unsigned int hash = std::hash<std::string>{}(hashText);
 		//unsigned int hash = std::hash<const char*>{}(hashText.c_str());
@@ -150,6 +149,16 @@ std::cout << "Failed to get Object(" << a_Obj << ") from string, class is not in
 
 	std::string directory = std::string(data->args[1]) + m_SaveFileName + ".h";
 
+	std::ifstream fileStream(directory);
+	std::stringstream fileBuffer;
+	fileBuffer << fileStream.rdbuf();//get text from file into buffer
+	std::string fileData = fileBuffer.str();
+
+	if (fileData == finalFile) {
+		std::cout << "\n" << directory << " - File Not changed" << "\n";
+		return;
+	}
+
 	CreateDirectoryA((data->args[1] + data->args[3]).c_str(), NULL);
 
 	std::cout << "\n" << "Output: " << directory << "\n";
@@ -211,6 +220,16 @@ finalFile += R"(
 };)";
 
 	std::string directory = std::string(data->args[1]) + m_SaveFileName + ".cpp";
+
+	std::ifstream fileStream(directory);
+	std::stringstream fileBuffer;
+	fileBuffer << fileStream.rdbuf();//get text from file into buffer
+	std::string fileData = fileBuffer.str();
+
+	if (fileData == finalFile) {
+		std::cout << "\n" << directory << " - File Not changed" << "\n";
+		return;
+	}
 
 	CreateDirectoryA((data->args[1] + data->args[3]).c_str(), NULL);
 

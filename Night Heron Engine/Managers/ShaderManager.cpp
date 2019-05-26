@@ -11,6 +11,8 @@
 
 #include "Debug.h"
 
+#include "Helpers/ImGuiHelper.h"
+
 ShaderManager::ShaderManager() {
 }
 
@@ -85,6 +87,7 @@ Shader* ShaderManager::GetShader(uint a_Index) {
 
 void ShaderManager::AddShader(Shader* a_Shader) {
 	m_Shaders.Add({ a_Shader, true });
+	m_UnsavedShaders.Add(false);
 }
 
 void ShaderManager::RemoveShader(Shader* a_Shader) {
@@ -150,31 +153,39 @@ void ShaderManager::ImGuiData() {
 	const uint nameMaxLength = 32;
 	static char shaderName[nameMaxLength] = "";
 
-	{
-		static ImGuiTextFilter filter;
-		//if (m_UnsavedShaders.Length() != m_Shaders.Length()) {
-		//	m_UnsavedShaders.Resize(m_Shaders.Length())
-		//}
+	enum class MODALS {
+		NONE = -1,
+		SAVE_AS = 1
+	};
+	static MODALS modal = MODALS::NONE;
+	static bool showingModal = false;
 
+	static bool ForceSave = false;
+
+	{
 		//float size = ImGui::GetWindowContentRegionWidth() * 0.5f;
 		static float size = 150;
 		//ImGui::DragFloat("Size", &size, 1.0f);
 		ImGui::BeginChild("Selector", ImVec2(size, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-		filter.Draw("", size);
-
+		CMArray<CMString> names;
 		for (uint i = 0; i < m_Shaders.Length(); i++) {
-			CMString text = m_Shaders[i].m_Shader->GetDebugObjName();
-			if (filter.PassFilter(text.Get())) {
-				if (m_UnsavedShaders[i]) {
-					text += " *";
-				}
-				if (ImGui::Selectable(text.Get(), m_NodeSelected == i)) {
-					m_NodeSelected = i;
-					ShaderCompileInfo = "";
-					strcpy_s(shaderName, m_Shaders[m_NodeSelected].m_Shader->GetDebugObjName().Get());
-				}
+			CMString name = m_Shaders[i].m_Shader->GetDebugObjName();
+			if (m_UnsavedShaders[i]) {
+				name += " *";
 			}
+			names.Add(name);
+		}
+		if (ImGuiHelper::Selectable(&m_NodeSelected, names)) {
+			ShaderCompileInfo = "";
+			strcpy_s(shaderName, m_Shaders[m_NodeSelected].m_Shader->GetDebugObjName().Get());
+		}
+
+
+		if (ImGui::Button("Add Shader")) {
+			Shader* shader = _CGraphics->CreateShader();
+			AddShader(shader);
+			shader->SetDebugObjName("New Shader.");
 		}
 
 		ImGui::EndChild();
@@ -197,16 +208,28 @@ void ShaderManager::ImGuiData() {
 
 			if (selected->m_FilePath.m_FilePath != "") {
 				if (ImGui::Button("Save")) {
-					selected->SetDebugObjName(shaderName);
-					//HashHolder temp = selected->m_Hash;
-					selected->Save();
-					m_UnsavedShaders[m_NodeSelected] = false;
-					//if (!temp.Comp(selected->m_Hash)) {
-						forceReload = true;
-					//}
+					ForceSave = true;
 				}
-				ImGui::SameLine();
-				ImGui::Text("%s", selected->m_FilePath.m_FilePath.Get());
+
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Save as...")) {
+				modal = MODALS::SAVE_AS;
+
+			}
+			ImGui::SameLine();
+			ImGui::Text("%s", selected->m_FilePath.m_FilePath.Get());
+
+			if (ForceSave) {
+				selected->SetDebugObjName(shaderName);
+				//HashHolder temp = selected->m_Hash;
+				selected->Save();
+				m_UnsavedShaders[m_NodeSelected] = false;
+				//if (!temp.Comp(selected->m_Hash)) {
+				forceReload = true;
+				//}
+
+				ForceSave = false;
 			}
 
 			if (ImGui::Button("Reload Shader") || forceReload) {
@@ -236,6 +259,10 @@ void ShaderManager::ImGuiData() {
 			ImGui::SameLine();
 			ImGui::Text(ShaderCompileInfo.Get());
 
+			if (ImGui::Button("Add Shader")) {
+				selected->m_ShaderFileObjects.Add(new ShaderSpirvData());
+			}
+
 			{
 				static uint newNode = -1;
 				static uint ChangingNode = -1;
@@ -264,6 +291,12 @@ void ShaderManager::ImGuiData() {
 
 							popupFilter = ImGuiTextFilter(ssd->m_FilePath.m_FilePath.SubStrFindFromEnd('.').Get());
 							popupFilter.Build();
+						}
+
+						ImGui::SameLine();
+
+						if (ImGui::Button("Remove")) {
+							selected->m_ShaderFileObjects.RemoveAt(i);
 						}
 
 						//popup selector
@@ -310,5 +343,59 @@ void ShaderManager::ImGuiData() {
 		}
 
 		ImGui::EndChild();
+	}
+
+	//MODALS
+	{
+		static int Selected = 0;
+		static ImGuiTextFilter filter;
+		if (showingModal == false && modal != MODALS::NONE) {
+			switch (modal) {
+				case MODALS::SAVE_AS:
+					ImGui::OpenPopup("Save As");
+					break;
+			}
+			showingModal = true;
+			Selected = -1;
+			modal = MODALS::NONE;
+		}
+
+		if (ImGui::BeginPopupModal("Save As", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			const uint nameMaxLength = 32;
+			static char name[nameMaxLength] = "";
+			static bool getNewName = true;
+
+			if (getNewName) {
+				strcpy_s(name, m_Shaders[m_NodeSelected].m_Shader->m_FilePath.m_FilePath.Get());
+				getNewName = false;
+			}
+
+			bool EnterPressed = false;
+			if (ImGui::InputText("", name, nameMaxLength, ImGuiInputTextFlags_EnterReturnsTrue)) {
+				EnterPressed = true;
+			}
+
+			if (ImGui::Button("OK") || EnterPressed) {
+				getNewName = true;
+
+				CMString fileName = name;
+				if (!fileName.ToLower().Contains(".shader")) {
+					fileName += ".shader";
+				}
+
+				m_Shaders[m_NodeSelected].m_Shader->m_FilePath = fileName;
+				m_UnsavedShaders[m_NodeSelected] = true;
+
+				ImGui::CloseCurrentPopup();
+				showingModal = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel")) {
+				getNewName = true;
+				ImGui::CloseCurrentPopup();
+				showingModal = false;
+			}
+			ImGui::EndPopup();
+		}
 	}
 }

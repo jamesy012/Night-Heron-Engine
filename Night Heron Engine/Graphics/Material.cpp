@@ -30,7 +30,7 @@ Material::~Material() {
 
 void Material::Use() {
 	if (LastMaterial != nullptr) {
-		for (int i = 0; i < LastMaterial->m_TextureOverloads.Length(); i++) {
+		for (uint i = 0; i < LastMaterial->m_TextureOverloads.Length(); i++) {
 			_CGraphics->UnbindTexture(LastMaterial->m_TextureOverloads[i].m_Slot);
 		}
 	}
@@ -41,13 +41,13 @@ void Material::Use() {
 		m_Shader->Use();
 	}
 
-	for (int i = 0; i < m_TextureOverloads.Length(); i++) {
+	for (uint i = 0; i < m_TextureOverloads.Length(); i++) {
 		_CGraphics->BindTexture(m_TextureOverloads[i].m_Tex, m_TextureOverloads[i].m_Slot);
 	}
 }
 
 void Material::AddTexture(Texture* a_Texture, uint a_Slot) {
-	for (int i = 0; i < m_TextureOverloads.Length(); i++) {
+	for (uint i = 0; i < m_TextureOverloads.Length(); i++) {
 		if (m_TextureOverloads[i].m_Slot == a_Slot) {
 			CMASSERT_MSG(true, "Texture already in slot");
 		}

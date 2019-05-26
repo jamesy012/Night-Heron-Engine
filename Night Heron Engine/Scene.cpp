@@ -7,19 +7,19 @@
 #include "nlohmann/json.hpp"
 
 void Scene::Start() {
-	for (int i = 0; i < m_Objects.Length(); i++) {
+	for (uint i = 0; i < m_Objects.Length(); i++) {
 		m_Objects[i]->Start();
 	}
 }
 
 void Scene::Update() {
-	for (int i = 0; i < m_Objects.Length(); i++) {
+	for (uint i = 0; i < m_Objects.Length(); i++) {
 		m_Objects[i]->Update();
 	}
 }
 
 void Scene::Draw() {
-	for (int i = 0; i < m_Objects.Length(); i++) {
+	for (uint i = 0; i < m_Objects.Length(); i++) {
 		m_Objects[i]->PreDraw();
 		m_Objects[i]->Draw();
 	}
@@ -62,7 +62,7 @@ void Scene::AddObject(Object* a_Object) {
 }
 
 Object * Scene::GetObjectByName(const CMString a_Name) const {
-	for (int i = 0; i < m_Objects.Length(); i++) {
+	for (uint i = 0; i < m_Objects.Length(); i++) {
 		if (m_Objects[i]->m_Name == a_Name) {
 			return m_Objects[i];
 		}

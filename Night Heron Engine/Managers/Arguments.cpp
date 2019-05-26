@@ -5,7 +5,7 @@
 void Arguments::Generate(CMString a_Arguments) {
 	CMArray<CMString> list = a_Arguments.Split('-');
 
-	for (int i = 0; i < a_Arguments.Length();) {
+	for (uint i = 0; i < a_Arguments.Length();) {
 		CMString arg;
 		CMString value;
 		char letter = a_Arguments[i];
@@ -46,7 +46,7 @@ bool Arguments::IsArgument(CMString a_Argument) {
 
 Arguments::Argument* Arguments::GetArgument(CMString a_Argument) {
 	a_Argument = a_Argument.ToLower();
-	for (int i = 0; i < m_Arguments.Length(); i++) {
+	for (uint i = 0; i < m_Arguments.Length(); i++) {
 		if (a_Argument == m_Arguments[i].m_Arg) {
 			return &m_Arguments[i];
 		}

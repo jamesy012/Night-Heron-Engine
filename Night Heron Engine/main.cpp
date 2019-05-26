@@ -386,34 +386,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			graphics->Clear();
 			testShader->Use();
 
-			//testUniformStructObj.MatrixModelTest = square1->m_Transform.GetModelMatrix();
-			//testUniform->UpdateBuffer(&testUniformStructObj);
-			//colorTest.Color = glm::vec4(1, 0, 0, 1);
-			//testUniform2->UpdateBuffer(&colorTest);
-			//squareModel->Draw();
-			//
-			//testUniformStructObj.MatrixModelTest = square2->m_Transform.GetModelMatrix();
-			//testUniform->UpdateBuffer(&testUniformStructObj);
-			//colorTest.Color = glm::vec4(0, 1, 0, 1);
-			//testUniform2->UpdateBuffer(&colorTest);
-			//squareModel->Draw();
-			//
-			//testUniformStructObj.MatrixModelTest = square3->m_Transform.GetModelMatrix();
-			//testUniform->UpdateBuffer(&testUniformStructObj);
-			//colorTest.Color = glm::vec4(0, 0, 1, 1);
-			//testUniform2->UpdateBuffer(&colorTest);
-			//squareModel->Draw();
-			//
-			//testUniformStructObj.MatrixModelTest = square4->m_Transform.GetModelMatrix();
-			//testUniform->UpdateBuffer(&testUniformStructObj);
-			//colorTest.Color = glm::vec4(1, 1, 1, 1);
-			//testUniform2->UpdateBuffer(&colorTest);
-			//squareModel->Draw();
-			//
-			//testUniformStructObj.MatrixModelTest = treeObj->m_Transform.GetModelMatrix();
-			//testUniform->UpdateBuffer(&testUniformStructObj);
-			//testModel.Draw();
-
 			scene.Draw();
 
 			graphics->UnbindTexture(0);

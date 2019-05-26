@@ -63,7 +63,7 @@ void Manager::RegisterShaderUniform(ShaderUniformBlock* a_Uniform, CMString a_Sl
 }
 
 ShaderUniformBlock* Manager::GetShaderUniform(CMString a_SlotName) {
-	for (int i = 0; i < m_ShaderUniforms.Length(); i++) {
+	for (uint i = 0; i < m_ShaderUniforms.Length(); i++) {
 		if (m_ShaderUniforms[i].a_Name == a_SlotName) {
 			return m_ShaderUniforms[i].a_Block;
 		}
@@ -79,7 +79,7 @@ void Manager::AddModel(Model * a_Model) {
 }
 
 Model * Manager::GetModel(CMString a_FileName) {
-	for (int i = 0; i < m_Models.Length(); i++) {
+	for (uint i = 0; i < m_Models.Length(); i++) {
 		if (m_Models[i]->m_FilePath == a_FileName) {
 			return m_Models[i];
 		}
@@ -265,7 +265,7 @@ void Manager::ImGuiObjects() {
 			static CMString ObjectSelected;
 			ImGui::BeginChild("Selector", ImVec2(400, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
 			filter.Draw("", 100);
-			for (int i = 0; i < m_Models.Length();i++) {
+			for (uint i = 0; i < m_Models.Length();i++) {
 				if (filter.PassFilter(m_Models[i]->m_FilePath.c_str())) {
 					if (ImGui::Selectable(m_Models[i]->m_FilePath.c_str(), Selected == i)) {
 						Selected = i;
@@ -292,8 +292,8 @@ void Manager::ImGuiObjects() {
 		}
 		if (ImGui::BeginPopupModal("Change Object Type", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 			static CMString ObjectSelected;
-			ImGui::BeginChild("Selector", ImVec2(0, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
-			filter.Draw("", 100);
+			ImGui::BeginChild("Selector", ImVec2(150, 150), false, ImGuiWindowFlags_HorizontalScrollbar);
+			filter.Draw("", 150);
 			int index = 0;
 			for (auto it = GENERATED_OBJ::g_factory->m_classes.begin(); it != GENERATED_OBJ::g_factory->m_classes.end(); it++, index++) {
 				if (filter.PassFilter(it->first.c_str())) {
@@ -447,7 +447,7 @@ void Manager::ImGuiMaterials() {
 
 		for (uint i = 0; i < m_Materials.Length(); i++) {
 			CMString text = m_Materials[i]->GetDebugObjName().Get();
-			for (int q = 0; q < unsaved.Length(); q++) {
+			for (uint q = 0; q < unsaved.Length(); q++) {
 				if (unsaved[q] == i) {
 					text += " *";
 				}

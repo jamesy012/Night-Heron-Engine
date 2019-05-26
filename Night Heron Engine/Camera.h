@@ -2,6 +2,9 @@
 
 #include "Transform.h"
 
+#include "Generated/Objects_Night_Heron_Engine.h"
+
+ADD_OBJ(Camera)
 class Camera : public Transform {
 public:
 	Camera();

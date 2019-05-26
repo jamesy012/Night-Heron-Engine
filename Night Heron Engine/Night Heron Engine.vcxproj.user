@@ -6,8 +6,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)WorkingDir</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-res 640x400 -console</LocalDebuggerCommandArguments>
-    <RemoteDebuggerCommandArguments>-res 640x400 -console</RemoteDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-res 640x400</LocalDebuggerCommandArguments>
+    <RemoteDebuggerCommandArguments>-res 640x400</RemoteDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)WorkingDir</LocalDebuggerWorkingDirectory>

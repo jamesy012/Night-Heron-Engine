@@ -129,55 +129,6 @@ void Model::ProcessNode(aiNode * node, const aiScene * scene) {
 }
 
 Mesh* Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
-	/*
-	// Data to fill
-	vector<VERTEX> vertices;
-	vector<UINT> indices;
-	vector<Texture> textures;
-
-	if (mesh->mMaterialIndex >= 0)
-	{
-		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-
-		if (textype.empty()) textype = determineTextureType(scene, mat);
-	}
-
-	// Walk through each of the mesh's vertices
-	for (UINT i = 0; i < mesh->mNumVertices; i++)
-	{
-		VERTEX vertex;
-
-		vertex.X = mesh->mVertices[i].x;
-		vertex.Y = mesh->mVertices[i].y;
-		vertex.Z = mesh->mVertices[i].z;
-
-		if (mesh->mTextureCoords[0])
-		{
-			vertex.texcoord.x = (float)mesh->mTextureCoords[0][i].x;
-			vertex.texcoord.y = (float)mesh->mTextureCoords[0][i].y;
-		}
-
-		vertices.push_back(vertex);
-	}
-
-	for (UINT i = 0; i < mesh->mNumFaces; i++)
-	{
-		aiFace face = mesh->mFaces[i];
-
-		for (UINT j = 0; j < face.mNumIndices; j++)
-			indices.push_back(face.mIndices[j]);
-	}
-
-	if (mesh->mMaterialIndex >= 0)
-	{
-		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-		vector<Texture> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", scene);
-		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-	}
-
-	return Mesh(dev, vertices, indices, textures);
-	*/
 
 	CMArray<MeshVerticesType> verties;
 	CMArray<MeshIndicesType> indices;

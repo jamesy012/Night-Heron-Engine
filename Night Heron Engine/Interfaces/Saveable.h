@@ -21,4 +21,6 @@ public:
 	CMFilePath m_FilePath;
 protected:
 	float m_Version = 1.0f;
+
+	CMString m_JsonData;
 };

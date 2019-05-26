@@ -14,6 +14,7 @@ bool Saveable::Load() {
 		return false;
 	}
 
+	m_JsonData = data;
 	nlohmann::json j = nlohmann::json::parse(data);
 
 	if (j["Version"] != m_Version) {
@@ -26,8 +27,8 @@ bool Saveable::Load() {
 void Saveable::Save() {
 	CreateDirectory(m_FilePath.m_FileLocation.Get(), NULL);
 	std::ofstream infoFile(m_FilePath.m_FilePath);
-	//CMString data;
-	nlohmann::json j;
+
+	nlohmann::json j = nlohmann::json::parse(m_JsonData);
 	j["Version"] = m_Version;
 	if (infoFile.is_open()) {
 

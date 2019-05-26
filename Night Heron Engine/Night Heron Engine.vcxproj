@@ -200,6 +200,7 @@
     <ClCompile Include="Graphics\OpenGL\TextureGL.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\ShaderSpirvData.cpp" />
+    <ClCompile Include="Helpers\ImGuiHelper.cpp" />
     <ClCompile Include="Managers\Arguments.cpp" />
     <ClCompile Include="Managers\ManagerBase.cpp" />
     <ClCompile Include="Managers\SceneManager.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="Generated\Objects_Night_Heron_Engine.h" />
     <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\ShaderSpirvData.h" />
+    <ClInclude Include="Helpers\ImGuiHelper.h" />
     <ClInclude Include="Interfaces\Jsonable.h" />
     <ClInclude Include="Managers\Arguments.h" />
     <ClInclude Include="Managers\ManagerBase.h" />
