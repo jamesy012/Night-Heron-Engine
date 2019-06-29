@@ -1,6 +1,6 @@
 {
     "Object": {
-        "Debug Name": "New Shader.",
+        "Debug Name": "Simple Shader",
         "Shaders": [
             "/Simple.vert",
             "/Simple.frag"

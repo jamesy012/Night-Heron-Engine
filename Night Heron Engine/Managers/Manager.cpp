@@ -4,6 +4,7 @@
 #include "Singletons.h"
 #include "TextureManager.h"
 #include "ShaderManager.h"
+#include "IniFile.h"
 
 #include "Graphics/API/GFXAPI.h"
 #include "Graphics/API/RenderTarget.h"
@@ -25,10 +26,42 @@
 
 Manager::Manager() {
 	_CManager = this;
+
+	ManagerWindowHolders.Add({ &m_ShowObjects, "Objects" });
+	ManagerWindowHolders.Add({ &m_ShowModels, "Models" });
+	ManagerWindowHolders.Add({ &m_ShowMaterials, "Materials" });
+	ManagerWindowHolders.Add({ &m_ShowTextures, "Textures" });
+	ManagerWindowHolders.Add({ &m_ShowShaders, "Shaders" });
+	ManagerWindowHolders.Add({ (bool*)nullptr, "Last" } );
+
+	nlohmann::json& j = _CIniFileManager->getIniData()["Manager"];
+	int counter = 0;
+	ImGuiManagerWindowHolders* wh = &ManagerWindowHolders[counter++];
+	while (wh->openRef != nullptr) {
+		if (j.contains(wh->name)) {
+			*wh->openRef = j[wh->name].get<bool>();
+		} else {
+			j[wh->name] = *wh->openRef;
+		}
+		wh = &ManagerWindowHolders[counter++];
+	}
 }
 
 Manager::~Manager() {
 	delete m_CommonRT;
+}
+
+void Manager::UpdateIniFile() {
+	nlohmann::json& j = _CIniFileManager->getIniData()["Manager"];
+
+	int counter = 0;
+	ImGuiManagerWindowHolders* wh = &ManagerWindowHolders[counter++];
+	while (wh->openRef != nullptr) {
+		j[wh->name] = *wh->openRef;
+		
+		wh = &ManagerWindowHolders[counter++];
+	}
+
 }
 
 void Manager::ImGuiWindow() {
@@ -40,10 +73,21 @@ void Manager::ImGuiWindow() {
 
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("Managers")) {
-			ImGui::MenuItem("Objects", NULL, &m_ShowObjects);
-			ImGui::MenuItem("Models", NULL, &m_ShowModels);
-			ImGui::MenuItem("Materials", NULL, &m_ShowMaterials);
-			ImGui::MenuItem("Textures", NULL, &m_ShowTextures);
+
+			int counter = 0;
+			ImGuiManagerWindowHolders* wh = &ManagerWindowHolders[counter++];
+			while (wh->openRef != nullptr) {
+				if (ImGui::MenuItem(wh->name, NULL, wh->openRef)) {
+					UpdateIniFile();
+				}
+
+				wh = &ManagerWindowHolders[counter++];
+			}
+
+			//ImGui::MenuItem("Objects", NULL, &m_ShowObjects);
+			//ImGui::MenuItem("Models", NULL, &m_ShowModels);
+			//ImGui::MenuItem("Materials", NULL, &m_ShowMaterials);
+			//ImGui::MenuItem("Textures", NULL, &m_ShowTextures);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
@@ -53,6 +97,7 @@ void Manager::ImGuiWindow() {
 	ImGuiModels();
 	ImGuiMaterials();
 	_CTextureManager->ImGuiWindow(&m_ShowTextures);
+	_CShaderManager->ImGuiWindow(&m_ShowShaders);
 }
 
 void Manager::RegisterShaderUniform(ShaderUniformBlock* a_Uniform, CMString a_SlotName) {

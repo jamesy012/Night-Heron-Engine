@@ -2,6 +2,8 @@
 
 #include "Types.h"
 
+extern class Arguments* _CArguments;
+
 class Arguments {
 public:
 	void Generate(CMString a_Arguments);

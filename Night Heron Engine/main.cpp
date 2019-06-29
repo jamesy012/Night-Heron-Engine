@@ -25,6 +25,8 @@
 
 #include "Managers/TimeManager.h"
 
+#include "Managers/IniFile.h"
+
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
 
@@ -68,6 +70,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 				   _In_opt_ HINSTANCE hPrevInstance,
 				   _In_ LPSTR lpCmdLine,
 				   _In_ int nShowCmd) {
+
+	_CIniFileManager = new IniFile();
+	_CIniFileManager->LoadIni();
+
 	_CArguments = new Arguments();
 	_CArguments->Generate(lpCmdLine);
 
@@ -239,14 +245,24 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		treeModelMat1.Save();
 	}
 	Material treeModelMat2("Material/TreeModelMat2.mat");
-	if (!treeModelMat2.Load()) {
+	if (!treeModelMat2.Load())
+	{
 		treeModelMat2.SetDebugObjName("Tree Model Mat 2");
 		treeModelMat2.m_Shader = testShader;
 		treeModelMat2.AddTexture(testTexture, 0);
 		treeModelMat2.Save();
 	}
+
+	Material SimpleMaterial("Material/SimpleMat.mat");
+	if (!SimpleMaterial.Load())
+	{
+		SimpleMaterial.SetDebugObjName("Simple");
+		SimpleMaterial.m_Shader = _CShaderManager->GetShader("Simple Shader.shader");
+		SimpleMaterial.Save();
+	}
+
 	testModel.SetMaterial(&treeModelMat1, 0);
-	testModel.SetMaterial(&treeModelMat2, 1);
+	testModel.SetMaterial(&SimpleMaterial, 1);
 	squareModel->SetMaterial(&treeModelMat2, 0);
 
 	//for (uint i = 0; i < _CManager->m_Materials.Length(); i++) {
@@ -302,18 +318,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			graphics->ImGuiNewFrame();
 
 			static bool DemoWindow = false;
-			static bool ShaderMenu = true;
 
 			if (ImGui::BeginMainMenuBar()) {
 				if (ImGui::BeginMenu("Windows")) {
 					ImGui::MenuItem("Demo", NULL, &DemoWindow);
-					ImGui::MenuItem("Shaders", NULL, &ShaderMenu);
 					ImGui::EndMenu();
 				}
 				ImGui::EndMainMenuBar();
 			}
 
-			_CShaderManager->ImGuiWindow(&ShaderMenu);
 			_CManager->ImGuiWindow();
 
 			if (DemoWindow) {
@@ -414,6 +427,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	delete testTexture;
 	delete testShader;
 	delete graphics;
+
+	_CIniFileManager->SaveIni();
 
 	return 0;
 }

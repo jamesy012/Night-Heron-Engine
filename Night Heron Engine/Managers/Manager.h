@@ -28,6 +28,7 @@ public:
 	bool m_ShowModels;
 	bool m_ShowMaterials;
 	bool m_ShowTextures;
+	bool m_ShowShaders;
 
 	void AddModel(Model* a_Model);
 	Model* GetModel(CMString a_FileName);
@@ -41,6 +42,9 @@ private:
 
 	void InlineImGoiRenderTargetSettings();
 
+	//saves to ini file
+	void UpdateIniFile();
+
 	class RenderTarget* m_CommonRT;
 
 	struct ShaderUniform {
@@ -53,6 +57,15 @@ private:
 	bool m_IsRtDirty = true;
 	SimpleVec3 m_RTPos = SimpleVec3(4, -4, 10);
 	float m_RTFov = 20.0f;
+
+	struct ImGuiManagerWindowHolders {
+		bool* openRef;
+		const char* name;
+		ImGuiManagerWindowHolders() : openRef(nullptr), name(nullptr) {};
+		ImGuiManagerWindowHolders(bool* ref, const char* a_Name) : openRef(ref), name(a_Name){};
+	};
+	CMArray<ImGuiManagerWindowHolders> ManagerWindowHolders;
+
 };
 
 extern class Manager* _CManager;

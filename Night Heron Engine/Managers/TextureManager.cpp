@@ -7,7 +7,7 @@
 #include "Graphics/API/Texture.h"
 
 void TextureManager::ImGuiWindow(bool* a_Open) {
-	if (!a_Open) {
+	if (!*a_Open) {
 		return;
 	}
 

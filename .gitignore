@@ -285,3 +285,4 @@ Dependencies/assimp-4.1.0/contrib/
 Dependencies/assimp-4.1.0/cmake-modules/
 Dependencies/assimp-4.1.0/cmakeBuild/
 Generator/Debug/
+WorkingDir/iniFile.ini

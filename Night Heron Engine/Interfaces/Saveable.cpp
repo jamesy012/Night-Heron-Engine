@@ -28,7 +28,11 @@ void Saveable::Save() {
 	CreateDirectory(m_FilePath.m_FileLocation.Get(), NULL);
 	std::ofstream infoFile(m_FilePath.m_FilePath);
 
-	nlohmann::json j = nlohmann::json::parse(m_JsonData);
+	nlohmann::json j;
+	if (!m_JsonData.IsEmpty())
+	{
+		j = nlohmann::json::parse(m_JsonData);
+	}
 	j["Version"] = m_Version;
 	if (infoFile.is_open()) {
 

@@ -6,10 +6,16 @@
 #include "Texture.h"
 #include "Managers/TextureManager.h"
 
+#include "Managers/Arguments.h"
+
 void GFX::ImGuiInit() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	if (_CArguments->IsArgument("ImGuiPath")) {
+		io.IniFilename = _CArguments->GetArgumentValue("ImGuiPath").Get();
+	}
 
 	ImGui::StyleColorsDark();
 
