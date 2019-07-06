@@ -7,6 +7,7 @@ class Shader;
 enum ShaderType {
 	SHADER_VERTEX,
 	SHADER_FRAGMENT,
+	SHADER_INCLUDE,
 	SHADERCOUNT,
 };
 
@@ -39,15 +40,17 @@ public:
 
 	CMFilePath m_FilePath;
 
+	CMString m_SourceFile;
+
 	CMArray<Shader*> m_AttachedShaders;
 
 	//todo: possibly have another format or use this class for includes too. as they need to have a hash
-	CMArray<CMString> m_IncludeList;
+	CMArray<ShaderSpirvData*> m_IncludeList;
 private:
 	void GetTypeFromFilePath();
 	unsigned int ShaderTypeToEShLanguage();
 
-	bool GenerateGLSlangData(CMString a_Code);
+	bool GenerateGLSlangData();
 	bool GenerateSpirvData();
 
 	void SaveInfoFile(bool a_DidFail);

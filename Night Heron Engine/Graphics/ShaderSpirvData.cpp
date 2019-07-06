@@ -11,16 +11,22 @@
 #include <fstream> //std::ifstream
 #include <sstream> //std::stringstream
 #include <string> //std::string
+#include <vector>
 
 #include "API/Shader.h"
 #include "Util.h"
 
-#include "Singletons.h"
+#include "Managers/ShaderSpirvManager.h"
 #include "API/GFXAPI.h"
 
 #include <windows.h>
 
+#include "nlohmann/json.hpp"
+//json object for this class.
+static nlohmann::json SSD_JsonHolder;
+
 #define ShaderCachePath "ShaderCache\\"
+#define ShaderJsonFileVersion 1
 
 const TBuiltInResource DefaultTBuiltInResource = {
 	/* .MaxLights = */ 32,
@@ -128,6 +134,8 @@ const TBuiltInResource DefaultTBuiltInResource = {
 	/* .generalConstantMatrixVectorIndexing = */ 1,
 } };
 
+
+
 class OurIncluder : public glslang::TShader::Includer
 {
 public:
@@ -180,14 +188,16 @@ public:
 private:
 	IncludeResult* LoadFile(CMString a_Path)
 	{
-		CMString file = Util::LoadTextFromPath(a_Path);
+		ShaderSpirvData* includeFile = _CShaderSpirvManager->GetShaderPart(a_Path);
+		if (includeFile) {
+			const uint length = includeFile->m_SourceFile.Length();
+			char* content = new char[length + 1];
+			strcpy_s(content, length + 1, includeFile->m_SourceFile.Get());
 
-		if (!file.IsEmpty())
-		{
-			char* content = new char[file.Length() + 1];
-			strcpy_s(content, file.Length() + 1, file.Get());
-			m_Owner->m_IncludeList.AddUnique(a_Path);
-			return new glslang::TShader::Includer::IncludeResult(a_Path, content, file.Length(), content);
+			//tell the current file that we have included something
+			m_Owner->m_IncludeList.AddUnique(includeFile);
+
+			return new glslang::TShader::Includer::IncludeResult(a_Path, content, length, content);
 		}
 		return nullptr;
 	}
@@ -206,21 +216,61 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	m_FilePath = a_FilePath;
 	GetTypeFromFilePath();
 
-	CMString shaderFile = Util::LoadTextFromPath(m_FilePath.m_FilePath);
+	m_SourceFile = Util::LoadTextFromPath(m_FilePath.m_FilePath);
 
-	if (shaderFile.Length() <= 5) {
+	if (m_SourceFile.Length() <= 5) {
 		SaveInfoFile(true);
 		return ShaderLoadRes::SHADERLOAD_ERROR;
 	}
 
+	m_SourceFile.Hash(m_Hash);
 
 	std::string infoFile = Util::LoadTextFromPath(ShaderCachePath + m_FilePath.m_FilePath + ".info");
 	if (infoFile.size() != 0) {
-		shaderFile.Hash(m_Hash);
+		int res = -1;
+		if (infoFile[0] == '{') {
+			SSD_JsonHolder = nlohmann::json::parse(infoFile);
 
-		//todo: also check included files hash's here.
+			bool correctVerion = SSD_JsonHolder.contains("SpirvJsonVersion") ? SSD_JsonHolder.at("SpirvJsonVersion").get<int>() == ShaderJsonFileVersion : false;
 
-		int res = memcmp(m_Hash, &infoFile[0], HASH_LENGTH);
+			bool errored = SSD_JsonHolder.contains("Error");
+
+			if (correctVerion && !errored) {
+
+				char output[HASH_LENGTH];
+				int index = 0;
+				
+				//check file hash
+				nlohmann::json j = SSD_JsonHolder.at("Hash");
+				for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
+					output[index++] = (*it).get<char>();
+				}
+				index = 0;
+
+				res = memcmp(m_Hash, output, HASH_LENGTH);
+				
+				//check include hash's
+				nlohmann::json objects = SSD_JsonHolder.at("Includes");
+				for (nlohmann::json::iterator it = objects.begin(); it != objects.end(); ++it) {
+					auto inc = *it;
+					nlohmann::json j = inc.at("Hash");
+					for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
+						output[index++] = (*it).get<char>();
+					}
+					index = 0;
+					ShaderSpirvData* includeFile = _CShaderSpirvManager->GetShaderPart(inc["FilePath"].get<CMString>());
+					if (includeFile) {
+						res |= memcmp(includeFile->m_Hash, output, HASH_LENGTH);
+					}
+					else {
+						res = -1;
+						break;
+					}
+				}
+				
+			}
+		}
+
 
 		if (res == 0) {
 			printf("Shader: Using cached data: %s\n", m_FilePath.m_FilePath.c_str());
@@ -235,19 +285,26 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	}
 	printf("Shader: Generating Code: %s\n", m_FilePath.m_FilePath.c_str());
 
-	//Generate GLSlang from file
-	if (!GenerateGLSlangData(shaderFile)) {
-		CMASSERT_MSG(true, "Failed To Generate GLSLang");
-		delete m_Shader;
-		return ShaderLoadRes::SHADERLOAD_ERROR;
-	}
+	if (m_ShaderType == ShaderType::SHADER_INCLUDE) {
+		SaveInfoFile(false);
+	}else{
 
-	//Generate SPIRV From GLSlang
-	if (!GenerateSpirvData()) {
-		CMASSERT_MSG(true, "Failed To Generate Spirv Data from glslang");
-		delete m_Program;
-		delete m_Shader;
-		return ShaderLoadRes::SHADERLOAD_ERROR;
+		//Generate GLSlang from file
+		if (!GenerateGLSlangData()) {
+			SaveInfoFile(true);
+			CMASSERT_MSG(true, "Failed To Generate GLSLang");
+			delete m_Shader;
+			return ShaderLoadRes::SHADERLOAD_ERROR;
+		}
+
+		//Generate SPIRV From GLSlang
+		if (!GenerateSpirvData()) {
+			CMASSERT_MSG(true, "Failed To Generate Spirv Data from glslang");
+			delete m_Program;
+			delete m_Shader;
+			return ShaderLoadRes::SHADERLOAD_ERROR;
+		}
+
 	}
 
 	m_HasBeenLoaded = true;
@@ -285,7 +342,7 @@ void ShaderSpirvData::RemoveShader(Shader * a_Shader) {
 }
 
 void ShaderSpirvData::GetTypeFromFilePath() {
-	const CMArray<CMStringHash> hashs = { ".vert", ".frag" };
+	const CMArray<CMStringHash> hashs = { ".vert", ".frag", ".inc" };
 
 	uchar* fileNameHash = m_FilePath.m_FileName.SubStrFindFromEnd('.').ToLower().HashAlloc();
 
@@ -313,20 +370,20 @@ unsigned int ShaderSpirvData::ShaderTypeToEShLanguage() {
 	}
 }
 
-bool ShaderSpirvData::GenerateGLSlangData(CMString a_Code) {
+bool ShaderSpirvData::GenerateGLSlangData() {
 	//Find/set file version
 	CMString versionText = "#version 450\n";
-	if (a_Code.ToLower().Contains("#version") && !a_Code.SubStr(0,3).Contains("//")) {
-		int firstNewLine = a_Code.FindFromStart('\n');
+	if (m_SourceFile.ToLower().Contains("#version") && !m_SourceFile.SubStr(0,3).Contains("//")) {
+		int firstNewLine = m_SourceFile.FindFromStart('\n');
 		const uint VersionTextSize = sizeof("#version");
-		versionText = a_Code.SubStr(VersionTextSize, firstNewLine - VersionTextSize);
+		versionText = m_SourceFile.SubStr(VersionTextSize, firstNewLine - VersionTextSize);
 		versionText = "#version " + versionText + "\n";
-		a_Code = a_Code.SubStr(firstNewLine + 1, -1);
+		m_SourceFile = m_SourceFile.SubStr(firstNewLine + 1, -1);
 	}
 
 	//and add this extension to allow glslang to use #include
 
-	const char* s[3] = { versionText.Get(), "#extension GL_GOOGLE_include_directive : enable\n", a_Code.Get() };
+	const char* s[3] = { versionText.Get(), "#extension GL_GOOGLE_include_directive : enable\n", m_SourceFile.Get() };
 
 
 	EShLanguage language = (EShLanguage)ShaderTypeToEShLanguage();
@@ -420,26 +477,48 @@ void ShaderSpirvData::SaveInfoFile(bool a_DidFail) {
 	//Update the info file with the new hash
 //CreateDirectory(ShaderCachePath, NULL);
 
-	//todo: Change shader info files over to json
-
 	CMString folderPath = (CMString(ShaderCachePath) + m_FilePath.m_FileLocation);
 	CreateDirectory(folderPath.Get(), NULL);
 	std::ofstream infoFile(folderPath + m_FilePath.m_FileName + ".info");
 	if (infoFile.is_open()) {
-		if (a_DidFail) {
-			infoFile << "Failed.\n";
-		} else {
-			for (int q = 0; q < HASH_LENGTH; q++) {
-				infoFile << m_Hash[q];
-			}
-			infoFile << "\n";
-		}
-		infoFile << m_FilePath.m_FilePath + "\n";
+		//if (a_DidFail) {
+		//	infoFile << "Failed.\n";
+		//} else {
+		//	for (int q = 0; q < HASH_LENGTH; q++) {
+		//		infoFile << m_Hash[q];
+		//	}
+		//	infoFile << "\n";
+		//}
+		//infoFile << m_FilePath.m_FilePath + "\n";
 
 		//todo: maybe also include the include's hash here?
-		for (uint i = 0; i < m_IncludeList.Length(); i++) {
-			infoFile << m_IncludeList[i] + "\n";
+		//for (uint i = 0; i < m_IncludeList.Length(); i++) {
+		//	infoFile << m_IncludeList[i]-> + "\n";
+		//}
+
+		SSD_JsonHolder = nlohmann::json();
+		SSD_JsonHolder["SpirvJsonVersion"] = ShaderJsonFileVersion;
+		if (a_DidFail) {
+			SSD_JsonHolder["Error"] = true;
+		} else {
+			std::vector<char> vec;
+			vec.insert(vec.end(), m_Hash, m_Hash + 16);
+			SSD_JsonHolder["Hash"] = vec;
+
+			SSD_JsonHolder["FilePath"] = m_FilePath.m_FilePath;
+
+			nlohmann::json& includes = SSD_JsonHolder["Includes"];
+			for (uint i = 0; i < m_IncludeList.Length(); i++) {
+				vec.clear();
+				vec.insert(vec.end(), m_Hash, m_Hash + 16);
+				SSD_JsonHolder["Hash"] = vec;
+				includes[i]["Hash"] = m_IncludeList[i]->m_Hash;
+				includes[i]["FilePath"] = m_IncludeList[i]->m_FilePath.m_FilePath;
+			}
+
 		}
+
+		infoFile << SSD_JsonHolder.dump(1, '\t', false, nlohmann::detail::error_handler_t::replace);
 
 		infoFile.close();
 	}
