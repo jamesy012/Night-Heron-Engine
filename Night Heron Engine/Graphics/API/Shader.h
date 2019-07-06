@@ -34,6 +34,9 @@ public:
 	virtual void Reload() = 0;
 
 	virtual void AddBuffer(ShaderUniformBlock* a_Block, CMString a_StructName);
+	//finds buffer called a_StructName and adds it to the shader
+	//returns true if buffer was found. false if it wasnt
+	virtual bool AddBuffer(CMString a_StructName);
 	virtual void BindTexture(std::string a_Name, unsigned int a_Index) = 0;
 
 	//if there were any uniforms added where we couldnt find a registered uniform for it

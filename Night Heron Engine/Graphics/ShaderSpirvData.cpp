@@ -128,6 +128,73 @@ const TBuiltInResource DefaultTBuiltInResource = {
 	/* .generalConstantMatrixVectorIndexing = */ 1,
 } };
 
+class OurIncluder : public glslang::TShader::Includer
+{
+public:
+	OurIncluder(ShaderSpirvData* a_Owner) : m_Owner(a_Owner)
+	{
+
+	}
+	// For the "system" or <>-style includes; search the "system" paths.
+	virtual IncludeResult* includeSystem(const char* headerName,
+										 const char* includerName,
+										 size_t inclusionDepth) override
+	{
+		printf("Including System file header name (%s) IncluderName (%s) inclusionDepth (%i)\n", headerName, includerName, inclusionDepth);
+		
+
+		return LoadFile(CMString("Programs/") + headerName);
+	}
+
+	// For the "local"-only aspect of a "" include. Should not search in the
+	// "system" paths, because on returning a failure, the parser will
+	// call includeSystem() to look in the "system" locations.
+	virtual IncludeResult* includeLocal(const char* headerName,
+										const char* includerName,
+										size_t inclusionDepth) override
+	{
+		printf("Including local file header name (%s) IncluderName (%s) inclusionDepth (%i)\n", headerName, includerName, inclusionDepth);
+		CMString includer = includerName;
+		CMString path;
+		if (!includer.IsEmpty()) {
+			int folderPos = includer.FindFromEnd('/');
+			path = includer.SubStr(0, folderPos);
+			path += "/";
+		}
+		path += headerName;
+
+		return LoadFile(path);
+	}
+
+	// Signals that the parser will no longer use the contents of the
+	// specified IncludeResult.
+	virtual void releaseInclude(IncludeResult* result) override {
+		if (result != nullptr)
+		{
+			delete[] static_cast<char*>(result->userData);
+			delete result;
+		}
+	};
+	virtual ~OurIncluder() override {}
+
+private:
+	IncludeResult* LoadFile(CMString a_Path)
+	{
+		CMString file = Util::LoadTextFromPath(a_Path);
+
+		if (!file.IsEmpty())
+		{
+			char* content = new char[file.Length() + 1];
+			strcpy_s(content, file.Length() + 1, file.Get());
+			m_Owner->m_IncludeList.AddUnique(a_Path);
+			return new glslang::TShader::Includer::IncludeResult(a_Path, content, file.Length(), content);
+		}
+		return nullptr;
+	}
+
+	ShaderSpirvData* m_Owner;
+};
+
 ShaderSpirvData::ShaderSpirvData() {
 }
 
@@ -146,10 +213,13 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 		return ShaderLoadRes::SHADERLOAD_ERROR;
 	}
 
-	shaderFile.Hash(m_Hash);
 
 	std::string infoFile = Util::LoadTextFromPath(ShaderCachePath + m_FilePath.m_FilePath + ".info");
 	if (infoFile.size() != 0) {
+		shaderFile.Hash(m_Hash);
+
+		//todo: also check included files hash's here.
+
 		int res = memcmp(m_Hash, &infoFile[0], HASH_LENGTH);
 
 		if (res == 0) {
@@ -244,13 +314,30 @@ unsigned int ShaderSpirvData::ShaderTypeToEShLanguage() {
 }
 
 bool ShaderSpirvData::GenerateGLSlangData(CMString a_Code) {
-	const char* s[1] = { a_Code.Get() };
+	//Find/set file version
+	CMString versionText = "#version 450\n";
+	if (a_Code.ToLower().Contains("#version") && !a_Code.SubStr(0,3).Contains("//")) {
+		int firstNewLine = a_Code.FindFromStart('\n');
+		const uint VersionTextSize = sizeof("#version");
+		versionText = a_Code.SubStr(VersionTextSize, firstNewLine - VersionTextSize);
+		versionText = "#version " + versionText + "\n";
+		a_Code = a_Code.SubStr(firstNewLine + 1, -1);
+	}
+
+	//and add this extension to allow glslang to use #include
+
+	const char* s[3] = { versionText.Get(), "#extension GL_GOOGLE_include_directive : enable\n", a_Code.Get() };
+
+
 	EShLanguage language = (EShLanguage)ShaderTypeToEShLanguage();
 
 	TBuiltInResource Resources = DefaultTBuiltInResource;
 	glslang::InitializeProcess();
 	glslang::TShader* newShader = new glslang::TShader(language);
-	newShader->setStrings(s, 1);
+
+	OurIncluder includer(this);
+
+	newShader->setStrings(s, 3);
 	newShader->setEnvInput(glslang::EShSourceGlsl, language, glslang::EShClientOpenGL, 450);
 	newShader->setEnvClient(glslang::EShClientOpenGL, glslang::EShTargetOpenGL_450);
 	newShader->setEnvTarget(glslang::EshTargetSpv, glslang::EShTargetSpv_1_0);
@@ -259,8 +346,15 @@ bool ShaderSpirvData::GenerateGLSlangData(CMString a_Code) {
 	newShader->setAutoMapBindings(true);
 	//newShader->setHlslIoMapping(true);
 	//newShader->setEnvTargetHlslFunctionality1();
-	newShader->parse(&Resources, 450, false, EShMessages::EShMsgDefault);
+
+	//Contains final string of shader code
+	//std::string output;
+	//newShader->preprocess(&Resources, 450, ENoProfile, false, false, EShMessages::EShMsgDefault, &output, includer);
+
+	newShader->parse(&Resources, 450, false, EShMessages::EShMsgDefault, includer);
 	//newShader->getIntermediate()->setSourceFile(m_FilePath.m_FilePath.c_str());//debug
+
+
 
 	//check if it failed:
 	if (newShader->getInfoLog() && newShader->getInfoLog()[0]) {
@@ -313,7 +407,6 @@ bool ShaderSpirvData::GenerateSpirvData() {
 		//spv::Disassemble(std::cout, spirv);
 		CMString folderPath = (CMString(ShaderCachePath) + m_FilePath.m_FileLocation);
 		CreateDirectory(folderPath.Get(), NULL);
-		std::ofstream infoFile(folderPath + m_FilePath.m_FileName + ".info");
 
 		glslang::OutputSpvBin(spirv, (folderPath + m_FilePath.m_FileName + ".spirv").c_str());
 	}
@@ -326,6 +419,9 @@ bool ShaderSpirvData::GenerateSpirvData() {
 void ShaderSpirvData::SaveInfoFile(bool a_DidFail) {
 	//Update the info file with the new hash
 //CreateDirectory(ShaderCachePath, NULL);
+
+	//todo: Change shader info files over to json
+
 	CMString folderPath = (CMString(ShaderCachePath) + m_FilePath.m_FileLocation);
 	CreateDirectory(folderPath.Get(), NULL);
 	std::ofstream infoFile(folderPath + m_FilePath.m_FileName + ".info");
@@ -338,7 +434,13 @@ void ShaderSpirvData::SaveInfoFile(bool a_DidFail) {
 			}
 			infoFile << "\n";
 		}
-		infoFile << m_FilePath.m_FilePath;
+		infoFile << m_FilePath.m_FilePath + "\n";
+
+		//todo: maybe also include the include's hash here?
+		for (uint i = 0; i < m_IncludeList.Length(); i++) {
+			infoFile << m_IncludeList[i] + "\n";
+		}
+
 		infoFile.close();
 	}
 }

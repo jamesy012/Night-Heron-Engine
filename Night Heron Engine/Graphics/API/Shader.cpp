@@ -37,6 +37,12 @@ void Shader::AddBuffer(ShaderUniformBlock* a_Block, CMString a_StructName) {
 	}
 }
 
+bool Shader::AddBuffer(CMString a_StructName) {
+	ShaderUniformBlock* uniform = _CManager->GetShaderUniform(a_StructName);
+	AddBuffer(uniform, a_StructName);
+	return uniform != nullptr;
+}
+
 void Shader::FindUnlinkedUniforms() {
 	for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
 		if (!m_AttachedUniforms[i].m_HasLinked) {

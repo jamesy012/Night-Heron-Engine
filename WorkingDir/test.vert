@@ -1,7 +1,6 @@
 #version 450
-layout(location = 0) in vec4 position;
-layout(location = 2) in vec2 texCoord;
-layout(location = 3) in vec4 vertColor;	
+#include "Programs/testInclude.inc"
+
 
 layout (std140) uniform Vertex_Data {
 	mat4 view;

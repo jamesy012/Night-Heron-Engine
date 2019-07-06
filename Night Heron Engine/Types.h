@@ -55,6 +55,12 @@ public:
 		//this->push_back(a_Object);
 	}
 
+	void AddUnique(T a_Object) {
+		if (FindElement(a_Object) == -1) {
+			Add(a_Object);
+		}
+	}
+
 	//void AddList(T a_Element, uint a_Count) {
 	//	for (uint i = 0; i < a_Count; i++) {
 	//		Add(a_Element[i]);

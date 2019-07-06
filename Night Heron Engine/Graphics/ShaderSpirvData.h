@@ -40,6 +40,9 @@ public:
 	CMFilePath m_FilePath;
 
 	CMArray<Shader*> m_AttachedShaders;
+
+	//todo: possibly have another format or use this class for includes too. as they need to have a hash
+	CMArray<CMString> m_IncludeList;
 private:
 	void GetTypeFromFilePath();
 	unsigned int ShaderTypeToEShLanguage();
