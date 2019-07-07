@@ -190,6 +190,14 @@ private:
 	{
 		ShaderSpirvData* includeFile = _CShaderSpirvManager->GetShaderPart(a_Path);
 		if (includeFile) {
+
+			if (m_Owner->m_IncludeList.FindElement(includeFile) != -1) {
+				printf("\tAuto #pragma once kicked in, not including\n");
+				const uint length = 0;
+				char* content = new char[length + 1];
+				return new glslang::TShader::Includer::IncludeResult(a_Path, content, length, content);
+			}
+
 			const uint length = includeFile->m_SourceFile.Length();
 			char* content = new char[length + 1];
 			strcpy_s(content, length + 1, includeFile->m_SourceFile.Get());
@@ -231,11 +239,14 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 		if (infoFile[0] == '{') {
 			SSD_JsonHolder = nlohmann::json::parse(infoFile);
 
-			bool correctVerion = SSD_JsonHolder.contains("SpirvJsonVersion") ? SSD_JsonHolder.at("SpirvJsonVersion").get<int>() == ShaderJsonFileVersion : false;
+			const bool correctVerion = SSD_JsonHolder.contains("SpirvJsonVersion") ? SSD_JsonHolder.at("SpirvJsonVersion").get<int>() == ShaderJsonFileVersion : false;
 
-			bool errored = SSD_JsonHolder.contains("Error");
+			const bool errored = SSD_JsonHolder.contains("Error");
+			//LastCompiedAPI
+			m_HasPermutation = SSD_JsonHolder.contains("Permutation") ? SSD_JsonHolder.at("Permutation").get<bool>() : false;
+			const bool lastCompiedAPIMatch = (SSD_JsonHolder.contains("LastCompiedAPI") ? SSD_JsonHolder.at("LastCompiedAPI").get<int>() == (int)_CGraphics->GetGraphicsType() : false);
 
-			if (correctVerion && !errored) {
+			if (correctVerion && !errored && !(m_HasPermutation && !lastCompiedAPIMatch)) {
 
 				char output[HASH_LENGTH];
 				int index = 0;
@@ -254,12 +265,15 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 				for (nlohmann::json::iterator it = objects.begin(); it != objects.end(); ++it) {
 					auto inc = *it;
 					nlohmann::json j = inc.at("Hash");
-					for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
-						output[index++] = (*it).get<char>();
-					}
-					index = 0;
+
 					ShaderSpirvData* includeFile = _CShaderSpirvManager->GetShaderPart(inc["FilePath"].get<CMString>());
 					if (includeFile) {
+
+						for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
+							output[index++] = (*it).get<char>();
+						}
+						index = 0;
+
 						res |= memcmp(includeFile->m_Hash, output, HASH_LENGTH);
 					}
 					else {
@@ -285,16 +299,21 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	}
 	printf("Shader: Generating Code: %s\n", m_FilePath.m_FilePath.c_str());
 
+	m_HasPermutation = m_SourceFile.Contains("#ifdef WITH_OPENGL");
+
 	if (m_ShaderType == ShaderType::SHADER_INCLUDE) {
 		SaveInfoFile(false);
 	}else{
-
 		//Generate GLSlang from file
 		if (!GenerateGLSlangData()) {
 			SaveInfoFile(true);
 			CMASSERT_MSG(true, "Failed To Generate GLSLang");
 			delete m_Shader;
 			return ShaderLoadRes::SHADERLOAD_ERROR;
+		}
+
+		for (uint i = 0; i < m_IncludeList.Length(); i++) {
+			m_HasPermutation |= m_IncludeList[i]->m_HasPermutation;
 		}
 
 		//Generate SPIRV From GLSlang
@@ -342,7 +361,7 @@ void ShaderSpirvData::RemoveShader(Shader * a_Shader) {
 }
 
 void ShaderSpirvData::GetTypeFromFilePath() {
-	const CMArray<CMStringHash> hashs = { ".vert", ".frag", ".inc" };
+	const CMArray<CMStringHash> hashs = { ".vert", ".frag","SHADERCOUNT", ".inc" };
 
 	uchar* fileNameHash = m_FilePath.m_FileName.SubStrFindFromEnd('.').ToLower().HashAlloc();
 
@@ -382,8 +401,15 @@ bool ShaderSpirvData::GenerateGLSlangData() {
 	}
 
 	//and add this extension to allow glslang to use #include
+	CMString preProcessorString = R"(
+		#extension GL_GOOGLE_include_directive : enable
+		)";
 
-	const char* s[3] = { versionText.Get(), "#extension GL_GOOGLE_include_directive : enable\n", m_SourceFile.Get() };
+	if (_CGraphics->GetGraphicsType() == GraphicsAPITypes::OPENGL4) {
+		preProcessorString += "#define WITH_OPENGL 1\n";
+	}
+
+	const char* s[3] = { versionText.Get(), preProcessorString.Get(), m_SourceFile.Get() };
 
 
 	EShLanguage language = (EShLanguage)ShaderTypeToEShLanguage();
@@ -405,13 +431,12 @@ bool ShaderSpirvData::GenerateGLSlangData() {
 	//newShader->setEnvTargetHlslFunctionality1();
 
 	//Contains final string of shader code
-	//std::string output;
-	//newShader->preprocess(&Resources, 450, ENoProfile, false, false, EShMessages::EShMsgDefault, &output, includer);
+	std::string output;
+	newShader->preprocess(&Resources, 450, ENoProfile, false, false, EShMessages::EShMsgDefault, &output, includer);
+	m_IncludeList.Clear();
 
 	newShader->parse(&Resources, 450, false, EShMessages::EShMsgDefault, includer);
 	//newShader->getIntermediate()->setSourceFile(m_FilePath.m_FilePath.c_str());//debug
-
-
 
 	//check if it failed:
 	if (newShader->getInfoLog() && newShader->getInfoLog()[0]) {
@@ -506,6 +531,9 @@ void ShaderSpirvData::SaveInfoFile(bool a_DidFail) {
 			SSD_JsonHolder["Hash"] = vec;
 
 			SSD_JsonHolder["FilePath"] = m_FilePath.m_FilePath;
+
+			SSD_JsonHolder["LastCompiedAPI"] = (int)_CGraphics->GetGraphicsType();
+			SSD_JsonHolder["Permutation"] = m_HasPermutation;
 
 			nlohmann::json& includes = SSD_JsonHolder["Includes"];
 			for (uint i = 0; i < m_IncludeList.Length(); i++) {

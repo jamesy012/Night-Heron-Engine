@@ -7,8 +7,8 @@ class Shader;
 enum ShaderType {
 	SHADER_VERTEX,
 	SHADER_FRAGMENT,
-	SHADER_INCLUDE,
 	SHADERCOUNT,
+	SHADER_INCLUDE,
 };
 
 enum class ShaderLoadRes {
@@ -57,6 +57,8 @@ private:
 
 	glslang::TShader* m_Shader;
 	glslang::TProgram* m_Program;
+
+	bool m_HasPermutation;
 
 	unsigned char m_Hash[16];
 };

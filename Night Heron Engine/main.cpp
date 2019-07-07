@@ -62,7 +62,8 @@ public:
 struct CommonDataStruct {
 public:
 	float time;
-	glm::vec3 pad;
+	glm::vec2 screenSize;
+	float pad;
 };
 
 
@@ -184,7 +185,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	_CManager->RegisterShaderUniform(testUniform2, "shader_data");
 	ShaderUniformBlock* commonDataBlock = graphics->CreateBuffer(&commonPerFrameData, sizeof(CommonDataStruct));
 	commonDataBlock->SetDebugObjName("Common Data Buffer");
-	_CManager->RegisterShaderUniform(commonDataBlock, "CommonData");
+	_CManager->RegisterShaderUniform(commonDataBlock, "Common_Data");
 
 	Shader* testShader = _CShaderManager->GetShader("Shaders/TestShader.shader");
 	if (testShader == nullptr) {
@@ -200,7 +201,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 			testShader->AddBuffer(testUniform, "Vertex_Data");
 			testShader->AddBuffer(testUniform2, "shader_data");
-			testShader->AddBuffer(commonDataBlock, "CommonData");
+			testShader->AddBuffer(commonDataBlock, "Common_Data");
 
 			testShader->Save();
 		}
@@ -219,7 +220,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 			treeShader->AddBuffer(testUniform, "Vertex_Data");
 			treeShader->AddBuffer(testUniform2, "shader_data");
-			treeShader->AddBuffer(commonDataBlock, "CommonData");
+			treeShader->AddBuffer(commonDataBlock, "Common_Data");
 
 			treeShader->Save();
 		}
@@ -270,7 +271,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	//		Shader* shader = _CManager->m_Materials[i]->m_Shader;
 	//		shader->AddBuffer(testUniform, "Vertex_Data");
 	//		shader->AddBuffer(testUniform2, "shader_data");
-	//		shader->AddBuffer(commonDataBlock, "CommonData");
+	//		shader->AddBuffer(commonDataBlock, "Common_Data");
 	//	}
 	//}
 
@@ -355,6 +356,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			scene.Update();
 
 			commonPerFrameData.time = currentTime;
+			commonPerFrameData.screenSize = glm::vec2(graphics->m_Window->m_WindowWidth, graphics->m_Window->m_WindowHeight);
 			commonDataBlock->UpdateBuffer(&commonPerFrameData);
 
 			float x = glm::sin(currentTime * 0.423f) * 5;

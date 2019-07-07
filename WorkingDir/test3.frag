@@ -9,7 +9,7 @@ layout (std140) uniform shader_data {
 	vec4 color;
 } testBlock;
 
-layout (std140, binding = 1) uniform CommonData {
+layout (std140, binding = 1) uniform Common_Data {
 	float time;
 	vec3 pad;
 } commonData;

@@ -57,6 +57,8 @@ public:
 		return SimpleVec2(1, 1);
 	};
 
+	virtual GraphicsAPITypes GetGraphicsType() override {return GraphicsAPITypes::DX11;};
+
 protected:
 	virtual void InitImGui_Internal() override;
 

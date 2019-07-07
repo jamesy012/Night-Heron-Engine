@@ -43,6 +43,8 @@ public:
 		return SimpleVec2(1, 0);
 	};
 
+	virtual GraphicsAPITypes GetGraphicsType() override { return GraphicsAPITypes::OPENGL4; };
+
 protected:
 	virtual void InitImGui_Internal() override;
 

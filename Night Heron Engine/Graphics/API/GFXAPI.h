@@ -8,6 +8,11 @@ class Window;
 
 #define NUM_OF_TEXTURE_SLOTS 32
 
+enum GraphicsAPITypes {
+	OPENGL4,
+	DX11
+};
+
 class GFX {
 public:
 	virtual bool CreateWindowSetUpAPI() = 0;
@@ -50,6 +55,8 @@ public:
 
 	virtual SimpleVec2 GetImGuiImageUV0() = 0;
 	virtual SimpleVec2 GetImGuiImageUV1() = 0;
+
+	virtual GraphicsAPITypes GetGraphicsType() = 0;
 
 	Window* m_Window;
 

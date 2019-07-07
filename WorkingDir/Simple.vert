@@ -8,13 +8,13 @@ layout (std140) uniform Vertex_Data {
 	mat4 projection;
 	mat4 model;
 	mat4 PV;
-} VertData;
+} vertData;
 
 out vec4 vVertColor;
 
 void main() {
 	//gl_Position = position;
-	gl_Position = VertData.PV * VertData.model * position;
+	gl_Position = vertData.PV * vertData.model * position;
 
 	vVertColor = vertColor;
 }

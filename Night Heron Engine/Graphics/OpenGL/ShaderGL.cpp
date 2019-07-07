@@ -93,7 +93,7 @@ void ShaderGL::Link_Internal() {
 	glGetProgramiv(m_Program, GL_LINK_STATUS, &success);
 	if (!success) {
 		GLchar infoLog[512];
-		glGetShaderInfoLog(m_Program, 512, NULL, infoLog);
+		glGetProgramInfoLog(m_Program, 512, NULL, infoLog);
 		if (infoLog[0] == -52) {
 			memcpy(infoLog, "No useful data.", 16);
 		}
