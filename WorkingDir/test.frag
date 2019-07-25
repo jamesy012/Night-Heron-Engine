@@ -21,7 +21,13 @@ void main() {
 	//fragColor = testBlock.color * vVertColor; 
 	//fragColor = testBlock.color; 
 
-	vec2 screenpos = GetScreenPos();
+	float stepRes = 1- step(testBlock.color.x + testBlock.color.y + testBlock.color.z, 2.9f);
+
+	vec2 screenpos = GetScreenPos() * 4;
+
+	screenpos.x += sin(screenpos.y*5 + commonData.time * 0.2f ) * 0.4f * stepRes;
+	screenpos.y += sin(screenpos.x*2 + commonData.time * 0.5f ) * 0.2f * stepRes;
+
 
 	//fragColor = texture(textureTest, vTexCoord);
 	//fragColor = vec4(vTexCoord.x, vTexCoord.y, 0, 1); 

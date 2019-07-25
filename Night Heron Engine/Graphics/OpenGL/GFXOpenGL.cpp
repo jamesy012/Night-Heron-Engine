@@ -13,6 +13,8 @@
 #include "TextureGL.h"
 #include "RenderTargetGL.h"
 
+#include "Managers/TimeManager.h"
+
 static void openGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 
 GFXOpenGL::GFXOpenGL() {
@@ -67,7 +69,7 @@ void GFXOpenGL::InitImGui_Internal() {
 void GFXOpenGL::SwapBuffer() {
 	SwapBuffers(m_Window->m_HDC);
 	//simulate vsync in a painfully bad way
-	Sleep((DWORD)(1.0 / 60.0f * 1000));
+	Sleep((DWORD)(1.0 / 60.0f * 1000) / 2 - _CTimeManager->m_DeltaTime);
 }
 
 void GFXOpenGL::Clear() {

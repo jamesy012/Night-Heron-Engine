@@ -11,8 +11,14 @@ public:
 		v2 = i2;
 	}
 
-	float v1;
-	float v2;
+	union {
+		float v1;
+		float x;
+	};
+	union {
+		float v2;
+		float y;
+	};
 };
 
 struct SimpleVec3 {
@@ -23,7 +29,16 @@ public:
 		v3 = i3;
 	}
 
-	float v1;
-	float v2;
-	float v3;
+	union {
+		float v1;
+		float x;
+	};
+	union {
+		float v2;
+		float y;
+	};	
+	union {
+		float v3;
+		float z;
+	};
 };

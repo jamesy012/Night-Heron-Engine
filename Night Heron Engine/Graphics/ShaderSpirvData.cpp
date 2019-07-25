@@ -431,9 +431,9 @@ bool ShaderSpirvData::GenerateGLSlangData() {
 	//newShader->setEnvTargetHlslFunctionality1();
 
 	//Contains final string of shader code
-	std::string output;
-	newShader->preprocess(&Resources, 450, ENoProfile, false, false, EShMessages::EShMsgDefault, &output, includer);
-	m_IncludeList.Clear();
+	//std::string output;
+	//newShader->preprocess(&Resources, 450, ENoProfile, false, false, EShMessages::EShMsgDefault, &output, includer);
+	//m_IncludeList.Clear();
 
 	newShader->parse(&Resources, 450, false, EShMessages::EShMsgDefault, includer);
 	//newShader->getIntermediate()->setSourceFile(m_FilePath.m_FilePath.c_str());//debug
@@ -506,22 +506,9 @@ void ShaderSpirvData::SaveInfoFile(bool a_DidFail) {
 	CreateDirectory(folderPath.Get(), NULL);
 	std::ofstream infoFile(folderPath + m_FilePath.m_FileName + ".info");
 	if (infoFile.is_open()) {
-		//if (a_DidFail) {
-		//	infoFile << "Failed.\n";
-		//} else {
-		//	for (int q = 0; q < HASH_LENGTH; q++) {
-		//		infoFile << m_Hash[q];
-		//	}
-		//	infoFile << "\n";
-		//}
-		//infoFile << m_FilePath.m_FilePath + "\n";
-
-		//todo: maybe also include the include's hash here?
-		//for (uint i = 0; i < m_IncludeList.Length(); i++) {
-		//	infoFile << m_IncludeList[i]-> + "\n";
-		//}
-
+		//start a new object
 		SSD_JsonHolder = nlohmann::json();
+
 		SSD_JsonHolder["SpirvJsonVersion"] = ShaderJsonFileVersion;
 		if (a_DidFail) {
 			SSD_JsonHolder["Error"] = true;

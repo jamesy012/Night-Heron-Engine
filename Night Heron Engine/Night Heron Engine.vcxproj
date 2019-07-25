@@ -105,11 +105,11 @@
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);$(SolutionDir)Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\hlsl\Debug;$(SolutionDir)Dependencies\assimp-4.1.0\lib\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);$(SolutionDir)Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\hlsl\Debug;$(SolutionDir)Dependencies\assimp-4.1.0\lib\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;assimp-vc140-mt.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)Generator\Debug\Generator.exe" "$(ProjectDir)\" "$(MSBuildProjectFullPath)" "Generated\\" "$(ProjectName)"</Command>
+      <Command>"$(SolutionDir)Generator\$(Configuration)\Generator.exe" "$(ProjectDir)\" "$(MSBuildProjectFullPath)" "Generated\\" "$(ProjectName)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -125,10 +125,10 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);$(SolutionDir)Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\hlsl\Debug;$(SolutionDir)Dependencies\assimp-4.1.0\lib\debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3d9.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;assimp-vc140-mt.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>$(SolutionDir)Generator\Debug\Generator.exe</Command>
+      <Command>"$(SolutionDir)Generator\$(Configuration)\Generator.exe" "$(ProjectDir)\" "$(MSBuildProjectFullPath)" "Generated\\" "$(ProjectName)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,17 +139,17 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm\;$(ProjectDir);$(ProjectDir)Dependency\;$(SolutionDir)Dependencies\assimp-4.1.0\include\;$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\hlsl\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);$(SolutionDir)Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\hlsl\Debug;$(SolutionDir)Dependencies\assimp-4.1.0\lib\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;assimp-vc140-mt.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>$(SolutionDir)Generator\Debug\Generator.exe</Command>
+      <Command>"$(SolutionDir)Generator\$(Configuration)\Generator.exe" "$(ProjectDir)\" "$(MSBuildProjectFullPath)" "Generated\\" "$(ProjectName)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -160,17 +160,17 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm\;$(ProjectDir);$(ProjectDir)Dependency\;$(SolutionDir)Dependencies\assimp-4.1.0\include\;$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;G:\proj\Engines\Night Heron\Night Heron Engine\Dependencies\glslang-master\cmakeBuild\hlsl\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);$(SolutionDir)Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\hlsl\Debug;$(SolutionDir)Dependencies\assimp-4.1.0\lib\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;glslangd.lib;OGLCompilerd.lib;OSDependentd.lib;SPIRVd.lib;hlsld.lib;spirv-cross-core.lib;spirv-cross-reflect.lib;spirv-cross-hlsl.lib;spirv-cross-glsl.lib;assimp-vc140-mt.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>$(SolutionDir)Generator\Debug\Generator.exe</Command>
+      <Command>"$(SolutionDir)Generator\$(Configuration)\Generator.exe" "$(ProjectDir)\" "$(MSBuildProjectFullPath)" "Generated\\" "$(ProjectName)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -201,6 +201,7 @@
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\ShaderSpirvData.cpp" />
     <ClCompile Include="Helpers\ImGuiHelper.cpp" />
+    <ClCompile Include="Input\InputHandler.cpp" />
     <ClCompile Include="Managers\IniFile.cpp" />
     <ClCompile Include="Managers\Arguments.cpp" />
     <ClCompile Include="Managers\ManagerBase.cpp" />
@@ -297,6 +298,8 @@
     <ClInclude Include="Graphics\Material.h" />
     <ClInclude Include="Graphics\ShaderSpirvData.h" />
     <ClInclude Include="Helpers\ImGuiHelper.h" />
+    <ClInclude Include="Input\InputHandler.h" />
+    <ClInclude Include="Input\InputKeys.h" />
     <ClInclude Include="Managers\IniFile.h" />
     <ClInclude Include="Interfaces\Jsonable.h" />
     <ClInclude Include="Managers\Arguments.h" />

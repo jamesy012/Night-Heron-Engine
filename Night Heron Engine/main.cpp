@@ -46,25 +46,32 @@
 
 #include "tests/ObjectDrawTest.h"
 
-struct TestUniformStruct {
-public:
+#include "Input/InputHandler.h"
+
+//Will error if the sizes are not correct
+#define CREATE_BUFFER_UNIFORM(name,x) \
+struct name { \
+public: \
+x \
+};\
+static_assert(sizeof(name) % 16 == 0,"Buffer size must be multiple of 16 '" #name "'");
+
+CREATE_BUFFER_UNIFORM(TestUniformStruct,
 	glm::mat4 MatrixView = glm::mat4();
 	glm::mat4 MatrixProjection = glm::mat4();
 	glm::mat4 MatrixModelTest = glm::mat4();
 	glm::mat4 MatrixPV = glm::mat4();
-};
+)
 
-struct TestUniformStruct2 {
-public:
+CREATE_BUFFER_UNIFORM(TestUniformStruct2,
 	glm::vec4 Color;
-};
+)
 
-struct CommonDataStruct {
-public:
+CREATE_BUFFER_UNIFORM(CommonDataStruct,
 	float time;
 	glm::vec2 screenSize;
 	float pad;
-};
+)
 
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance,
@@ -275,6 +282,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	//	}
 	//}
 
+	InputHandler ih;
+	ih.Startup(graphics->m_Window);
+
 	//todo remove this
 	_CManager->tempPVMUniform = testUniform;
 
@@ -315,6 +325,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			auto timerStart = timer.now();
 			currentTime += deltaTime;
 			_CTimeManager->m_CurrentTime = currentTime;
+			_CTimeManager->m_DeltaTime = deltaTime;
+
+			ih.Update();
 
 			graphics->ImGuiNewFrame();
 
@@ -341,6 +354,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			ImGui::Text("Current Time: %f", currentTime);
 			ImGui::Text("Delta Time: %f", deltaTime);
 			ImGui::Text("fps: %f", ImGui::GetIO().Framerate);
+			ImGui::Text("Mouse Pos: (x=%f, y=%f)", ih.GetMousePos().x, ih.GetMousePos().y);
+			ImGui::Text("Keys: %s", ih.GetKeysDown().Get());
 			if (ImGui::DragFloat("FOV", &fov, 1, 0, 180)) {
 				mainCamera.SetFov(fov);
 			}
@@ -349,7 +364,31 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			}
 			ImGui::Checkbox("Rotate Camera", &RotateCamera);
 			ImGui::DragFloat3("Camera Pos", &CameraPos.x, 0.25f);
+
+			static float cameraSpeed = 5.0f;
+			ImGui::DragFloat("Camera Speed", &cameraSpeed, 0.1f);
 			ImGui::End();
+
+			
+			if (ih.IsKeyDown(IKEY_W)) {
+				CameraPos.z -= cameraSpeed * deltaTime;
+			}
+			if (ih.IsKeyDown(IKEY_S)) {
+				CameraPos.z += cameraSpeed * deltaTime;
+			}
+			if (ih.IsKeyDown(IKEY_Q)) {
+				CameraPos.y -= cameraSpeed * deltaTime;
+			}
+			if (ih.IsKeyDown(IKEY_E)) {
+				CameraPos.y += cameraSpeed * deltaTime;
+			}
+			if (ih.IsKeyDown(IKEY_A)) {
+				CameraPos.x -= cameraSpeed * deltaTime;
+			}
+			if (ih.IsKeyDown(IKEY_D)) {
+				CameraPos.x += cameraSpeed * deltaTime;
+			}
+
 
 
 			//UPDATE OUR SCENE

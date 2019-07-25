@@ -162,6 +162,9 @@
     <ClCompile Include="Managers\IniFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Input\InputHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\OpenGL\GFXOpenGL.h">
@@ -516,6 +519,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Managers\IniFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputKeys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
