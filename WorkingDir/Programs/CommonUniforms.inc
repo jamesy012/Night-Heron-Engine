@@ -1,4 +1,4 @@
-layout (std140) uniform Vertex_Data {
+layout (std140, binding = 0) uniform Vertex_Data {
 	mat4 view;
 	mat4 projection;
 	mat4 model;

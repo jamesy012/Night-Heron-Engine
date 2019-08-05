@@ -7,8 +7,9 @@
         ],
         "Uniforms": [
             "Vertex_Data",
-            "shader_data",
-            "Common_Data"
+            "Shader_Data",
+            "Common_Data",
+            "Lighting_Data"
         ]
     },
     "Version": 1.0

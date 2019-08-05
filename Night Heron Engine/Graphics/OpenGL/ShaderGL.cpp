@@ -28,7 +28,7 @@ ShaderGL::~ShaderGL() {
 
 void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
 	spirv_cross::CompilerGLSL glsl(a_Code);
-
+	printf("Shader: %s\n", m_DebugName.Get());
 	spirv_cross::ShaderResources resources = glsl.get_shader_resources();
 	// Get all sampled images in the shader.
 	for (auto& resource : resources.sampled_images) {
@@ -45,6 +45,26 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 		//glsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
 
 		m_HasTextureForSlot[location] = true;
+	}
+
+	for (auto& resource : resources.uniform_buffers) {
+		unsigned set = glsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
+		unsigned binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
+		unsigned int location = glsl.get_decoration(resource.id, spv::DecorationLocation);
+		printf("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+	
+		// Modify the decoration to prepare it for GLSL.
+		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
+		//
+		//// Some arbitrary remapping if we want.
+		//hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
+		if (binding != 0) {
+			glsl.set_decoration(resource.id, spv::DecorationLocation, binding);
+	
+			binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
+			location = glsl.get_decoration(resource.id, spv::DecorationLocation);
+			printf("\tuniform %s moved to at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+		}
 	}
 
 	// Set some options.
@@ -116,11 +136,11 @@ void ShaderGL::Link_Internal() {
 
 	//goes through each uniform and creates a ShaderUniformData object to store and allow
 	//modification of uniforms
-	for (int i = 0; i < count; i++) {
-		//gets uniform name and type
-		glGetActiveUniform(m_Program, (GLuint)i, bufSize, &length, &size, &type, name);
-		printf("Uniform: %s\n", name);
-	}
+	//for (int i = 0; i < count; i++) {
+	//	//gets uniform name and type
+	//	glGetActiveUniform(m_Program, (GLuint)i, bufSize, &length, &size, &type, name);
+	//	//printf("Uniform: %s\n", name);
+	//}
 
 	DeleteShaders();
 

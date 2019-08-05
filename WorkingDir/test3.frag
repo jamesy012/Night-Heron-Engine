@@ -5,7 +5,7 @@ in vec4 vVertColor;
 						
 out vec4 fragColor; 
 
-layout (std140) uniform shader_data {
+layout (std140) uniform Shader_Data {
 	vec4 color;
 } testBlock;
 

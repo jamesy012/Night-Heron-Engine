@@ -1,10 +1,11 @@
 #version 450
-#include "Programs/testInclude.inc"
+#include "Programs/CommonVertexIn.inc"
 
 #include "Programs/CommonUniforms.inc"
 
 out vec2 vTexCoord;
 out vec4 vVertColor;
+out vec4 vVertNormal;
 
 void main() {		
 	//gl_Position = projectionViewMatrix * model * position;
@@ -15,4 +16,5 @@ void main() {
 
 	vTexCoord = texCoord;
 	vVertColor = vertColor;
+	vVertNormal = vertNormal;
 }

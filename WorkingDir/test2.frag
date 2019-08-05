@@ -2,10 +2,12 @@
  
 in vec2 vTexCoord; 	
 in vec4 vVertColor;	
+in vec4 vVertNormal;
+
 						
 out vec4 fragColor; 
 
-layout (std140) uniform shader_data {
+layout (std140) uniform Shader_Data {
 	vec4 color;
 } testBlock;
 
@@ -18,4 +20,5 @@ layout (std140, binding = 1) uniform Common_Data {
  
 void main() { 
 	fragColor = vVertColor;
+	fragColor = (vVertNormal);
 } 

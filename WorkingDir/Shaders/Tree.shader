@@ -7,7 +7,7 @@
         ],
         "Uniforms": [
             "Vertex_Data",
-            "shader_data",
+            "Shader_Data",
             "Common_Data"
         ]
     },

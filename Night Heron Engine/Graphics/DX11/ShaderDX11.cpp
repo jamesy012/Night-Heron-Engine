@@ -14,6 +14,7 @@
 //};
 D3D11_INPUT_ELEMENT_DESC VertexLayout[] = {
 	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Normal), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 { "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(Vertex, m_UV), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 { "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
@@ -39,6 +40,7 @@ ShaderDX11::~ShaderDX11() {
 }
 
 void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
+	printf("Shader: %s\n", m_DebugName.Get());
 	spirv_cross::CompilerHLSL hlsl(a_Code);
 
 	spirv_cross::ShaderResources resources = hlsl.get_shader_resources();
@@ -47,7 +49,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
-		printf("Image %s at set = %u, binding = %u Location = %u\n", resource.name.c_str(), set, binding, location);
+		printf("\tImage %s at set = %u, binding = %u Location = %u\n", resource.name.c_str(), set, binding, location);
 
 		// Modify the decoration to prepare it for GLSL.
 		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -63,7 +65,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
-		printf("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+		printf("\tuniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
 
 		// Modify the decoration to prepare it for GLSL.
 		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -75,7 +77,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 
 			binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
 			location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
-			printf("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+			printf("\t\tuniform %s moved to at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
 		}
 
 		m_ShaderCBufferList.Add({ GetShaderTypeString(a_Type) + resource.name, location });
@@ -86,7 +88,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 	options.shader_model = 50;
 	hlsl.set_hlsl_options(options);
 
-	// Compile to GLSL, ready to give to GL driver.
+	// Compile to HLSL, ready to give to DirectX.
 	std::string source = hlsl.compile();
 
 	if (m_ShouldPrintCode) {

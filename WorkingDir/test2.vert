@@ -1,22 +1,11 @@
 #version 450
-layout(location = 0) in vec4 position;
-layout(location = 2) in vec2 texCoord;
-layout(location = 3) in vec4 vertColor;	
+#include "Programs/CommonVertexIn.inc"
 
-layout (std140, binding = 0) uniform Vertex_Data {
-	mat4 view;
-	mat4 projection;
-	mat4 model;
-	mat4 PV;
-} vertData;
-
-layout (std140, binding = 1) uniform Common_Data {
-	float time;
-	vec3 pad;
-} commonData;
+#include "Programs/CommonUniforms.inc"
 
 out vec2 vTexCoord;
 out vec4 vVertColor;
+out vec4 vVertNormal;
 
 void main() {		
 	float treeSpeed = commonData.time * 2;
@@ -25,4 +14,6 @@ void main() {
 
 	vTexCoord = texCoord;
 	vVertColor = vertColor;
+	mat4 normalMatrix = transpose(inverse(vertData.model));
+	vVertNormal = normalMatrix * vertNormal;
 }

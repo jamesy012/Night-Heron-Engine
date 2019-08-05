@@ -34,6 +34,14 @@ void Mesh::CreateSquare() {
 		glm::vec4(-1, 1, 1, 1),
 		glm::vec4(-1, 1, -1, 1),
 	};
+	glm::vec4 normals[]{
+		glm::vec4(0, -1, 0, 0),
+		glm::vec4(0, 1, 0, 0),
+		glm::vec4(1, -0, 0, 0),
+		glm::vec4(-0, -0, 1, 0),
+		glm::vec4(-1, -0, -0, 0),
+		glm::vec4(0, 0, -1, 0),
+	};
 	glm::vec2 texCoords[]{//y coords have been flipped
 		glm::vec2(1, 0),
 		glm::vec2(0, 0),
@@ -63,7 +71,7 @@ void Mesh::CreateSquare() {
 		vert.m_Pos = vertPos[indexData[i] - 1];
 		vert.m_Color = glm::vec4(1, 1, 1, 1);
 		vert.m_UV = texCoords[indexData[i + 1] - 1];
-		//vert.normal = normals[indexData[i + 2] - 1];
+		vert.m_Normal = normals[indexData[i + 2] - 1];
 
 		m_Vertices.Add(vert);
 		m_Indices.Add(i / 3);

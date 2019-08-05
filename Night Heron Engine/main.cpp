@@ -63,6 +63,11 @@ CREATE_BUFFER_UNIFORM(TestUniformStruct,
 	glm::mat4 MatrixPV = glm::mat4();
 )
 
+#define NUM_LIGHTS 10
+CREATE_BUFFER_UNIFORM(TestUniformArray,
+  TestUniformStruct data[NUM_LIGHTS];
+)
+
 CREATE_BUFFER_UNIFORM(TestUniformStruct2,
 	glm::vec4 Color;
 )
@@ -180,6 +185,22 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	}
 
 	//UNIFORMS
+	TestUniformArray testUniformArray;
+	for (int i = 0; i < NUM_LIGHTS; i++) {
+		//testUniformArray.data[i].MatrixModelTest = glm::mat4(1);
+		//testUniformArray.data[i].MatrixView = glm::mat4(1);
+		//testUniformArray.data[i].MatrixProjection = glm::mat4(1);
+		//testUniformArray.data[i].MatrixPV = glm::mat4(1);
+		testUniformArray.data[i].MatrixView[0][0] = 200.0f / NUM_LIGHTS;
+		testUniformArray.data[i].MatrixView[0][1] = 50.0f / NUM_LIGHTS;
+		testUniformArray.data[i].MatrixView[0][2] = 255.0f / NUM_LIGHTS;
+	}
+	ShaderUniformBlock* testUniformArrayBlock = graphics->CreateBuffer(&testUniformArray, sizeof(TestUniformArray));
+	testUniformArrayBlock->SetDebugObjName("Color Aray");
+	_CManager->RegisterShaderUniform(testUniformArrayBlock, "Lighting_Data");
+	//testUniformArrayBlock->UpdateBuffer(&testUniformArray);
+
+
 	TestUniformStruct testUniformStructObj;
 	TestUniformStruct2 colorTest;
 	CommonDataStruct commonPerFrameData;
@@ -189,7 +210,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	_CManager->RegisterShaderUniform(testUniform, "Vertex_Data");
 	ShaderUniformBlock* testUniform2 = graphics->CreateBuffer(&colorTest, sizeof(TestUniformStruct2));
 	testUniform2->SetDebugObjName("Color Test Buffer");
-	_CManager->RegisterShaderUniform(testUniform2, "shader_data");
+	_CManager->RegisterShaderUniform(testUniform2, "Shader_Data");
 	ShaderUniformBlock* commonDataBlock = graphics->CreateBuffer(&commonPerFrameData, sizeof(CommonDataStruct));
 	commonDataBlock->SetDebugObjName("Common Data Buffer");
 	_CManager->RegisterShaderUniform(commonDataBlock, "Common_Data");
@@ -207,8 +228,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			testShader->LinkShaders();
 
 			testShader->AddBuffer(testUniform, "Vertex_Data");
-			testShader->AddBuffer(testUniform2, "shader_data");
+			testShader->AddBuffer(testUniform2, "Shader_Data");
 			testShader->AddBuffer(commonDataBlock, "Common_Data");
+			testShader->AddBuffer(commonDataBlock, "Lighting_Data");
 
 			testShader->Save();
 		}
@@ -226,7 +248,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			treeShader->LinkShaders();
 
 			treeShader->AddBuffer(testUniform, "Vertex_Data");
-			treeShader->AddBuffer(testUniform2, "shader_data");
+			treeShader->AddBuffer(testUniform2, "Shader_Data");
 			treeShader->AddBuffer(commonDataBlock, "Common_Data");
 
 			treeShader->Save();
@@ -277,7 +299,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	//	if (_CManager->m_Materials[i]->m_CreatedShader) {
 	//		Shader* shader = _CManager->m_Materials[i]->m_Shader;
 	//		shader->AddBuffer(testUniform, "Vertex_Data");
-	//		shader->AddBuffer(testUniform2, "shader_data");
+	//		shader->AddBuffer(testUniform2, "Shader_Data");
 	//		shader->AddBuffer(commonDataBlock, "Common_Data");
 	//	}
 	//}

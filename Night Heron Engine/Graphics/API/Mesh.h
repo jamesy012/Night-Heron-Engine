@@ -11,8 +11,8 @@
 
 struct Vertex {
 	glm::vec4 m_Pos;
+	glm::vec4 m_Normal;
 	glm::vec2 m_UV;
-	//glm::vec3 m_Normal;
 	glm::vec4 m_Color;
 };
 

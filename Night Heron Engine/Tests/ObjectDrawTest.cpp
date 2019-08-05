@@ -25,7 +25,7 @@ public:
 
 void ObjectDrawTest::Start() {
 	m_ModelUniform = _CManager->GetShaderUniform("Vertex_Data");
-	m_ColorUniform = _CManager->GetShaderUniform("shader_data");
+	m_ColorUniform = _CManager->GetShaderUniform("Shader_Data");
 }
 
 void ObjectDrawTest::PreDraw() {

@@ -50,6 +50,14 @@ void Model::CreateSquare() {
 		glm::vec4(-1, 1, 1, 1),
 		glm::vec4(-1, 1, -1, 1),
 	};
+	glm::vec4 normals[]{
+		glm::vec4(0, -1, 0, 0),
+		glm::vec4(0, 1, 0, 0),
+		glm::vec4(1, -0, 0, 0),
+		glm::vec4(-0, -0, 1, 0),
+		glm::vec4(-1, -0, -0, 0),
+		glm::vec4(0, 0, -1, 0),
+	};
 	glm::vec2 texCoords[]{//y coords have been flipped
 		glm::vec2(1, 0),
 		glm::vec2(0, 0),
@@ -81,7 +89,7 @@ void Model::CreateSquare() {
 		vert.m_Pos = vertPos[indexData[i] - 1];
 		vert.m_Color = glm::vec4(1, 1, 1, 1);
 		vert.m_UV = texCoords[indexData[i + 1] - 1];
-		//vert.normal = normals[indexData[i + 2] - 1];
+		vert.m_Normal = normals[indexData[i + 2] - 1];
 
 		mesh->m_Vertices.Add(vert);
 		mesh->m_Indices.Add(i / 3);
@@ -153,6 +161,13 @@ Mesh* Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 		vert.m_Pos.y = mesh->mVertices[i].y;
 		vert.m_Pos.z = mesh->mVertices[i].z;
 		vert.m_Pos.w = 1;
+
+		if (mesh->HasNormals()) {
+			vert.m_Normal.x = mesh->mNormals[i].x;
+			vert.m_Normal.y = mesh->mNormals[i].y;
+			vert.m_Normal.z = mesh->mNormals[i].z;
+			vert.m_Normal.w = 1;
+		}
 
 		if (mesh->mTextureCoords[0]) {
 			vert.m_UV.x = mesh->mTextureCoords[0][i].x;
