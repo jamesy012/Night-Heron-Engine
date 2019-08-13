@@ -1,5 +1,7 @@
 #version 450
  
+#include "Programs/CommonUniforms.inc"
+
 in vec2 vTexCoord; 	
 in vec4 vVertColor;	
 in vec4 vVertNormal;
@@ -11,10 +13,6 @@ layout (std140) uniform Shader_Data {
 	vec4 color;
 } testBlock;
 
-layout (std140, binding = 1) uniform Common_Data {
-	float time;
-	vec3 pad;
-} commonData;
 
 //layout (location = 1) uniform sampler2D textureTest;
  

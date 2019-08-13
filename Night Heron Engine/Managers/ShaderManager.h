@@ -11,6 +11,14 @@ class ShaderSpirvManager;
 
 extern class ShaderManager* _CShaderManager;
 
+//Will error if the sizes are not correct
+#define CREATE_BUFFER_UNIFORM(name,x) \
+struct name { \
+public: \
+x \
+};\
+static_assert(sizeof(name) % 16 == 0,"Buffer size must be multiple of 16 '" #name "'");
+
 class ShaderManager : public ManagerBase {
 public:
 	ShaderManager();

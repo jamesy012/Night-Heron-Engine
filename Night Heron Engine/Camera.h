@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Transform.h"
+#include "Object.h"
 
 #include "Generated/Objects_Night_Heron_Engine.h"
 
-ADD_OBJ(Camera)
 class Camera : public Transform {
 public:
 	Camera();
@@ -28,4 +28,11 @@ private:
 	float m_Fov = glm::radians(90.0f);
 	float m_Near = 0.1f;
 	float m_Far = 100.0f;
+};
+
+
+ADD_OBJ(CameraBaseObject)
+class CameraBaseObject : public Object {
+public:
+	Camera* m_Camera;
 };

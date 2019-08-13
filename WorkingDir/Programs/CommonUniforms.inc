@@ -10,3 +10,8 @@ layout (std140, binding = 1) uniform Common_Data {
 	vec2 screenSize;
 	float pad;
 } commonData;
+
+layout (std140, binding = 1) uniform Camera_Data {
+	vec3 position;
+	float pad;
+} cameraData;

@@ -2,7 +2,7 @@
 #include "Objects_Night_Heron_Engine.h"
 
 #include "Tests\ObjectDrawTest.h" //ObjectDrawTest 
-#include "Camera.h" //Camera 
+#include "Camera.h" //CameraBaseObject 
 #include "Object.h" //Object 
 #include "Object.h" //SinObject 
 
@@ -24,7 +24,7 @@ namespace GENERATED_OBJ{
 
 	void RegisterClasses() {
 REGISTER_OBJ(ObjectDrawTest);
-REGISTER_OBJ(Camera);
+REGISTER_OBJ(CameraBaseObject);
 REGISTER_OBJ(Object);
 REGISTER_OBJ(SinObject);
 

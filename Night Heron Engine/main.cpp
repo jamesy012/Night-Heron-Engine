@@ -19,6 +19,7 @@
 #include "Managers/ShaderManager.h"
 #include "Managers/ShaderSpirvManager.h"
 #include "Managers/TextureManager.h"
+#include "Managers/LightManager.h"
 #include "Managers/Manager.h"
 #include "Managers/Arguments.h"
 #include "Singletons.h"
@@ -48,24 +49,16 @@
 
 #include "Input/InputHandler.h"
 
-//Will error if the sizes are not correct
-#define CREATE_BUFFER_UNIFORM(name,x) \
-struct name { \
-public: \
-x \
-};\
-static_assert(sizeof(name) % 16 == 0,"Buffer size must be multiple of 16 '" #name "'");
-
 CREATE_BUFFER_UNIFORM(TestUniformStruct,
 	glm::mat4 MatrixView = glm::mat4();
 	glm::mat4 MatrixProjection = glm::mat4();
 	glm::mat4 MatrixModelTest = glm::mat4();
 	glm::mat4 MatrixPV = glm::mat4();
-)
+	)
 
-#define NUM_LIGHTS 10
-CREATE_BUFFER_UNIFORM(TestUniformArray,
-  TestUniformStruct data[NUM_LIGHTS];
+CREATE_BUFFER_UNIFORM(CameraUniformStruct,
+	glm::vec3 pos;
+	float pad;
 )
 
 CREATE_BUFFER_UNIFORM(TestUniformStruct2,
@@ -185,21 +178,30 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	}
 
 	//UNIFORMS
-	TestUniformArray testUniformArray;
-	for (int i = 0; i < NUM_LIGHTS; i++) {
+	PointLightsData testUniformArray;
+	for (int i = 0; i < MAX_NUM_LIGHTS; i++) {
 		//testUniformArray.data[i].MatrixModelTest = glm::mat4(1);
 		//testUniformArray.data[i].MatrixView = glm::mat4(1);
 		//testUniformArray.data[i].MatrixProjection = glm::mat4(1);
 		//testUniformArray.data[i].MatrixPV = glm::mat4(1);
-		testUniformArray.data[i].MatrixView[0][0] = 200.0f / NUM_LIGHTS;
-		testUniformArray.data[i].MatrixView[0][1] = 50.0f / NUM_LIGHTS;
-		testUniformArray.data[i].MatrixView[0][2] = 255.0f / NUM_LIGHTS;
+		//testUniformArray.data[i].MatrixView[0][0] = 200.0f / NUM_LIGHTS;
+		//testUniformArray.data[i].MatrixView[0][1] = 50.0f / NUM_LIGHTS;
+		//testUniformArray.data[i].MatrixView[0][2] = 255.0f / NUM_LIGHTS;
 	}
-	ShaderUniformBlock* testUniformArrayBlock = graphics->CreateBuffer(&testUniformArray, sizeof(TestUniformArray));
+	testUniformArray.data[0].color = glm::vec3(1, 1, 1);
+	testUniformArray.data[0].pos = glm::vec3(.5f, 3.25f, 3.25f);
+	testUniformArray.data[0].ambientStrength = 0.2f;
+	testUniformArray.data[0].specularStrength = 0.5f;
+
+	ShaderUniformBlock* testUniformArrayBlock = graphics->CreateBuffer(&testUniformArray, sizeof(PointLightsData));
 	testUniformArrayBlock->SetDebugObjName("Color Aray");
 	_CManager->RegisterShaderUniform(testUniformArrayBlock, "Lighting_Data");
 	//testUniformArrayBlock->UpdateBuffer(&testUniformArray);
 
+	CameraUniformStruct cameraUniformData;
+	ShaderUniformBlock* cameraUniformBlock = graphics->CreateBuffer(&cameraUniformData, sizeof(CameraUniformStruct));
+	cameraUniformBlock->SetDebugObjName("Camera Data");
+	_CManager->RegisterShaderUniform(cameraUniformBlock, "Camera_Data");
 
 	TestUniformStruct testUniformStructObj;
 	TestUniformStruct2 colorTest;
@@ -230,7 +232,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			testShader->AddBuffer(testUniform, "Vertex_Data");
 			testShader->AddBuffer(testUniform2, "Shader_Data");
 			testShader->AddBuffer(commonDataBlock, "Common_Data");
-			testShader->AddBuffer(commonDataBlock, "Lighting_Data");
+			testShader->AddBuffer(testUniformArrayBlock, "Lighting_Data");
+			testShader->AddBuffer(cameraUniformBlock, "Camera_Data");
 
 			testShader->Save();
 		}
@@ -389,7 +392,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 			static float cameraSpeed = 5.0f;
 			ImGui::DragFloat("Camera Speed", &cameraSpeed, 0.1f);
+
 			ImGui::End();
+
+			ImGui::Begin("Lights");
+			{
+				bool updateUniform = false;
+				updateUniform |= ImGui::DragFloat3("Pos", &testUniformArray.data[0].pos.x, 0.25f);
+				updateUniform |= ImGui::DragFloat3("Color", &testUniformArray.data[0].color.x, 0.05f,0,1);
+				updateUniform |= ImGui::DragFloat("Ambient Power", &testUniformArray.data[0].ambientStrength, 0.05f);
+				updateUniform |= ImGui::DragFloat("Spec Power", &testUniformArray.data[0].specularStrength, 0.05f);
+
+				if(updateUniform){
+					testUniformArrayBlock->UpdateBuffer(&testUniformArray);
+				}
+			}
+			ImGui::End();
+
 
 			
 			if (ih.IsKeyDown(IKEY_W)) {
@@ -456,6 +475,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 				mainCamera.SetRotation(glm::vec3(0));
 			}
 			testUniformStructObj.MatrixPV = mainCamera.GetPV();
+			cameraUniformData.pos = mainCamera.m_Position;
+			cameraUniformBlock->UpdateBuffer(&cameraUniformData);
 
 			graphics->PushDebugGroup("Main Render");
 			graphics->SetClearColor(0.1f, 0.1f, 0.1f, 1.0f);

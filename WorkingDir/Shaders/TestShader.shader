@@ -9,7 +9,8 @@
             "Vertex_Data",
             "Shader_Data",
             "Common_Data",
-            "Lighting_Data"
+            "Lighting_Data",
+            "Camera_Data"
         ]
     },
     "Version": 1.0

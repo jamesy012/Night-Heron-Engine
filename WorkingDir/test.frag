@@ -6,6 +6,7 @@
 in vec2 vTexCoord; 	
 in vec4 vVertColor;	
 in vec4 vVertNormal;
+in vec3 vVertPos; 	
 						
 out vec4 fragColor; 
 
@@ -14,13 +15,13 @@ layout (std140) uniform Shader_Data {
 } testBlock;
 
 struct LightData {
-	mat4 view;
-	mat4 projection;
-	mat4 model;
-	mat4 PV;
+	vec3 pos;
+	float ambientStrength;
+	vec3 color;
+	float specularStrength;
 };
 
-#define NUM_LIGHTS 10
+#define NUM_LIGHTS 1
 layout (std140) uniform Lighting_Data {
 	LightData data[NUM_LIGHTS];
 } lightData;
@@ -34,13 +35,28 @@ void main() {
 	//fragColor = testBlock.color * vVertColor; 
 	//fragColor = testBlock.color; 
 	//fragColor = vec4(0,0.5f,0,1);
-	for(int i = 0;i<NUM_LIGHTS;i++){
-		fragColor.r += lightData.data[i].view[0][0] /255.0f;
-		fragColor.g += lightData.data[i].view[0][1] /255.0f;
-		fragColor.b += lightData.data[i].view[0][2] /255.0f;
-	}
+	// for(int i = 0;i<NUM_LIGHTS;i++){
+	// 	fragColor.r += lightData.data[i].view[0][0] /255.0f;
+	// 	fragColor.g += lightData.data[i].view[0][1] /255.0f;
+	// 	fragColor.b += lightData.data[i].view[0][2] /255.0f;
+	// }
 
-	//fragColor = abs(vVertNormal);
+    vec3 ambient = lightData.data[0].ambientStrength * lightData.data[0].color;
+
+	vec3 norm = normalize(vVertNormal.xyz);
+	vec3 lightDir = normalize(lightData.data[0].pos - vVertPos.xyz);  
+	float diff = max(dot(norm, lightDir), 0.0);
+	vec3 diffuse = diff * lightData.data[0].color;
+	//vec3 result = (ambient + diffuse) * testBlock.color.xyz;
+
+	vec3 viewDir = normalize(cameraData.position - vVertPos.xyz);
+	vec3 reflectDir = reflect(-lightDir, norm); 
+
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	vec3 specular = lightData.data[0].specularStrength * spec * lightData.data[0].color;  
+
+	vec3 result = (ambient + diffuse + specular) * testBlock.color.xyz;
+	fragColor = vec4(result, 1.0);
 	//return;
 //
 //
