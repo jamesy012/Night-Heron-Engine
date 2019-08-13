@@ -35,6 +35,8 @@ public:
 	};
 
 	virtual void ResizeWindow(int a_Width, int a_Height);
+	virtual void SetFpsLimit(int a_NewLimit) = 0;
+	virtual int GetFpsLimit() { return m_FpsLimit; };
 
 	virtual Shader* CreateShader() = 0;
 	virtual Mesh* CreateMesh() = 0;
@@ -67,6 +69,8 @@ protected:
 	virtual void ResizeWindow_Internal(int a_Width, int a_Height) = 0;
 
 	float m_ClearR = 0, m_ClearG = 0, m_ClearB = 0, m_ClearA = 1;
+
+	int m_FpsLimit = 60;
 
 	//reference to hold which textures are in each slot
 	Texture* m_TextureSlots[NUM_OF_TEXTURE_SLOTS] = { nullptr };

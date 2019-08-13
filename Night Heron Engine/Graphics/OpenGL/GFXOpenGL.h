@@ -18,6 +18,7 @@ public:
 	void SetClearColor(float R, float G, float B, float A) override;
 
 	virtual void ResizeWindow_Internal(int a_Width, int a_Height) override;
+	virtual void SetFpsLimit(int a_NewLimit) override;
 
 	virtual class Shader* CreateShader() override;
 	virtual class Mesh* CreateMesh() override;

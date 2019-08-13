@@ -4,11 +4,15 @@
 #include <Graphics/DX11/GFXDX11.h>
 #include <stb-master/stb_image.h>
 
-static DXGI_FORMAT getDX11FormatFromSTBFormat(unsigned int a_Format) {
+static DXGI_FORMAT getDX11FormatFromSize(TextureSizes a_Format) {
 	switch (a_Format) {
-		case STBI_rgb_alpha:
+		case TextureSizes::R:
+			return DXGI_FORMAT_R8G8_UNORM;
+		case TextureSizes::RG:
+			return DXGI_FORMAT_R32G32B32_FLOAT;
+		case TextureSizes::RGBA:
 			return DXGI_FORMAT_R8G8B8A8_UNORM;
-		case STBI_rgb:
+		case TextureSizes::RGB:
 		default:
 			return DXGI_FORMAT_R8G8B8A8_UNORM;
 	}
@@ -27,7 +31,7 @@ void TextureDX11::createData() {
 	if (m_DesiredFormat) {
 		texDesc.Format = (DXGI_FORMAT)m_DesiredFormat;
 	} else {
-		texDesc.Format = getDX11FormatFromSTBFormat(m_ImageFormat);
+		texDesc.Format = getDX11FormatFromSize(m_ImageFormat);
 	}
 	texDesc.Width = m_Width;
 	texDesc.Height = m_Height;

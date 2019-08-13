@@ -69,7 +69,7 @@ void GFXOpenGL::InitImGui_Internal() {
 void GFXOpenGL::SwapBuffer() {
 	SwapBuffers(m_Window->m_HDC);
 	//simulate vsync in a painfully bad way
-	Sleep((DWORD)(1.0 / 60.0f * 1000) / 2 - _CTimeManager->m_DeltaTime);
+	Sleep((DWORD)(1.0 / m_FpsLimit * 1000) / 2 - _CTimeManager->m_DeltaTime);
 }
 
 void GFXOpenGL::Clear() {
@@ -83,6 +83,10 @@ void GFXOpenGL::SetClearColor(float R, float G, float B, float A) {
 
 void GFXOpenGL::ResizeWindow_Internal(int a_Width, int a_Height) {
 	glViewport(0, 0, a_Width, a_Height);
+}
+
+void GFXOpenGL::SetFpsLimit(int a_NewLimit) {
+	m_FpsLimit = a_NewLimit;
 }
 
 Shader* GFXOpenGL::CreateShader() {

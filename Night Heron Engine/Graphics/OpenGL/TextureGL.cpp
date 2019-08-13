@@ -3,11 +3,15 @@
 #include <GL/glew.h>
 #include <stb-master/stb_image.h>
 
-static unsigned int getGLFormatFromSTBFormat(unsigned int a_Format) {
+static unsigned int getGLFormatFromSize(TextureSizes a_Format) {
 	switch (a_Format) {
-		case STBI_rgb_alpha:
+		case TextureSizes::R:
+			return GL_R;
+		case TextureSizes::RG:
+			return GL_RG;
+		case TextureSizes::RGBA:
 			return GL_RGBA;
-		case STBI_rgb:
+		case TextureSizes::RGB:
 		default:
 			return GL_RGB;
 	}
@@ -20,7 +24,7 @@ void TextureGL::SetDebugObjName_Internal() {
 }
 
 void TextureGL::createData() {
-	unsigned int glType = getGLFormatFromSTBFormat(m_ImageFormat);
+	unsigned int glType = getGLFormatFromSize(m_ImageFormat);
 
 	glGenTextures(1, &m_BufferID);
 	glBindTexture(GL_TEXTURE_2D, m_BufferID);

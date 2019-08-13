@@ -134,6 +134,10 @@ void GFXDX11::ResizeWindow_Internal(int a_Width, int a_Height) {
 	}
 }
 
+void GFXDX11::SetFpsLimit(int a_NewLimit) {
+	m_FpsLimit = a_NewLimit;
+}
+
 Shader* GFXDX11::CreateShader() {
 	return new ShaderDX11();
 }
@@ -176,6 +180,8 @@ ShaderUniformBlock* GFXDX11::CreateBuffer(void* a_Object, unsigned int a_Size) {
 			MessageBox(NULL, "Error CreateBuffer cbPerObjectBuffer", "Error", MB_OK | MB_ICONERROR);
 		}
 	}
+
+	sub->UpdateBuffer(a_Object);
 
 	return sub;
 }

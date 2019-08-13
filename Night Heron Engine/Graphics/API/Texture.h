@@ -5,6 +5,14 @@
 
 class GFX;
 
+enum TextureSizes {
+	None,
+	R,
+	RG,
+	RGB,
+	RGBA
+};
+
 class Texture : public GFXObj {
 	friend GFX;
 public:
@@ -20,9 +28,11 @@ public:
 protected:
 	virtual void createData() = 0;
 
+	TextureSizes STBiToSize(int a_Size) const;
+
 	unsigned char* m_TextureData;
 	int m_Width;
 	int m_Height;
-	int m_ImageFormat;
+	TextureSizes m_ImageFormat;
 	CMString m_Path;
 };

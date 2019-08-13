@@ -261,6 +261,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	testShader->FindUnlinkedUniforms();
 	treeShader->FindUnlinkedUniforms();
 
+	RenderTarget* shadowTest = nullptr;// = graphics->CreateRenderTarget(256, 256);
+	if (shadowTest) {
+		shadowTest->AddBuffer(RenderTargetBufferTypes::TEXTURE, RenderTargetBufferFormats::DEPTH_STENCIL);
+		shadowTest->Create();
+		shadowTest->SetDebugObjName("Test Shadow RT");
+	}
+
 	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
 	if (testRT) {
 		testRT->SetupRenderTarget_Internal();
@@ -386,6 +393,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			}
 			if (testRT) {
 				ImGui::Image(testRT->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
+			}
+			if (shadowTest) {
+				ImGui::Image(shadowTest->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
 			}
 			ImGui::Checkbox("Rotate Camera", &RotateCamera);
 			ImGui::DragFloat3("Camera Pos", &CameraPos.x, 0.25f);
