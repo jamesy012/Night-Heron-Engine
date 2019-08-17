@@ -38,6 +38,6 @@ public:
 protected:
 	virtual void UpdateModelMatrix();
 
-	bool m_IsDirty;
+	bool m_IsDirty = true;
 	Matrix m_ModelMatrix;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Types.h"
+#include "Types/CMString.h"
+#include "Types/CMArray.h"
 #include "API/GFXObj.h"
 #include "Interfaces/Saveable.h"
 
@@ -15,6 +16,8 @@ public:
 	~Material();
 
 	void Use();
+
+	void AddShader(CMString a_BufferName);
 
 	Shader* m_Shader;
 

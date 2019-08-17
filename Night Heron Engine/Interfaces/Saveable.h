@@ -3,7 +3,8 @@
 //Handles objects which are able to be saved to or loaded from disk
 
 #include "Util.h"
-#include "Types.h"
+#include "Types/CMString.h"
+#include "Types/CMFilePath.h"
 
 #include "Jsonable.h"
 

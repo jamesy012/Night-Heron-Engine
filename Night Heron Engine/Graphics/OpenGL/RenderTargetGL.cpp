@@ -58,7 +58,7 @@ void RenderTargetGL::SetupRenderTarget_Internal() {
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
-		printf("Framebuffer Error ID: %u\n", status);
+		CMLOG("Framebuffer Error ID: %u\n", status);
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

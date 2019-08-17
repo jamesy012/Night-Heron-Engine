@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SimpleMath.h"
-#include "Types.h"
+#include "Types/CMString.h"
 
 #include "InputKeys.h"
 

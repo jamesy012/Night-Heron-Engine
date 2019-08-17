@@ -148,7 +148,7 @@ public:
 										 const char* includerName,
 										 size_t inclusionDepth) override
 	{
-		printf("Including System file header name (%s) IncluderName (%s) inclusionDepth (%i)\n", headerName, includerName, inclusionDepth);
+		CMLOG("Including System file header name (%s) IncluderName (%s) inclusionDepth (%i)\n", headerName, includerName, inclusionDepth);
 		
 
 		return LoadFile(CMString("Programs/") + headerName);
@@ -161,7 +161,7 @@ public:
 										const char* includerName,
 										size_t inclusionDepth) override
 	{
-		printf("Including local file header name (%s) IncluderName (%s) inclusionDepth (%i)\n", headerName, includerName, inclusionDepth);
+		CMLOG("Including local file header name (%s) IncluderName (%s) inclusionDepth (%i)\n", headerName, includerName, inclusionDepth);
 		CMString includer = includerName;
 		CMString path;
 		if (!includer.IsEmpty()) {
@@ -192,7 +192,7 @@ private:
 		if (includeFile) {
 
 			if (m_Owner->m_IncludeList.FindElement(includeFile) != -1) {
-				printf("\tAuto #pragma once kicked in, not including\n");
+				CMLOG("\tAuto #pragma once kicked in, not including\n");
 				const uint length = 0;
 				char* content = new char[length + 1];
 				return new glslang::TShader::Includer::IncludeResult(a_Path, content, length, content);
@@ -218,7 +218,7 @@ ShaderSpirvData::ShaderSpirvData() {
 
 ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	if (m_Shader) {
-		CMLog("Shader already exists");
+		CMLOG("Shader already exists");
 		return ShaderLoadRes::SHADERLOAD_ERROR;
 	}
 	m_FilePath = a_FilePath;
@@ -287,17 +287,17 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 
 
 		if (res == 0) {
-			printf("Shader: Using cached data: %s\n", m_FilePath.m_FilePath.c_str());
+			CMLOG("Shader: Using cached data: %s\n", m_FilePath.m_FilePath.c_str());
 			m_HasBeenLoaded = true;
 			return ShaderLoadRes::SHADERLOAD_LOAD;
 		} else {
 			//delete old files
 			remove((ShaderCachePath + m_FilePath.m_FilePath + ".info").c_str());
 			remove((ShaderCachePath + m_FilePath.m_FilePath + ".spirv").c_str());
-			printf("Shader: Old code didnt match, deleteing cached data %s\n", m_FilePath.m_FilePath.c_str());
+			CMLOG("Shader: Old code didnt match, deleteing cached data %s\n", m_FilePath.m_FilePath.c_str());
 		}
 	}
-	printf("Shader: Generating Code: %s\n", m_FilePath.m_FilePath.c_str());
+	CMLOG("Shader: Generating Code: %s\n", m_FilePath.m_FilePath.c_str());
 
 	m_HasPermutation = m_SourceFile.Contains("#ifdef WITH_OPENGL");
 

@@ -106,7 +106,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		freopen_s((FILE * *)stdout, "CONOUT$", "w", stdout);
 	}
 
-
 	if (!graphics->CreateWindowSetUpAPI()) {
 		return -1;
 	}
@@ -115,6 +114,82 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 	_CGraphics->SetUpGraphics();
 
+	//TEXTURES
+	Texture* testTexture = _CTextureManager->GetTexture("peacock-2.jpg");
+	if (testTexture == nullptr) {
+		testTexture = graphics->CreateTexture();
+		testTexture->LoadTexture("peacock-2.jpg");
+		testTexture->SetDebugObjName("Test Texture");
+	}
+
+	//SHADERS
+	Shader* testShader = _CShaderManager->GetShader("Shaders/TestShader.shader");
+	if (testShader == nullptr) {
+		testShader = graphics->CreateShader();
+		testShader->m_FilePath = "Shaders/TestShader.shader";
+
+		if (!testShader->Load()) {
+			testShader->SetDebugObjName("Test Shader");
+			testShader->m_ShouldPrintCode = true;
+			testShader->AddShader(_CShaderSpirvManager->GetShaderPart("test.vert"));
+			testShader->AddShader(_CShaderSpirvManager->GetShaderPart("test.frag"));
+			testShader->LinkShaders();
+
+			testShader->AddBuffer("Vertex_Data");
+			testShader->AddBuffer("Shader_Data");
+			testShader->AddBuffer("Common_Data");
+			testShader->AddBuffer("Lighting_Data");
+			testShader->AddBuffer("Camera_Data");
+
+
+			testShader->Save();
+		}
+	}
+
+	Shader* treeShader = _CShaderManager->GetShader("Shaders/Tree.shader");
+	if (treeShader == nullptr) {
+		treeShader = graphics->CreateShader();
+		treeShader->m_FilePath = "Shaders/Tree.shader";
+		if (!treeShader->Load()) {
+			treeShader->SetDebugObjName("tree Shader");
+			treeShader->m_ShouldPrintCode = true;
+			treeShader->AddShader(_CShaderSpirvManager->GetShaderPart("test2.vert"));
+			treeShader->AddShader(_CShaderSpirvManager->GetShaderPart("test2.frag"));
+			treeShader->LinkShaders();
+
+			treeShader->AddBuffer("Vertex_Data");
+			treeShader->AddBuffer("Shader_Data");
+			treeShader->AddBuffer("Common_Data");
+
+
+			treeShader->Save();
+		}
+	}
+
+	//MATERIALS
+	Material treeModelMat1("Material/TreeModelMat1.mat");
+	if (!treeModelMat1.Load()) {
+		treeModelMat1.SetDebugObjName("Tree Model Mat 1");
+		treeModelMat1.m_Shader = treeShader;
+		treeModelMat1.AddTexture(_CGraphics->m_WhiteTexture, 0);
+		treeModelMat1.Save();
+	}
+	Material treeModelMat2("Material/TreeModelMat2.mat");
+	if (!treeModelMat2.Load()) {
+		treeModelMat2.SetDebugObjName("Tree Model Mat 2");
+		treeModelMat2.m_Shader = testShader;
+		treeModelMat2.AddTexture(testTexture, 0);
+		treeModelMat2.Save();
+	}
+
+	Material SimpleMaterial("Material/SimpleMat.mat");
+	if (!SimpleMaterial.Load()) {
+		SimpleMaterial.SetDebugObjName("Simple");
+		SimpleMaterial.m_Shader = _CShaderManager->GetShader("Simple Shader.shader");
+		SimpleMaterial.Save();
+	}
+
+	//MODELS
 	Model* squareModel = new Model();
 	squareModel->CreateSquare();
 
@@ -122,81 +197,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");
 	//testModel.LoadModel("Models/nanosuit.obj");
 
-	Camera mainCamera;
-
-	Scene scene;
-	scene.m_Camera = &mainCamera;
-
-	ObjectDrawTest* square1;
-	ObjectDrawTest* square2;
-	ObjectDrawTest* square3;
-	ObjectDrawTest* square4;
-	ObjectDrawTest* treeObj;
-
-	scene.m_Name = "Scene Test";
-	scene.m_FilePath = "sceneTest.scene";
-	if (!scene.Load()) {
-		square1 = new ObjectDrawTest("Square1");
-		square2 = new ObjectDrawTest("Square2");
-		square3 = new ObjectDrawTest("Square3");
-		square4 = new ObjectDrawTest("Square4");
-		treeObj = new ObjectDrawTest("WorldTree");
-
-		square1->m_Color = glm::vec4(1, 0, 0, 1);
-		square2->m_Color = glm::vec4(0, 1, 0, 1);
-		square3->m_Color = glm::vec4(0, 0, 1, 1);
-		square4->m_Color = glm::vec4(1, 1, 1, 1);
-
-		square1->m_Transform.SetPosition(glm::vec3(-2, 0, 0));
-		square2->m_Transform.SetPosition(glm::vec3(0, 0, 0));
-		square3->m_Transform.SetPosition(glm::vec3(2, 0, 0));
-		square4->m_Transform.SetPosition(glm::vec3(2, 2, 0));
-		treeObj->m_Transform.SetPosition(glm::vec3(-6.5f, 5.5f, -5.5f));
-		treeObj->m_Transform.SetRotation(glm::vec3(-55.0f, 0, 55.0f));
-
-		scene.AddObject(square1);
-		scene.AddObject(square2);
-		scene.AddObject(square3);
-		scene.AddObject(square4);
-		scene.AddObject(treeObj);
-		scene.Save();
-	} else {
-		square1 = (ObjectDrawTest*)scene.GetObjectByName("Square1");
-		square2 = (ObjectDrawTest*)scene.GetObjectByName("Square2");
-		square3 = (ObjectDrawTest*)scene.GetObjectByName("Square3");
-		square4 = (ObjectDrawTest*)scene.GetObjectByName("Square4");
-		treeObj = (ObjectDrawTest*)scene.GetObjectByName("WorldTree");
-	}
-
-	_CManager->m_CurrentScene = &scene;
-
-	Texture * testTexture = _CTextureManager->GetTexture("peacock-2.jpg");
-	if (testTexture == nullptr) {
-		testTexture = graphics->CreateTexture();
-		testTexture->LoadTexture("peacock-2.jpg");
-		testTexture->SetDebugObjName("Test Texture");
-	}
+	testModel.SetMaterial(&treeModelMat1, 0);
+	testModel.SetMaterial(&SimpleMaterial, 1);
+	squareModel->SetMaterial(&treeModelMat2, 0);
 
 	//UNIFORMS
-	PointLightsData testUniformArray;
-	for (int i = 0; i < MAX_NUM_LIGHTS; i++) {
-		//testUniformArray.data[i].MatrixModelTest = glm::mat4(1);
-		//testUniformArray.data[i].MatrixView = glm::mat4(1);
-		//testUniformArray.data[i].MatrixProjection = glm::mat4(1);
-		//testUniformArray.data[i].MatrixPV = glm::mat4(1);
-		//testUniformArray.data[i].MatrixView[0][0] = 200.0f / NUM_LIGHTS;
-		//testUniformArray.data[i].MatrixView[0][1] = 50.0f / NUM_LIGHTS;
-		//testUniformArray.data[i].MatrixView[0][2] = 255.0f / NUM_LIGHTS;
-	}
-	testUniformArray.data[0].color = glm::vec3(1, 1, 1);
-	testUniformArray.data[0].pos = glm::vec3(.5f, 3.25f, 3.25f);
-	testUniformArray.data[0].ambientStrength = 0.2f;
-	testUniformArray.data[0].specularStrength = 0.5f;
+	PointLightsData pointLightsArray;
+	pointLightsArray.data[0].color = glm::vec3(1, 1, 1);
+	pointLightsArray.data[0].pos = glm::vec3(.5f, 3.25f, 3.25f);
+	pointLightsArray.data[0].ambientStrength = 0.2f;
+	pointLightsArray.data[0].specularStrength = 0.5f;
 
-	ShaderUniformBlock* testUniformArrayBlock = graphics->CreateBuffer(&testUniformArray, sizeof(PointLightsData));
-	testUniformArrayBlock->SetDebugObjName("Color Aray");
-	_CManager->RegisterShaderUniform(testUniformArrayBlock, "Lighting_Data");
-	//testUniformArrayBlock->UpdateBuffer(&testUniformArray);
+	ShaderUniformBlock* pointLightsBlock = graphics->CreateBuffer(&pointLightsArray, sizeof(PointLightsData));
+	pointLightsBlock->SetDebugObjName("Color Array");
+	_CManager->RegisterShaderUniform(pointLightsBlock, "Lighting_Data");
 
 	CameraUniformStruct cameraUniformData;
 	ShaderUniformBlock* cameraUniformBlock = graphics->CreateBuffer(&cameraUniformData, sizeof(CameraUniformStruct));
@@ -217,103 +231,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	commonDataBlock->SetDebugObjName("Common Data Buffer");
 	_CManager->RegisterShaderUniform(commonDataBlock, "Common_Data");
 
-	Shader* testShader = _CShaderManager->GetShader("Shaders/TestShader.shader");
-	if (testShader == nullptr) {
-		testShader = graphics->CreateShader();
-		testShader->m_FilePath = "Shaders/TestShader.shader";
 
-		if (!testShader->Load()) {
-			testShader->SetDebugObjName("Test Shader");
-			testShader->m_ShouldPrintCode = true;
-			testShader->AddShader(_CShaderSpirvManager->GetShaderPart("test.vert"));
-			testShader->AddShader(_CShaderSpirvManager->GetShaderPart("test.frag"));
-			testShader->LinkShaders();
+	//CAMERA
+	Camera mainCamera;
 
-			testShader->AddBuffer(testUniform, "Vertex_Data");
-			testShader->AddBuffer(testUniform2, "Shader_Data");
-			testShader->AddBuffer(commonDataBlock, "Common_Data");
-			testShader->AddBuffer(testUniformArrayBlock, "Lighting_Data");
-			testShader->AddBuffer(cameraUniformBlock, "Camera_Data");
+	//SCENE
+	Scene scene;
+	scene.m_Camera = &mainCamera;
 
-			testShader->Save();
-		}
-	}
+	_CManager->m_CurrentScene = &scene;
 
-	Shader* treeShader = _CShaderManager->GetShader("Shaders/Tree.shader");
-	if (treeShader == nullptr) {
-		treeShader = graphics->CreateShader();
-		treeShader->m_FilePath = "Shaders/Tree.shader";
-		if (!treeShader->Load()) {
-			treeShader->SetDebugObjName("tree Shader");
-			treeShader->m_ShouldPrintCode = true;
-			treeShader->AddShader(_CShaderSpirvManager->GetShaderPart("test2.vert"));
-			treeShader->AddShader(_CShaderSpirvManager->GetShaderPart("test2.frag"));
-			treeShader->LinkShaders();
 
-			treeShader->AddBuffer(testUniform, "Vertex_Data");
-			treeShader->AddBuffer(testUniform2, "Shader_Data");
-			treeShader->AddBuffer(commonDataBlock, "Common_Data");
-
-			treeShader->Save();
-		}
-	}
-
-	testShader->FindUnlinkedUniforms();
-	treeShader->FindUnlinkedUniforms();
-
-	RenderTarget* shadowTest = nullptr;// = graphics->CreateRenderTarget(256, 256);
-	if (shadowTest) {
-		shadowTest->AddBuffer(RenderTargetBufferTypes::TEXTURE, RenderTargetBufferFormats::DEPTH_STENCIL);
-		shadowTest->Create();
-		shadowTest->SetDebugObjName("Test Shadow RT");
-	}
-
-	RenderTarget* testRT = graphics->CreateRenderTarget(256, 256);
-	if (testRT) {
-		testRT->SetupRenderTarget_Internal();
-		testRT->SetDebugObjName("Test RT");
-	}
-
-	square1->m_ObjectModel = square2->m_ObjectModel = square3->m_ObjectModel = square4->m_ObjectModel = squareModel;
-	treeObj->m_ObjectModel = &testModel;
-
-	Material treeModelMat1("Material/TreeModelMat1.mat");
-	if (!treeModelMat1.Load()) {
-		treeModelMat1.SetDebugObjName("Tree Model Mat 1");
-		treeModelMat1.m_Shader = treeShader;
-		treeModelMat1.AddTexture(_CGraphics->m_WhiteTexture, 0);
-		treeModelMat1.Save();
-	}
-	Material treeModelMat2("Material/TreeModelMat2.mat");
-	if (!treeModelMat2.Load())
-	{
-		treeModelMat2.SetDebugObjName("Tree Model Mat 2");
-		treeModelMat2.m_Shader = testShader;
-		treeModelMat2.AddTexture(testTexture, 0);
-		treeModelMat2.Save();
-	}
-
-	Material SimpleMaterial("Material/SimpleMat.mat");
-	if (!SimpleMaterial.Load())
-	{
-		SimpleMaterial.SetDebugObjName("Simple");
-		SimpleMaterial.m_Shader = _CShaderManager->GetShader("Simple Shader.shader");
-		SimpleMaterial.Save();
-	}
-
-	testModel.SetMaterial(&treeModelMat1, 0);
-	testModel.SetMaterial(&SimpleMaterial, 1);
-	squareModel->SetMaterial(&treeModelMat2, 0);
-
-	//for (uint i = 0; i < _CManager->m_Materials.Length(); i++) {
-	//	if (_CManager->m_Materials[i]->m_CreatedShader) {
-	//		Shader* shader = _CManager->m_Materials[i]->m_Shader;
-	//		shader->AddBuffer(testUniform, "Vertex_Data");
-	//		shader->AddBuffer(testUniform2, "Shader_Data");
-	//		shader->AddBuffer(commonDataBlock, "Common_Data");
-	//	}
-	//}
-
+	//RENDER SETUP
 	InputHandler ih;
 	ih.Startup(graphics->m_Window);
 
@@ -341,6 +270,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		testObj->m_ColorUniform = testUniform2;
 		scene.AddObject(testObj);
 	}
+
+
+	treeShader->FindUnlinkedUniforms();  
+	testShader->FindUnlinkedUniforms();
+
 
 	scene.Start();
 	
@@ -391,12 +325,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			if (ImGui::DragFloat("FOV", &fov, 1, 0, 180)) {
 				mainCamera.SetFov(fov);
 			}
-			if (testRT) {
-				ImGui::Image(testRT->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
-			}
-			if (shadowTest) {
-				ImGui::Image(shadowTest->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
-			}
 			ImGui::Checkbox("Rotate Camera", &RotateCamera);
 			ImGui::DragFloat3("Camera Pos", &CameraPos.x, 0.25f);
 
@@ -408,13 +336,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			ImGui::Begin("Lights");
 			{
 				bool updateUniform = false;
-				updateUniform |= ImGui::DragFloat3("Pos", &testUniformArray.data[0].pos.x, 0.25f);
-				updateUniform |= ImGui::DragFloat3("Color", &testUniformArray.data[0].color.x, 0.05f,0,1);
-				updateUniform |= ImGui::DragFloat("Ambient Power", &testUniformArray.data[0].ambientStrength, 0.05f);
-				updateUniform |= ImGui::DragFloat("Spec Power", &testUniformArray.data[0].specularStrength, 0.05f);
+				updateUniform |= ImGui::DragFloat3("Pos", &pointLightsArray.data[0].pos.x, 0.25f);
+				updateUniform |= ImGui::DragFloat3("Color", &pointLightsArray.data[0].color.x, 0.05f,0,1);
+				updateUniform |= ImGui::DragFloat("Ambient Power", &pointLightsArray.data[0].ambientStrength, 0.05f);
+				updateUniform |= ImGui::DragFloat("Spec Power", &pointLightsArray.data[0].specularStrength, 0.05f);
 
 				if(updateUniform){
-					testUniformArrayBlock->UpdateBuffer(&testUniformArray);
+					pointLightsBlock->UpdateBuffer(&pointLightsArray);
 				}
 			}
 			ImGui::End();
@@ -454,6 +382,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			//
 			testUniformStructObj.MatrixProjection = mainCamera.GetProjection();
 
+			/*
 			if (testRT) {
 				graphics->PushDebugGroup("Render Target");
 				mainCamera.SetLookAt(glm::vec3(-x, y, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
@@ -477,6 +406,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 				graphics->PopDebugGroup();
 			}
+			*/
 
 			if (RotateCamera) {
 				mainCamera.SetLookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));

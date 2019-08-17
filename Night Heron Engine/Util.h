@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Types.h"
-
-#define CMLog(Message) printf(Message);
+#include "Types/CMString.h"
 
 #define HASH_LENGTH 16
 

@@ -27,15 +27,19 @@ ShaderGL::~ShaderGL() {
 }
 
 void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
+	CMLOG_NAME(m_FilePath.m_FileName + " - " + GetShaderTypeString(a_Type));
+	CMLOG("Shader: %s\n", m_DebugName.Get());
+	CMLOG_INDENT(indent);
+
 	spirv_cross::CompilerGLSL glsl(a_Code);
-	printf("Shader: %s\n", m_DebugName.Get());
+
 	spirv_cross::ShaderResources resources = glsl.get_shader_resources();
 	// Get all sampled images in the shader.
 	for (auto& resource : resources.sampled_images) {
 		unsigned set = glsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned location = glsl.get_decoration(resource.id, spv::DecorationLocation);
-		printf("Image %s at set = %u, binding = %u, location = %u\n", resource.name.c_str(), set, binding, location);
+		CMLOG("Image %s at set = %u, binding = %u, location = %u\n", resource.name.c_str(), set, binding, location);
 
 		// Modify the decoration to prepare it for GLSL.
 		glsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -51,7 +55,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 		unsigned set = glsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned int location = glsl.get_decoration(resource.id, spv::DecorationLocation);
-		printf("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+		CMLOG("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
 	
 		// Modify the decoration to prepare it for GLSL.
 		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -59,11 +63,12 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 		//// Some arbitrary remapping if we want.
 		//hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
 		if (binding != 0) {
+			CMLOG_INDENT(bindingIndent);
 			glsl.set_decoration(resource.id, spv::DecorationLocation, binding);
 	
 			binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
 			location = glsl.get_decoration(resource.id, spv::DecorationLocation);
-			printf("\tuniform %s moved to at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+			CMLOG("\tuniform %s moved to at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
 		}
 	}
 
@@ -76,7 +81,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 	std::string source = glsl.compile();
 
 	if (m_ShouldPrintCode) {
-		printf("Final Source: glsl (TYPE:%i)\n%s\n", a_Type, source.c_str());
+		CMLOG("Final Source: glsl (TYPE:%i)\n%s\n", a_Type, source.c_str());
 	}
 
 	unsigned int index = glCreateShader(getOpenglShaderType(a_Type));
@@ -92,7 +97,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 	if (!success) {
 		GLchar infoLog[512];
 		glGetShaderInfoLog(index, 512, NULL, infoLog);
-		printf("ERROR::SHADER::_%u_::%s\n%s\n", index, "COMPILE ERROR", infoLog);
+		CMLOG("ERROR::SHADER::_%u_::%s\n%s\n", index, "COMPILE ERROR", infoLog);
 	}
 
 	m_GLShaderIndex[a_Type] = index;
@@ -117,7 +122,7 @@ void ShaderGL::Link_Internal() {
 		if (infoLog[0] == -52) {
 			memcpy(infoLog, "No useful data.", 16);
 		}
-		printf("ERROR::SHADER::_%u_::%s\n%s\n", m_Program, "Linking ERROR", infoLog);
+		CMLOG("ERROR::SHADER::_%u_::%s\n%s\n", m_Program, "Linking ERROR", infoLog);
 		DeleteShaders();
 		glDeleteProgram(m_Program);
 		glUseProgram(0);

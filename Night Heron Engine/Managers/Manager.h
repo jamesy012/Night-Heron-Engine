@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Types.h"
+#include "Types/CMString.h"
+#include "Types/CMArray.h"
 #include "SimpleMath.h"
 
 class Model;

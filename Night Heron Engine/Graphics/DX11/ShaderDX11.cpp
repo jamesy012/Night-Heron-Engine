@@ -2,6 +2,8 @@
 
 #include "GFXDX11.h"
 
+#include "Debug.h"
+
 #include "d3dcompiler.h"
 #include <d3d11shader.h>
 
@@ -40,7 +42,10 @@ ShaderDX11::~ShaderDX11() {
 }
 
 void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
-	printf("Shader: %s\n", m_DebugName.Get());
+	CMLOG_NAME(m_FilePath.m_FileName + " - " + GetShaderTypeString(a_Type));
+	CMLOG("Shader: %s\n", m_DebugName.Get());
+	CMLOG_INDENT(indent);
+
 	spirv_cross::CompilerHLSL hlsl(a_Code);
 
 	spirv_cross::ShaderResources resources = hlsl.get_shader_resources();
@@ -49,7 +54,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
-		printf("\tImage %s at set = %u, binding = %u Location = %u\n", resource.name.c_str(), set, binding, location);
+		CMLOG("\tImage %s at set = %u, binding = %u Location = %u\n", resource.name.c_str(), set, binding, location);
 
 		// Modify the decoration to prepare it for GLSL.
 		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -65,7 +70,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		unsigned set = hlsl.get_decoration(resource.id, spv::DecorationDescriptorSet);
 		unsigned binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned int location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
-		printf("\tuniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+		CMLOG("\tuniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
 
 		// Modify the decoration to prepare it for GLSL.
 		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -73,11 +78,12 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		//// Some arbitrary remapping if we want.
 		//hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
 		if (binding != 0) {
+			CMLOG_INDENT(bindingIndent);
 			hlsl.set_decoration(resource.id, spv::DecorationLocation, binding);
 
 			binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
 			location = hlsl.get_decoration(resource.id, spv::DecorationLocation);
-			printf("\t\tuniform %s moved to at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
+			CMLOG("\t\tuniform %s moved to at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
 		}
 
 		m_ShaderCBufferList.Add({ GetShaderTypeString(a_Type) + resource.name, location });
@@ -92,7 +98,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 	std::string source = hlsl.compile();
 
 	if (m_ShouldPrintCode) {
-		printf("Final Source: hlsl (TYPE:%i)\n%s\n", a_Type, source.c_str());
+		CMLOG("Final Source: hlsl (TYPE:%i)\n%s\n", a_Type, source.c_str());
 	}
 
 	HRESULT hr;
@@ -102,24 +108,24 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		case ShaderType::SHADER_VERTEX:
 			hr = D3DCompile(source.c_str(), source.size(), NULL, nullptr, nullptr, "main", "vs_5_0", 0, 0, &VS_Buffer, &shaderError);
 			if (FAILED(hr)) {
-				printf("VERTEX Test SHADER ERROR\n%s", (char*)(shaderError->GetBufferPointer()));
+				CMLOG("VERTEX Test SHADER ERROR\n%s", (char*)(shaderError->GetBufferPointer()));
 				return;
 			}
 			GFXDX11::GetCurrentContex()->m_Device->CreateVertexShader(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), NULL, &VS);
 			if (FAILED(hr)) {
-				printf("PIXEL Test SHADER ERROR CreateVertexShader\n%s", (char*)(shaderError->GetBufferPointer()));
+				CMLOG("PIXEL Test SHADER ERROR CreateVertexShader\n%s", (char*)(shaderError->GetBufferPointer()));
 				return;
 			}
 			return;
 		case ShaderType::SHADER_FRAGMENT:
 			hr = D3DCompile(source.c_str(), source.size(), NULL, nullptr, nullptr, "main", "ps_5_0", 0, 0, &PS_Buffer, &shaderError);
 			if (FAILED(hr)) {
-				printf("PIXEL Test SHADER ERROR\n%s", (char*)(shaderError->GetBufferPointer()));
+				CMLOG("PIXEL Test SHADER ERROR\n%s", (char*)(shaderError->GetBufferPointer()));
 				return;
 			}
 			GFXDX11::GetCurrentContex()->m_Device->CreatePixelShader(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), NULL, &PS);
 			if (FAILED(hr)) {
-				printf("PIXEL Test SHADER ERROR CreatePixelShader\n%s", (char*)(shaderError->GetBufferPointer()));
+				CMLOG("PIXEL Test SHADER ERROR CreatePixelShader\n%s", (char*)(shaderError->GetBufferPointer()));
 				return;
 			}
 			return;
@@ -131,7 +137,7 @@ void ShaderDX11::Link_Internal() {
 	if (VS_Buffer) {
 		hr = GFXDX11::GetCurrentContex()->m_Device->CreateInputLayout(VertexLayout, numVertexLayoutElements, VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), &vertLayout);
 		if (FAILED(hr)) {
-			printf("CreateInputLayout ERROR %ld\n", hr);
+			CMLOG("CreateInputLayout ERROR %ld\n", hr);
 			return;
 		}
 		m_IsLinked = true;

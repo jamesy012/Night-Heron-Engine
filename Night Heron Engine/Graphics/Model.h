@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Types.h"
+#include "Types/CMString.h"
+#include "Types/CMArray.h"
 #include "API/GFXObj.h"
 
 class Material;

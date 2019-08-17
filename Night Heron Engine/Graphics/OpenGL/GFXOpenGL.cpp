@@ -1,4 +1,5 @@
 #include "GFXOpenGL.h"
+#include "Debug.h"
 
 #include "Window.h"
 #include <GL/glew.h>
@@ -207,7 +208,7 @@ bool GFXOpenGL::InitGfx() {
 		glVersion = glGetString(GL_VERSION);
 		glVender = glGetString(GL_VENDOR);
 		glRenderer = glGetString(GL_RENDERER);
-		printf("OpenGL - %s\n(%i.%i) Vender: %s, Renderer: %s\n\n", glVersion, glMajor, glMinor, glVender, glRenderer);
+		CMLOG("OpenGL - %s\n(%i.%i) Vender: %s, Renderer: %s\n\n", glVersion, glMajor, glMinor, glVender, glRenderer);
 	}
 
 	glEnable(GL_DEPTH_TEST);
@@ -287,7 +288,7 @@ void openGLMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severit
 			errorMessage += "DEBUG_SEVERITY_HIGH/";
 			break;
 	}
-	printf("GL_ERROR: %X(%i), %s\n\t%s\n", id, id, errorMessage.c_str(), message);
+	CMLOG("GL_ERROR: %X(%i), %s\n\t%s\n", id, id, errorMessage.c_str(), message);
 	//printf("GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
 	//	(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
 	//	   type, severity, message);

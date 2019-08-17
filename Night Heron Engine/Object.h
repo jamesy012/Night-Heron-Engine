@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "Types/CMString.h"
 #include "Transform.h"
 
 #include "Interfaces/Jsonable.h"

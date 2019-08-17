@@ -6,7 +6,8 @@
 
 #include <vector>
 
-#include "Types.h"
+#include "Types/CMArray.h"
+
 #include "GFXObj.h"
 
 struct Vertex {

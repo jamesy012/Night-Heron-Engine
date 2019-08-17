@@ -235,6 +235,9 @@ void GFXDX11::UseRenderTarget(RenderTarget * a_Rt) {
 }
 
 void GFXDX11::ResetRenderTarget() {
+	if (!m_DevCon) {
+		return;
+	}
 	m_DevCon->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
 
 	D3D11_VIEWPORT viewport;

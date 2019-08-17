@@ -2,7 +2,7 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "Types.h"
+#include "Types/CMFilePath.h"
 
 extern class IniFile* _CIniFileManager;
 

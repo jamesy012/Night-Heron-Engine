@@ -29,6 +29,8 @@ public:
 	int m_WindowWidth = 1024;
 	int m_WindowHeight = 768;
 
+	bool m_IsShown = false;
+
 	std::string m_WindowTitle = "Night Heron Engine";
 	std::string m_WindowClassName = "NightHeronEngineWndClass";
 };

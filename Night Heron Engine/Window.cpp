@@ -35,6 +35,10 @@ LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM  wParam, LPARAM  lParam) {
 
 				_CGraphics->m_Window->m_WindowWidth = width;
 				_CGraphics->m_Window->m_WindowHeight = height;
+
+				if (_CGraphics->m_Window->m_IsShown) {
+					_CGraphics->ResetRenderTarget();
+				}
 			}
 			return 0;
 		case WM_CLOSE:
@@ -209,6 +213,8 @@ bool Window::CreateMainWindow() {
 	ShowWindow(m_HWnd, SW_SHOW);
 	SetForegroundWindow(m_HWnd);
 	SetFocus(m_HWnd);
+
+	m_IsShown = true;
 
 	return true;
 }

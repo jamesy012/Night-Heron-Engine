@@ -1,4 +1,4 @@
-#include "Types.h"
+#include "CMString.h"
 
 #include <Windows.h>
 #include <wincrypt.h>

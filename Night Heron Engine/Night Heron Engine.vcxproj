@@ -175,6 +175,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Dependency\ImGui\examples\imgui_impl_dx11.cpp" />
     <ClCompile Include="Dependency\ImGui\examples\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Dependency\ImGui\examples\imgui_impl_win32.cpp" />
@@ -217,7 +218,7 @@
     <ClCompile Include="Singletons.cpp" />
     <ClCompile Include="Tests\ObjectDrawTest.cpp" />
     <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Types.cpp" />
+    <ClCompile Include="Types\CMString.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Graphics\DX11\GFXDX11.cpp" />
@@ -318,7 +319,6 @@
     <ClInclude Include="Singletons.h" />
     <ClInclude Include="Tests\ObjectDrawTest.h" />
     <ClInclude Include="Transform.h" />
-    <ClInclude Include="Types.h" />
     <ClInclude Include="Dependency\ImGui\examples\imgui_impl_dx11.h" />
     <ClInclude Include="Dependency\ImGui\examples\imgui_impl_opengl3.h" />
     <ClInclude Include="Dependency\ImGui\examples\imgui_impl_win32.h" />
@@ -342,6 +342,10 @@
     <ClInclude Include="Graphics\OpenGL\TextureGL.h" />
     <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="SimpleMath.h" />
+    <ClInclude Include="Types\CMArray.h" />
+    <ClInclude Include="Types\CMFilePath.h" />
+    <ClInclude Include="Types\CMString.h" />
+    <ClInclude Include="Types\CMStringHash.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Graphics\DX11\GFXDX11.h" />

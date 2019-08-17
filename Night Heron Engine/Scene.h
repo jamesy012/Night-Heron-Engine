@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Interfaces/Saveable.h"
-#include "Types.h"
+#include "Types/CMString.h"
+#include "Types/CMArray.h"
 
 class Object;
 class Manager;

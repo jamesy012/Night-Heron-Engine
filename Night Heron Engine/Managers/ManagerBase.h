@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Types.h"
+#include "Types/CMString.h"
+#include "Types/CMArray.h"
 class ShaderSpirvData;
 class Shader;
 

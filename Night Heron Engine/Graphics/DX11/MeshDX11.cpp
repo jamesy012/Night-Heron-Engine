@@ -2,6 +2,8 @@
 
 #include "GFXDX11.h"
 
+#include "Debug.h"
+
 #include <d3d11.h>
 
 MeshDX11::~MeshDX11() {
@@ -38,15 +40,16 @@ void MeshDX11::Bind() {
 	indexData.pSysMem = m_Indices.First();
 
 	HRESULT hr;
+	CMLOG_NAME("Mesh:" + m_DebugName);
 
 	hr = GFXDX11::GetCurrentContex()->m_Device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_VertexBuffer);
 	if (FAILED(hr)) {
-		printf("vertexData error %ld\n", hr);
+		CMLOG("vertexData error %ld\n", hr);
 		return;
 	}
 	hr = GFXDX11::GetCurrentContex()->m_Device->CreateBuffer(&indexBufferDesc, &indexData, &m_IndexBuffer);
 	if (FAILED(hr)) {
-		printf("indexData ERROR %ld\n", hr);
+		CMLOG("indexData ERROR %ld\n", hr);
 		return;
 	}
 

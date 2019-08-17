@@ -2,7 +2,9 @@
 
 #include "ManagerBase.h"
 
-#include "Types.h"
+#include "Types/CMString.h"
+#include "Types/CMStringHash.h"
+#include "Types/CMArray.h"
 
 class ShaderSpirvData;
 class Shader;

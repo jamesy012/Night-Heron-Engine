@@ -44,6 +44,7 @@ bool Shader::AddBuffer(CMString a_StructName) {
 }
 
 void Shader::FindUnlinkedUniforms() {
+	//CMASSERT_MSG(true, "FindUnlinkedUniforms unused");
 	for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
 		if (!m_AttachedUniforms[i].m_HasLinked) {
 			ShaderUniformBlock* block = _CManager->GetShaderUniform(m_AttachedUniforms[i].m_Name);
