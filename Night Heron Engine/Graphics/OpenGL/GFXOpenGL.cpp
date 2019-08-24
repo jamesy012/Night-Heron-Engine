@@ -143,7 +143,7 @@ void GFXOpenGL::BindTexture(Texture * a_Tex, uint a_Slot) {
 		return;
 	}
 	//this should be the same?
-	glUniform1i(_CCurrentShader->m_HasTextureForSlot[a_Slot] ? a_Slot : -1, a_Slot);
+	//glUniform1i(_CCurrentShader->m_HasTextureForSlot[a_Slot] ? a_Slot : -1, a_Slot);
 
 	glActiveTexture(GL_TEXTURE0 + a_Slot);
 	glBindTexture(GL_TEXTURE_2D, (GLuint)a_Tex->getTexturePtr());

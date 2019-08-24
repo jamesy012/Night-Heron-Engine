@@ -6,6 +6,9 @@
 #include "Types/CMStringHash.h"
 #include "Types/CMArray.h"
 
+//for Uniforms
+#include <glm/glm.hpp>
+
 class ShaderSpirvData;
 class Shader;
 
@@ -20,6 +23,16 @@ public: \
 x \
 };\
 static_assert(sizeof(name) % 16 == 0,"Buffer size must be multiple of 16 '" #name "'");
+
+CREATE_BUFFER_UNIFORM(ObjectUniformStruct,
+					  glm::mat4 ModelMatrix = glm::mat4();
+);
+
+CREATE_BUFFER_UNIFORM(CameraUniformStruct,
+					  glm::vec3 pos;
+float pad;
+glm::mat4 MatrixPV = glm::mat4();
+);
 
 class ShaderManager : public ManagerBase {
 public:

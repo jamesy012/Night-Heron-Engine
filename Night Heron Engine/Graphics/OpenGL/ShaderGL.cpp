@@ -1,6 +1,7 @@
 #include "ShaderGL.h"
 
 #include <GL/glew.h>
+#include "Managers/Arguments.h"
 
 //#include "..\SPIRV-Cross-master\spirv_glsl.hpp"
 #include <fstream>
@@ -27,9 +28,9 @@ ShaderGL::~ShaderGL() {
 }
 
 void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
-	CMLOG_NAME(m_FilePath.m_FileName + " - " + GetShaderTypeString(a_Type));
+	CMLOG_SCOPED_NAME(m_FilePath.m_FileName + " - " + GetShaderTypeString(a_Type));
 	CMLOG("Shader: %s\n", m_DebugName.Get());
-	CMLOG_INDENT(indent);
+	CMLOG_SCOPED_INDENT;
 
 	spirv_cross::CompilerGLSL glsl(a_Code);
 
@@ -62,14 +63,18 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 		//
 		//// Some arbitrary remapping if we want.
 		//hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
-		if (binding != 0) {
-			CMLOG_INDENT(bindingIndent);
+		glsl.unset_decoration(resource.id, spv::DecorationLocation);
+
+		if (binding != 0 && false) {
+			CMLOG_SCOPED_INDENT;
 			glsl.set_decoration(resource.id, spv::DecorationLocation, binding);
 	
 			binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
 			location = glsl.get_decoration(resource.id, spv::DecorationLocation);
 			CMLOG("\tuniform %s moved to at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
 		}
+		CMLOG_SCOPED_NAME(CMLOG_GET_NAME + " " + resource.name);
+		AddBuffer(resource.name);
 	}
 
 	// Set some options.
@@ -80,7 +85,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 	// Compile to GLSL, ready to give to GL driver.
 	std::string source = glsl.compile();
 
-	if (m_ShouldPrintCode) {
+	if (_CArguments->IsArgument("PrintShaderCode")) {
 		CMLOG("Final Source: glsl (TYPE:%i)\n%s\n", a_Type, source.c_str());
 	}
 

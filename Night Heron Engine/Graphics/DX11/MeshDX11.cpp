@@ -40,7 +40,7 @@ void MeshDX11::Bind() {
 	indexData.pSysMem = m_Indices.First();
 
 	HRESULT hr;
-	CMLOG_NAME("Mesh:" + m_DebugName);
+	CMLOG_SCOPED_NAME("Mesh:" + m_DebugName);
 
 	hr = GFXDX11::GetCurrentContex()->m_Device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_VertexBuffer);
 	if (FAILED(hr)) {

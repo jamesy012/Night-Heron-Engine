@@ -28,7 +28,7 @@ void TextureGL::createData() {
 
 	glGenTextures(1, &m_BufferID);
 	glBindTexture(GL_TEXTURE_2D, m_BufferID);
-	glTexImage2D(GL_TEXTURE_2D, 0, glType, m_Width, m_Height, 0, glType, GL_UNSIGNED_BYTE, m_TextureData);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_TextureData);
 
 	//filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

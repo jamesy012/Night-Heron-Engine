@@ -386,6 +386,7 @@ void Manager::ImGuiModels() {
 	static int nodeSelected = -1;
 
 	if (m_IsRtDirty && nodeSelected != -1) {
+		//todo this is wrong, doesnt update the camera or object uniforms
 		struct {
 		public:
 			glm::mat4 MatrixView = glm::mat4();

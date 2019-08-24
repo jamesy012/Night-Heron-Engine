@@ -7,7 +7,7 @@ out vec4 vVertColor;
 
 void main() {
 	//gl_Position = position;
-	gl_Position = vertData.PV * vertData.model * position;
+	gl_Position = CALC_POSITION;
 
 	vVertColor = vertColor;
 }

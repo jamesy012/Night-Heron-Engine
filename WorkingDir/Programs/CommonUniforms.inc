@@ -1,17 +1,11 @@
-layout (std140, binding = 0) uniform Vertex_Data {
-	mat4 view;
-	mat4 projection;
-	mat4 model;
-	mat4 PV;
-} vertData;
-
-layout (std140, binding = 1) uniform Common_Data {
+layout (std140, binding = 2) uniform Common_Data {
 	float time;
 	vec2 screenSize;
 	float pad;
 } commonData;
 
-layout (std140, binding = 1) uniform Camera_Data {
+layout (std140, binding = 3) uniform Camera_Data {
 	vec3 position;
 	float pad;
+	mat4 PV;
 } cameraData;

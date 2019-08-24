@@ -3,16 +3,25 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include <Windows.h>
+
 namespace CMLogger {
 	int PrintIndent = 0;
 	CMString LogCat = CMString();
 };
 
 void CMLogger::LogMessage(const char* a_Message, ...) {
-	//Catergory
+	char buffer[512] = { 0 };
+
+	//Category
 	if (!LogCat.IsEmpty()) {
-		printf("%s%s", LogCat.Get(), ":\t");
+		sprintf_s(buffer, "%s%s", LogCat.Get(), ":\t");
+		printf(buffer);
+		OutputDebugString(buffer);
+
 	}
+
+	FillMemory(buffer, 512, 0);
 
 	//indent
 	CMString indent;
@@ -20,10 +29,18 @@ void CMLogger::LogMessage(const char* a_Message, ...) {
 		indent += '\t';
 	}
 	printf(indent.Get());
+	OutputDebugString(indent.Get());
 
-	//message/arugments
+	//message/arguments
 	va_list argptr;
 	va_start(argptr, a_Message);
 	vprintf(a_Message, argptr);
+
+
+	vsprintf_s(buffer, a_Message, argptr);
+	OutputDebugString(buffer);
+
 	va_end(argptr);
+
+
 }

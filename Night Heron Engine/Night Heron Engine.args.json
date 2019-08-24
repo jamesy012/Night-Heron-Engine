@@ -8,11 +8,19 @@
     },
     {
       "Id": "09890f6b-a0fb-41c0-8514-a36e1a0c8ac1",
-      "Command": "-res 640x400 -imguipath imgui-small.ini"
+      "Command": "-res 640x400"
     },
     {
       "Id": "4a6680ed-d261-4ff8-9e0b-c9bf146157ae",
       "Command": "-console"
+    },
+    {
+      "Id": "23db9061-9e12-4509-9c32-d83e9aadbc22",
+      "Command": "-imguipath imgui-small.ini"
+    },
+    {
+      "Id": "3e999120-d8c9-4fa8-b8a1-d582a770d95f",
+      "Command": "-PrintShaderCode"
     }
   ]
 }

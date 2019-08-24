@@ -1,9 +1,9 @@
 #include "CommonUniforms.inc"
 
+//layout(origin_upper_left) in vec4 gl_FragCoord;
+layout(location=4) in vec2 vPosTest;
+
+
 vec2 GetScreenPos () {
-#ifdef WITH_OPENGL
-	return (gl_FragCoord.xy*vec2(1,-1)) / commonData.screenSize.xx;
-#else
-	return (gl_FragCoord.xy) / commonData.screenSize.xx;
-#endif
+return vPosTest;
 }

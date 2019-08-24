@@ -57,7 +57,7 @@ void Transform::SetLookAt(Vector3 a_Pos, Vector3 a_At, Vector3 a_Up) {
 #endif // USE_QUATERNIONS
 
 	SetPosition(a_Pos);
-	SetScale(Vector3(1));
+	//SetScale(Vector3(1));
 }
 
 Matrix Transform::GetModelMatrix() {

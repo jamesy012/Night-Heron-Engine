@@ -10,13 +10,8 @@
 #include "ImGui/imgui.h"
 #include "nlohmann/json.hpp"
 
-struct TestUniformStruct {
-public:
-	glm::mat4 pad1 = glm::mat4();
-	glm::mat4 pad2 = glm::mat4();
-	glm::mat4 MatrixModel = glm::mat4();
-	glm::mat4 MatrixPV = glm::mat4();
-};
+//for uniforms
+#include "Managers/ShaderManager.h"
 
 struct TestUniformStruct2 {
 public:
@@ -24,15 +19,15 @@ public:
 };
 
 void ObjectDrawTest::Start() {
-	m_ModelUniform = _CManager->GetShaderUniform("Vertex_Data");
+	m_ModelUniform = _CManager->GetShaderUniform("Object_Data");
 	m_ColorUniform = _CManager->GetShaderUniform("Shader_Data");
 }
 
 void ObjectDrawTest::PreDraw() {
 	if (m_ModelUniform) {
-		TestUniformStruct PVMBuf;
-		PVMBuf.MatrixModel = m_Transform.GetModelMatrix();
-		PVMBuf.MatrixPV = _CManager->m_CurrentScene->m_Camera->GetPV();
+		ObjectUniformStruct PVMBuf;
+		PVMBuf.ModelMatrix = m_Transform.GetModelMatrix();
+		//PVMBuf.MatrixPV = _CManager->m_CurrentScene->m_Camera->GetPV();
 		m_ModelUniform->UpdateBuffer(&PVMBuf);
 	}
 	if (m_ColorUniform) {

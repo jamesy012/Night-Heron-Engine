@@ -42,9 +42,9 @@ ShaderDX11::~ShaderDX11() {
 }
 
 void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
-	CMLOG_NAME(m_FilePath.m_FileName + " - " + GetShaderTypeString(a_Type));
+	CMLOG_SCOPED_NAME(m_FilePath.m_FileName + " - " + GetShaderTypeString(a_Type));
 	CMLOG("Shader: %s\n", m_DebugName.Get());
-	CMLOG_INDENT(indent);
+	CMLOG_SCOPED_INDENT;
 
 	spirv_cross::CompilerHLSL hlsl(a_Code);
 
@@ -78,7 +78,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		//// Some arbitrary remapping if we want.
 		//hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
 		if (binding != 0) {
-			CMLOG_INDENT(bindingIndent);
+			CMLOG_SCOPED_INDENT;
 			hlsl.set_decoration(resource.id, spv::DecorationLocation, binding);
 
 			binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);
@@ -87,6 +87,9 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		}
 
 		m_ShaderCBufferList.Add({ GetShaderTypeString(a_Type) + resource.name, location });
+
+		CMLOG_SCOPED_NAME(CMLOG_GET_NAME + " " + resource.name);
+		AddBuffer(resource.name);
 	}
 
 	// Set some options.

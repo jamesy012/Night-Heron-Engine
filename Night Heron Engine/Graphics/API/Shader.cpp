@@ -75,59 +75,6 @@ std::vector<unsigned int> Shader::loadSpirvFromPath(std::string a_Path) {
 
 	return code;
 }
-/*
-bool Shader::Load_Internal(CMArray<CMString> a_Splits) {
-	uint line = 0;
-	uint stage = 0;
-	while (line < a_Splits.Length() - 1) {
-		stage++;
-			if (stage == 1) {
-			SetDebugObjName(a_Splits[line++]);
-		}
-		if (stage == 2) {
-			int shaders = CMString::StringToInt(a_Splits[line++]);
-			for (int i = 0; i < shaders; i++) {
-				AddShader(_CShaderSpirvManager->GetShaderPart(a_Splits[line++]));
-			}
-			LinkShaders();
-		}
-		if (stage == 3) {
-			int uniforms = CMString::StringToInt(a_Splits[line++]);
-			for (int i = 0; i < uniforms; i++) {
-				ShaderUniformBlock* uniform = _CManager->GetShaderUniform(a_Splits[line]);
-				AddBuffer(uniform, a_Splits[line++]);
-			}
-		}
-	}
-	return true;
-}
-
-CMString Shader::SaveData_Internal() {
-	CMString data;
-
-	data += m_DebugName + "\n";
-	{
-		data += CMString::IntToString(m_ShaderFileObjects.Length()) + '\n';
-		for (uint i = 0; i < m_ShaderFileObjects.Length(); i++) {
-			data += m_ShaderFileObjects[i]->m_FilePath.m_FilePath + '\n';
-		}
-	}
-	{
-		CMString uniformData = "";
-		int numUniforms = 0;
-		for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
-			if (m_AttachedUniforms[i].m_HasLinked && (m_AttachedUniforms[i].m_Block && m_AttachedUniforms[i].m_Block->m_Registered)) {
-				uniformData += m_AttachedUniforms[i].m_Name + '\n';
-				numUniforms++;
-			}
-		}
-		data += CMString::IntToString(numUniforms) + '\n';
-		data += uniformData;
-	}
-
-	return data;
-}
-*/
 
 bool Shader::LoadData_Internal(nlohmann::json & a_Json) {
 	SetDebugObjName(a_Json["Debug Name"].get<CMString>());
@@ -140,15 +87,15 @@ bool Shader::LoadData_Internal(nlohmann::json & a_Json) {
 		}
 		LinkShaders();
 	}
-	if (a_Json.contains("Uniforms")) {
-		auto uniforms = a_Json["Uniforms"];
-		for (nlohmann::json::iterator it = uniforms.begin(); it != uniforms.end(); ++it) {
-			auto obj = *it;
-			CMString uniformName = obj.get<CMString>();
-			ShaderUniformBlock* uniform = _CManager->GetShaderUniform(uniformName);
-			AddBuffer(uniform, uniformName);
-		}
-	}
+	//if (a_Json.contains("Uniforms")) {
+	//	auto uniforms = a_Json["Uniforms"];
+	//	for (nlohmann::json::iterator it = uniforms.begin(); it != uniforms.end(); ++it) {
+	//		auto obj = *it;
+	//		CMString uniformName = obj.get<CMString>();
+	//		ShaderUniformBlock* uniform = _CManager->GetShaderUniform(uniformName);
+	//		AddBuffer(uniform, uniformName);
+	//	}
+	//}
 	return true;
 }
 
@@ -162,11 +109,12 @@ void Shader::SaveData_Internal(nlohmann::json & a_Json) {
 	}
 	{
 		auto& uniforms = a_Json["Uniforms"];
-		for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
-			if (m_AttachedUniforms[i].m_HasLinked && (m_AttachedUniforms[i].m_Block && m_AttachedUniforms[i].m_Block->m_Registered)) {
-				uniforms[i] = m_AttachedUniforms[i].m_Name;
-			}
-		}
+		//for (uint i = 0; i < m_AttachedUniforms.Length(); i++) {
+		//	if (m_AttachedUniforms[i].m_HasLinked && (m_AttachedUniforms[i].m_Block && m_AttachedUniforms[i].m_Block->m_Registered)) {
+		//		uniforms[i] = m_AttachedUniforms[i].m_Name;
+		//	}
+		//}
+		uniforms[0] = "Todo";
 	}
 }
 

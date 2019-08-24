@@ -100,6 +100,48 @@ void Model::CreateSquare() {
 	m_FilePath = "GENERATED/Square";
 }
 
+void Model::CreatePlane() {
+	const glm::vec4 vertPos[] = {
+		glm::vec4(-1, 0, 1, 1),
+		glm::vec4(1, 0, 1, 1),
+		glm::vec4(-1, 0, -1, 1),
+		glm::vec4(1, 0, -1, 1),
+	};
+	const glm::vec4 normals[]{
+		glm::vec4(0, 1, 0, 0),
+	};
+	const glm::vec2 texCoords[]{
+		glm::vec2(0, 1),
+		glm::vec2(1, 1),
+		glm::vec2(0, 0),
+		glm::vec2(1, 0),
+	};
+	const unsigned int indexData[]{
+		1, 1, 1, 2, 2, 1, 3, 3, 1,
+		2, 2, 1, 4, 4, 1, 3, 3, 1,
+	};
+	const unsigned int indexSize = sizeof(indexData) / sizeof(unsigned int);
+
+	Mesh* mesh = _CGraphics->CreateMesh();
+
+	mesh->m_Vertices.Reserve(indexSize);
+	mesh->m_Indices.Reserve(indexSize);
+	for (unsigned int i = 0; i < indexSize; i += 3) {
+		Vertex vert;
+		vert.m_Pos = vertPos[indexData[i] - 1];
+		vert.m_Color = glm::vec4(1, 1, 1, 1);
+		vert.m_UV = texCoords[indexData[i + 1] - 1];
+		vert.m_Normal = normals[indexData[i + 2] - 1];
+
+		mesh->m_Vertices.Add(vert);
+		mesh->m_Indices.Add(i / 3);
+	}
+	mesh->Bind();
+	m_Meshs.Add({ mesh, "Model_Plane" });
+	SetDebugObjName("Plane");
+	m_FilePath = "GENERATED/Plane";
+}
+
 void Model::Draw() {
 	for (uint i = 0; i < m_Meshs.Length(); i++) {
 		if (m_Meshs[i].m_Material) {

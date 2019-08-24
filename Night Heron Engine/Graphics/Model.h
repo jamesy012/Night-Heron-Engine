@@ -21,6 +21,7 @@ public:
 
 	void LoadModel(CMString a_FileName);
 	void CreateSquare();
+	void CreatePlane();
 
 	void Draw();
 
