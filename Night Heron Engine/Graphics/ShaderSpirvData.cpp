@@ -299,7 +299,7 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	}
 	CMLOG("Shader: Generating Code: %s\n", m_FilePath.m_FilePath.c_str());
 
-	m_HasPermutation = m_SourceFile.Contains("#ifdef WITH_OPENGL");
+	m_HasPermutation = m_SourceFile.Contains("#ifdef WITH_OPENGL") || m_SourceFile.Contains("#if WITH_OPENGL");
 
 	if (m_ShaderType == ShaderType::SHADER_INCLUDE) {
 		SaveInfoFile(false);

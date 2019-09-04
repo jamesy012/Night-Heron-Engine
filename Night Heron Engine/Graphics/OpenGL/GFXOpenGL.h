@@ -46,6 +46,8 @@ public:
 
 	virtual GraphicsAPITypes GetGraphicsType() override { return GraphicsAPITypes::OPENGL4; };
 
+	virtual void SetCullState(CullState a_State);
+
 protected:
 	virtual void InitImGui_Internal() override;
 

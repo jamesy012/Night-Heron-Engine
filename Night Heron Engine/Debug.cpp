@@ -11,7 +11,9 @@ namespace CMLogger {
 };
 
 void CMLogger::LogMessage(const char* a_Message, ...) {
-	char buffer[512] = { 0 };
+	const unsigned int size = 1024 * 16;
+	static char buffer[size] = { 0 };
+	FillMemory(buffer, size, 0);
 
 	//Category
 	if (!LogCat.IsEmpty()) {
@@ -21,7 +23,7 @@ void CMLogger::LogMessage(const char* a_Message, ...) {
 
 	}
 
-	FillMemory(buffer, 512, 0);
+	FillMemory(buffer, size, 0);
 
 	//indent
 	CMString indent;

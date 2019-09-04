@@ -20,6 +20,8 @@ public:
 	virtual void Bind() override;
 	virtual Texture* GetTexture() override;
 
+	virtual void Blitz(RenderTarget* a_From, uint a_FromX, uint a_FromY, uint a_FromWidth, uint a_FromHeight, uint a_ToX, uint a_ToY, uint a_ToWidth, uint a_ToHeight, RenderTargetBlitzFormats a_Format) override;
+
 	virtual void SetupRenderTarget_Internal() override;
 private:
 	virtual void SetDebugObjName_Internal() override;

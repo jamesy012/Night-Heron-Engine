@@ -24,6 +24,12 @@ enum class RenderTargetBufferFormats {
 	DEPTH_STENCIL,
 };
 
+enum class RenderTargetBlitzFormats {
+	COLOR,
+	DEPTH,
+	STENCIL,
+};
+
 //types of buffers that can be added to this Framebuffer
 //Texture if you want to read it
 //RenderBuffer if you dont
@@ -52,6 +58,8 @@ public:
 	virtual Texture* GetTexture() = 0;
 
 	virtual void SetupRenderTarget_Internal() = 0;
+
+	virtual void Blitz(RenderTarget* a_From, uint a_FromX, uint a_FromY, uint a_FromWidth, uint a_FromHeight, uint a_ToX, uint a_ToY, uint a_ToWidth, uint a_ToHeight, RenderTargetBlitzFormats a_Format) = 0;
 
 	uint GetWidth() {
 		return m_Width;

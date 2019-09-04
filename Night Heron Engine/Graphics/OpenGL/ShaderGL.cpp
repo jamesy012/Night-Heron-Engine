@@ -44,7 +44,9 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 
 		// Modify the decoration to prepare it for GLSL.
 		glsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
-		glsl.unset_decoration(resource.id, spv::DecorationBinding);
+		//glsl.unset_decoration(resource.id, spv::DecorationBinding);
+		//glsl.set_decoration(resource.id, spv::DecorationBinding, location);
+		glsl.unset_decoration(resource.id, spv::DecorationLocation);
 
 		// Some arbitrary remapping if we want.
 		//glsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
@@ -57,7 +59,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 		unsigned binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
 		unsigned int location = glsl.get_decoration(resource.id, spv::DecorationLocation);
 		CMLOG("uniform %s at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);
-	
+
 		// Modify the decoration to prepare it for GLSL.
 		//hlsl.unset_decoration(resource.id, spv::DecorationDescriptorSet);
 		//
@@ -68,7 +70,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 		if (binding != 0 && false) {
 			CMLOG_SCOPED_INDENT;
 			glsl.set_decoration(resource.id, spv::DecorationLocation, binding);
-	
+
 			binding = glsl.get_decoration(resource.id, spv::DecorationBinding);
 			location = glsl.get_decoration(resource.id, spv::DecorationLocation);
 			CMLOG("\tuniform %s moved to at set = %u, binding = %u, location %u\n", resource.name.c_str(), set, binding, location);

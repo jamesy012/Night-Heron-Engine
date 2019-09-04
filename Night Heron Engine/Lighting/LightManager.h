@@ -38,11 +38,14 @@ struct DirectionalLight {
 	glm::vec3 color;
 	float specularStrength;
 
+	glm::vec4 UVOffsets;
+
 	DirectionalLight() {
 		direction = glm::vec3(0, -1, 0);
 		ambientStrength = 0.2f;
 		color = glm::vec3(0);
 		specularStrength = 0.5f;
+		UVOffsets = glm::vec4(0, 0, 1, 1);
 	}
 };
 
@@ -59,6 +62,7 @@ struct SpotLight {
 	float shininess;
 	float specularStrength;
 	float pad;
+	glm::vec4 UVOffsets;
 
 	SpotLight() {
 		pos = glm::vec3(0);
@@ -75,11 +79,13 @@ struct SpotLight {
 		shininess = 32;
 
 		specularStrength = 0.5f;
+		UVOffsets = glm::vec4(0, 0, 1, 1);
+
 	}
 };
 
 #define MAX_NUM_POINTLIGHTS 2
-#define MAX_NUM_DIRECTIONALLIGHTS 1
+#define MAX_NUM_DIRECTIONALLIGHTS 2
 #define MAX_NUM_SPOTLIGHTS 1
 CREATE_BUFFER_UNIFORM(LightsData,
 	PointLight pointLights[MAX_NUM_POINTLIGHTS];

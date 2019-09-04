@@ -1,5 +1,7 @@
 #include "RenderTargetDX11.h"
 
+#include "Debug.h"
+
 #include <d3d11.h>
 
 #include <d3d11.h>
@@ -85,4 +87,8 @@ void RenderTargetDX11::Bind() {
 
 Texture* RenderTargetDX11::GetTexture() {
 	return m_Texture;
+}
+
+void RenderTargetDX11::Blitz(RenderTarget * a_From, uint a_FromX, uint a_FromY, uint a_FromWidth, uint a_FromHeight, uint a_ToX, uint a_ToY, uint a_ToWidth, uint a_ToHeight, RenderTargetBlitzFormats a_Format) {
+	CMASSERT(true);
 }

@@ -8,9 +8,25 @@
 
 #include "Debug.h"
 
+
 void RenderTargetGL::AddBuffer(RenderTargetBufferTypes a_Type, RenderTargetBufferFormats a_Format, RenderTargetBufferSize a_Size) {
-	CMASSERT_MSG(a_Type != RenderTargetBufferTypes::TEXTURE, "Buffer not supported");
+	//CMASSERT_MSG(a_Type != RenderTargetBufferTypes::TEXTURE, "Buffer not supported");
 	const uint GLsize = GetGLFormatSize(a_Format, a_Size);
+
+
+	if (a_Type == RenderTargetBufferTypes::TEXTURE && a_Format == RenderTargetBufferFormats::DEPTH) {
+		TextureGL* tex2D;
+		m_Texture = tex2D = new TextureGL();
+		tex2D->m_DesiredFormat = GL_DEPTH_COMPONENT;
+		tex2D->CreateTexture(m_Width, m_Height);
+
+		glGenFramebuffers(1, &m_Fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_Fbo);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, tex2D->getBufferID(), 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 }
 
 void RenderTargetGL::Create() {
@@ -87,6 +103,25 @@ void RenderTargetGL::Bind() {
 
 Texture* RenderTargetGL::GetTexture() {
 	return m_Texture;
+}
+
+void RenderTargetGL::Blitz(RenderTarget * a_From, uint a_FromX, uint a_FromY, uint a_FromWidth, uint a_FromHeight, uint a_ToX, uint a_ToY, uint a_ToWidth, uint a_ToHeight, RenderTargetBlitzFormats a_Format) {
+	GLbitfield mask = 0;
+	switch (a_Format) {
+		case RenderTargetBlitzFormats::COLOR:
+			mask = GL_COLOR_BUFFER_BIT;
+			break;
+		case RenderTargetBlitzFormats::DEPTH:
+			mask = GL_DEPTH_BUFFER_BIT;
+			break;
+		case RenderTargetBlitzFormats::STENCIL:
+			mask = GL_STENCIL_BUFFER_BIT;
+			break;
+	}
+	CMASSERT(mask == 0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, ((RenderTargetGL*)a_From)->m_Fbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_Fbo);
+	glBlitFramebuffer(a_FromX, a_FromY, a_FromX + a_FromHeight, a_FromY + a_FromHeight, a_ToX, a_ToY, a_ToX + a_ToWidth, a_ToY + a_ToHeight, mask, GL_NEAREST);
 }
 
 //converts a_Format and a_FormatSize into their opengl counterparts

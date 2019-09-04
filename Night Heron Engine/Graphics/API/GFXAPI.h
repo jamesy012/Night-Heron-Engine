@@ -13,6 +13,11 @@ enum GraphicsAPITypes {
 	DX11
 };
 
+enum CullState {
+	Back,
+	Front,
+};
+
 class GFX {
 public:
 	virtual bool CreateWindowSetUpAPI() = 0;
@@ -59,6 +64,8 @@ public:
 	virtual SimpleVec2 GetImGuiImageUV1() = 0;
 
 	virtual GraphicsAPITypes GetGraphicsType() = 0;
+
+	virtual void SetCullState(CullState a_State) = 0;
 
 	Window* m_Window;
 

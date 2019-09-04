@@ -13,6 +13,8 @@ public:
 	}
 
 	virtual void SetDebugObjName_Internal() override;
+
+	unsigned int m_DesiredFormat = 0;
 private:
 	virtual void createData() override;
 

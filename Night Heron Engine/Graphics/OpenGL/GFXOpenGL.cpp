@@ -63,6 +63,10 @@ void GFXOpenGL::ImGuiNewFrame() {
 	ImGui::NewFrame();
 }
 
+void GFXOpenGL::SetCullState(CullState a_State) {
+	glCullFace(a_State == CullState::Front ? GL_FRONT : GL_BACK);
+}
+
 void GFXOpenGL::InitImGui_Internal() {
 	ImGui_ImplOpenGL3_Init("#version 450");
 }
