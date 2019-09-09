@@ -10,7 +10,7 @@ public:
 		, m_DepthStencilTexture(nullptr) {
 	};
 
-	virtual void AddBuffer(RenderTargetBufferTypes a_Type, RenderTargetBufferFormats a_Format, RenderTargetBufferSize a_Size) override {};
+	virtual void AddBuffer(RenderTargetBufferTypes a_Type, RenderTargetBufferFormats a_Format, RenderTargetBufferSize a_Size) override;
 	virtual void Create() override {};
 
 	// Inherited via RenderTarget

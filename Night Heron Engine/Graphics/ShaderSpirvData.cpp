@@ -24,6 +24,8 @@
 #include "nlohmann/json.hpp"
 //json object for this class.
 static nlohmann::json SSD_JsonHolder;
+CMArray<SHADERDEFINES> ShaderDefines;
+
 
 #define ShaderCachePath "ShaderCache\\"
 #define ShaderJsonFileVersion 1
@@ -149,7 +151,7 @@ public:
 										 size_t inclusionDepth) override
 	{
 		CMLOG("Including System file header name (%s) IncluderName (%s) inclusionDepth (%i)\n", headerName, includerName, inclusionDepth);
-		
+
 
 		return LoadFile(CMString("Programs/") + headerName);
 	}
@@ -196,6 +198,29 @@ private:
 				const uint length = 0;
 				char* content = new char[length + 1];
 				return new glslang::TShader::Includer::IncludeResult(a_Path, content, length, content);
+			}
+
+			CMString includeString = includeFile->m_SourceFile;
+
+			//process include defines
+			{
+				CMString defines;
+				CMArray<SHADERDEFINES*> shaderDefineRef;
+				//search for them
+				for (int i = 0; i < ShaderDefines.Length(); i++) {
+					if (includeString.Contains(ShaderDefines[i].m_Name)) {
+						m_Owner->AddDefine(&ShaderDefines[i]);
+						shaderDefineRef.Add(&ShaderDefines[i]);
+
+
+					}
+				}
+				//set up string
+				for (int i = 0; i < shaderDefineRef.Length(); i++) {
+					defines += "#define " + shaderDefineRef[i]->m_Name + " " + CMString::IntToString(shaderDefineRef[i]->m_Value) + "\n";
+				}
+				//add to file
+				includeString = defines + includeString;
 			}
 
 			const uint length = includeFile->m_SourceFile.Length();
@@ -246,11 +271,34 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 			m_HasPermutation = SSD_JsonHolder.contains("Permutation") ? SSD_JsonHolder.at("Permutation").get<bool>() : false;
 			const bool lastCompiedAPIMatch = (SSD_JsonHolder.contains("LastCompiedAPI") ? SSD_JsonHolder.at("LastCompiedAPI").get<int>() == (int)_CGraphics->GetGraphicsType() : false);
 
-			if (correctVerion && !errored && !(m_HasPermutation && !lastCompiedAPIMatch)) {
+			bool failedDefines = false;
+			//Check for different defines
+			if (m_HasPermutation && SSD_JsonHolder.contains("Defines")) {
+				nlohmann::json objects = SSD_JsonHolder.at("Defines");
+				//search through each define that was included and see if it's different
+				for (nlohmann::json::iterator it = objects.begin(); it != objects.end(); ++it) {
+					auto inc = *it;
+					CMString name = inc["Name"].get<CMString>();
+					//find it
+					for (int i = 0; i < ShaderDefines.Length(); i++) {
+						if (name == ShaderDefines[i].m_Name) {
+							int value = inc["Value"].get<int>();
+							if (ShaderDefines[i].m_Value != value) {
+								//value didnt match, error
+								failedDefines = true;
+							}
+							break;
+						}
+					}
+				}
+			}
+
+
+			if (correctVerion && !errored && !(m_HasPermutation && !lastCompiedAPIMatch) && !failedDefines) {
 
 				char output[HASH_LENGTH];
 				int index = 0;
-				
+
 				//check file hash
 				nlohmann::json j = SSD_JsonHolder.at("Hash");
 				for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
@@ -259,7 +307,7 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 				index = 0;
 
 				res = memcmp(m_Hash, output, HASH_LENGTH);
-				
+
 				//check include hash's
 				nlohmann::json objects = SSD_JsonHolder.at("Includes");
 				for (nlohmann::json::iterator it = objects.begin(); it != objects.end(); ++it) {
@@ -281,7 +329,7 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 						break;
 					}
 				}
-				
+
 			}
 		}
 
@@ -299,7 +347,15 @@ ShaderLoadRes ShaderSpirvData::LoadFromFile(CMString a_FilePath) {
 	}
 	CMLOG("Shader: Generating Code: %s\n", m_FilePath.m_FilePath.c_str());
 
-	m_HasPermutation = m_SourceFile.Contains("#ifdef WITH_OPENGL") || m_SourceFile.Contains("#if WITH_OPENGL");
+	m_HasPermutation = m_SourceFile.Contains("#if WITH_OPENGL");
+	m_HasPermutation |= m_SourceFile.Contains("#if WITH_DIRECTX");
+
+	//find any defines we need
+	for (int i = 0; i < ShaderDefines.Length(); i++) {
+		if (m_SourceFile.Contains(ShaderDefines[i].m_Name)) {
+			AddDefine(&ShaderDefines[i]);
+		}
+	}
 
 	if (m_ShaderType == ShaderType::SHADER_INCLUDE) {
 		SaveInfoFile(false);
@@ -360,6 +416,12 @@ void ShaderSpirvData::RemoveShader(Shader * a_Shader) {
 	m_AttachedShaders.Remove(a_Shader);
 }
 
+void ShaderSpirvData::AddDefine(SHADERDEFINES* a_Define) {
+	m_ShaderDefines.AddUnique(a_Define);
+	m_HasPermutation = true;
+}
+
+
 void ShaderSpirvData::GetTypeFromFilePath() {
 	const CMArray<CMStringHash> hashs = { ".vert", ".frag","SHADERCOUNT", ".inc" };
 
@@ -407,6 +469,15 @@ bool ShaderSpirvData::GenerateGLSlangData() {
 
 	if (_CGraphics->GetGraphicsType() == GraphicsAPITypes::OPENGL4) {
 		preProcessorString += "#define WITH_OPENGL 1\n";
+		preProcessorString += "#define WITH_DIRECTX 0\n";
+	} else {
+		preProcessorString += "#define WITH_OPENGL 0\n";
+		preProcessorString += "#define WITH_DIRECTX 1\n";
+	}
+
+	//Add our defines to the final file
+	for (int i = 0; i < m_ShaderDefines.Length(); i++) {
+		preProcessorString += "#define " + m_ShaderDefines[i]->m_Name + " " + CMString::IntToString(m_ShaderDefines[i]->m_Value) + "\n";
 	}
 
 	const char* s[3] = { versionText.Get(), preProcessorString.Get(), m_SourceFile.Get() };
@@ -529,6 +600,12 @@ void ShaderSpirvData::SaveInfoFile(bool a_DidFail) {
 				SSD_JsonHolder["Hash"] = vec;
 				includes[i]["Hash"] = m_IncludeList[i]->m_Hash;
 				includes[i]["FilePath"] = m_IncludeList[i]->m_FilePath.m_FilePath;
+			}
+
+			nlohmann::json& defines = SSD_JsonHolder["Defines"];
+			for (uint i = 0; i < m_ShaderDefines.Length(); i++) {
+				defines[i]["Name"] = m_ShaderDefines[i]->m_Name;
+				defines[i]["Value"] = m_ShaderDefines[i]->m_Value;
 			}
 
 		}

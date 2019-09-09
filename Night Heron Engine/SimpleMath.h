@@ -36,9 +36,23 @@ public:
 	union {
 		float v2;
 		float y;
-	};	
+	};
 	union {
 		float v3;
 		float z;
 	};
+};
+
+struct SimpleBox {
+	SimpleBox(float iX, float iY, float iWidth, float iHeight) {
+		X = iX;
+		Y = iY;
+		Width = iWidth;
+		Height = iHeight;
+	}
+
+	float X;
+	float Y;
+	float Width;
+	float Height;
 };

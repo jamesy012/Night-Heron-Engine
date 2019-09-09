@@ -8,6 +8,8 @@
 
 #include "Managers/Arguments.h"
 
+#include "RenderTarget.h"
+
 void GFX::ImGuiInit() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -21,6 +23,15 @@ void GFX::ImGuiInit() {
 
 	m_Window->ImGuiInit();
 	InitImGui_Internal();
+}
+
+void GFX::UseRenderTarget(RenderTarget* a_Rt, SimpleBox a_ViewPort) {
+	a_Rt->Bind();
+	SetViewPort(a_ViewPort);
+}
+
+void GFX::UseRenderTarget(RenderTarget* a_Rt) {
+	UseRenderTarget(a_Rt, SimpleBox(0, 0, a_Rt->GetWidth(), a_Rt->GetHeight()));
 }
 
 void GFX::SetUpGraphics() {

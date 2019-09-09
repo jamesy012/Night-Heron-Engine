@@ -54,8 +54,12 @@ void GFXDX11::SwapBuffer() {
 }
 
 void GFXDX11::Clear() {
-	m_DevCon->ClearRenderTargetView(m_CurrentContext->m_CurrentBoundRenderTarget, &m_ClearR);
-	m_DevCon->ClearDepthStencilView(m_CurrentContext->m_CurrentBoundDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	if (m_CurrentContext->m_CurrentBoundRenderTarget) {
+		m_DevCon->ClearRenderTargetView(m_CurrentContext->m_CurrentBoundRenderTarget, &m_ClearR);
+	}
+	if (m_CurrentContext->m_CurrentBoundDepthStencilView) {
+		m_DevCon->ClearDepthStencilView(m_CurrentContext->m_CurrentBoundDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	}
 }
 
 void GFXDX11::SetClearColor(float R, float G, float B, float A) {
@@ -220,15 +224,15 @@ void GFXDX11::PopDebugGroup() {
 	}
 }
 
-void GFXDX11::UseRenderTarget(RenderTarget * a_Rt) {
-	a_Rt->Bind();
-
+void GFXDX11::SetViewPort(SimpleBox a_ViewPort) {
 	D3D11_VIEWPORT viewport;
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
-	viewport.Width = (float)a_Rt->GetWidth();
-	viewport.Height = (float)a_Rt->GetHeight();
-	viewport.MaxDepth = 1.0f;
+	viewport.TopLeftX = a_ViewPort.X;
+	viewport.TopLeftY = a_ViewPort.Y;
+	viewport.Width = a_ViewPort.Width;
+	viewport.Height = a_ViewPort.Height;
+	viewport.MaxDepth = 1.5f;
 	viewport.MinDepth = 0.0f;
 
 	GFXDX11::GetCurrentContex()->m_DevCon->RSSetViewports(1, &viewport);

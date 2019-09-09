@@ -57,10 +57,19 @@ CREATE_BUFFER_UNIFORM(CommonDataStruct,
 	float time;
 	glm::vec2 screenSize;
 	float pad;
-)
+	)
+
+#define NUM_SHADOWS 4
+//size/res of an individual shadow map
+#define SHADOW_MAP_WIDTH 1024
+#define SHADOW_MAP_HEIGHT 1024
+//size/res of combined shadows
+#define SHADOW_MAP_COMBINED_WIDTH 4096
+#define SHADOW_MAP_COMBINED_HEIGHT 2048
+static_assert(SHADOW_MAP_COMBINED_WIDTH*SHADOW_MAP_COMBINED_HEIGHT > (SHADOW_MAP_WIDTH * SHADOW_MAP_HEIGHT) * NUM_SHADOWS, "Too many shadows to store in combined map");
 
 CREATE_BUFFER_UNIFORM(ShadowData,
-	glm::mat4 DirLightPV[4];
+	glm::mat4 DirLightPV[NUM_SHADOWS];
 )
 
 
@@ -100,6 +109,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 	if (!graphics->CreateWindowSetUpAPI()) {
 		return -1;
+	}
+
+	//SHADER DEFINES SETUP
+	{
+		ShaderDefines.Add({ "NUM_POINTLIGHTS", MAX_NUM_POINTLIGHTS });
+		ShaderDefines.Add({ "NUM_SPOT_LIGHTS", MAX_NUM_SPOTLIGHTS });
+		ShaderDefines.Add({ "NUM_DIRECTIONAL_LIGHTS", MAX_NUM_DIRECTIONALLIGHTS });
+		ShaderDefines.Add({ "NUM_SHADOWS", NUM_SHADOWS });
 	}
 
 	SingletonManager::CreateSingletons();
@@ -199,6 +216,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		lightsArray.pointLights[1].specularStrength = 0.5f;
 	}
 
+	const float shadowUVXRatio =  /*1.0f /*/ (float(SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH);
+	const float shadowUVYRatio = /*1.0f /*/ (float(SHADOW_MAP_HEIGHT) / SHADOW_MAP_COMBINED_HEIGHT);
+
 	lightsArray.directionalLights[0].color = glm::vec3(1,0.5f,0);
 	lightsArray.directionalLights[0].direction = glm::vec3(2.7f, 12.5f, 10.7f);
 	lightsArray.directionalLights[0].ambientStrength = 0.2f;
@@ -207,8 +227,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	lightsArray.directionalLights[1].direction = glm::vec3(-2.7f, 12.5f, 10.7f);
 	lightsArray.directionalLights[1].ambientStrength = 0.2f;
 	lightsArray.directionalLights[1].specularStrength = 0.5f;
-	lightsArray.directionalLights[0].UVOffsets = glm::vec4(0, 0, 0.25f, 1);
-	lightsArray.directionalLights[1].UVOffsets = glm::vec4(0.25f, 0, 0.25f, 1);
+	lightsArray.directionalLights[0].UVOffsets = glm::vec4(shadowUVXRatio *0, 0, shadowUVXRatio, shadowUVYRatio);
+	lightsArray.directionalLights[1].UVOffsets = glm::vec4(shadowUVXRatio *1, 0, shadowUVXRatio, shadowUVYRatio);
 
 
 
@@ -216,7 +236,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	lightsArray.spotLights[0].pos = glm::vec3(10.750f, 0.5f, -5.5f);
 	lightsArray.spotLights[0].direction = glm::vec3(-1.5f, -7.5f, -0.25f);
 	lightsArray.spotLights[0].cutOff = 0.45f;
-	lightsArray.spotLights[0].UVOffsets = glm::vec4(0.5f, 0, 0.25f, 1);
+	lightsArray.spotLights[0].UVOffsets = glm::vec4(shadowUVXRatio*2, 0, shadowUVXRatio, shadowUVYRatio);
 
 
 	ShaderUniformBlock* pointLightsBlock = graphics->CreateBuffer(&lightsArray, sizeof(LightsData));
@@ -349,11 +369,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 	}
 
-	RenderTarget* shadowSmaller = _CGraphics->CreateRenderTarget(1024,1024);
+	RenderTarget* shadowSmaller = _CGraphics->CreateRenderTarget(SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT);
 	shadowSmaller->AddBuffer(RenderTargetBufferTypes::TEXTURE, RenderTargetBufferFormats::DEPTH, RenderTargetBufferSize::Size16);
+	shadowSmaller->SetDebugObjName("shadowSmaller");
 	shadowSmaller->Bind();
-	RenderTarget* shadowRT = _CGraphics->CreateRenderTarget(4096,1024);
+	RenderTarget* shadowRT = _CGraphics->CreateRenderTarget(SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_COMBINED_HEIGHT);
 	shadowRT->AddBuffer(RenderTargetBufferTypes::TEXTURE, RenderTargetBufferFormats::DEPTH, RenderTargetBufferSize::Size16);
+	shadowRT->SetDebugObjName("shadowRT");
 	shadowRT->Bind();
 	if (shadowRT->GetTexture()) {
 		treeModelMat2.AddTexture(shadowRT->GetTexture(), 1);
@@ -436,7 +458,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			ImGui::DragFloat("Camera Speed", &cameraSpeed, 0.1f);
 
 			if (shadowRT && shadowRT->GetTexture()) {
-				ImGui::Image(shadowRT->GetTexture()->getTexturePtr(), ImVec2(200, 150), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
+				ImGui::Image(shadowRT->GetTexture()->getTexturePtr(), ImVec2(200, 150), SimpleVec2(0, 0), SimpleVec2(1, 1));
 			}
 			if (shadowSmaller && shadowSmaller->GetTexture()) {
 				ImGui::Image(shadowSmaller->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
@@ -584,6 +606,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 
 			if (shadowSmaller && shadowSmaller->GetTexture()) {
 				_CGraphics->SetCullState(CullState::Front);
+
+				_CGraphics->UseRenderTarget(shadowRT);
+
+				graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+				graphics->Clear();
+
 				float near_plane = 1.0f, far_plane = 100.0f;
 				//glm::mat4 lightProjection = mainCamera.GetProjection();
 				glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
@@ -611,14 +639,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 					cameraUniformData.pos = -light.direction;
 					cameraUniformBlock->UpdateBuffer(&cameraUniformData);
 
-					_CGraphics->UseRenderTarget(shadowSmaller);
+					//_CGraphics->UseRenderTarget(shadowRT, SimpleBox((i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
+					//_CGraphics->UseRenderTarget(shadowSmaller);
+					_CGraphics->SetViewPort(SimpleBox((i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
 
-					graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-					graphics->Clear();
+					//graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+					//graphics->Clear();
 
 					shadowScene.Draw();
 
-					shadowRT->Blitz(shadowSmaller, 0, 0, 1024, 1024, i * 1024, 0, 1024, 1024, RenderTargetBlitzFormats::DEPTH);
+					//CMLOG("%i WIDTH: %i, HEIGHT %i\n", i, (i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH);
+					//CMLOG("%i %i\n", i, (i * SHADOW_MAP_WIDTH));
+
+					//shadowRT->Blitz(shadowSmaller, 0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, (i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, RenderTargetBlitzFormats::DEPTH);
 				}
 				for (int i = 0; i < MAX_NUM_SPOTLIGHTS; i++) {
 					SpotLight& light = lightsArray.spotLights[i];
@@ -629,8 +662,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 					glm::mat4 lightView = glm::lookAt(light.pos, light.pos + light.direction, glm::vec3(0, 1, 0));
 					//float spotlightAngle = (1 - light.cutOff) * 180;
 					float spotlightAngle = (1 - light.cutOff) * 180 * 1.3f;
-					CMLOG("FOV: %f\n", spotlightAngle);
-					lightProjection = glm::perspective(glm::radians(spotlightAngle), 1.0f, near_plane, far_plane);
+					//CMLOG("FOV: %f\n", spotlightAngle);
+					lightProjection = glm::perspective(glm::radians(spotlightAngle), 1.0f, near_plane, far_plane*2);
 					glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
 					glm::mat4 biasMatrix(
@@ -647,14 +680,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 					cameraUniformData.pos = light.pos;
 					cameraUniformBlock->UpdateBuffer(&cameraUniformData);
 
-					_CGraphics->UseRenderTarget(shadowSmaller);
+					//_CGraphics->UseRenderTarget(shadowRT, SimpleBox((i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
+					//_CGraphics->UseRenderTarget(shadowRT, SimpleBox(((2 + i) * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, ((2 + i) * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
+					_CGraphics->SetViewPort(SimpleBox(((2 + i) * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, ((2 + i) * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
 
-					graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-					graphics->Clear();
+					//graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+					//graphics->Clear();
 
 					shadowScene.Draw();
 
-					shadowRT->Blitz(shadowSmaller, 0, 0, 1024, 1024, (2+i) * 1024, 0, 1024, 1024, RenderTargetBlitzFormats::DEPTH);
+					//shadowRT->Blitz(shadowSmaller, 0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, ((2+i) * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, ((2 + i) * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, RenderTargetBlitzFormats::DEPTH);
 				}
 
 				_CGraphics->SetCullState(CullState::Back);

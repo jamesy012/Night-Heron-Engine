@@ -59,7 +59,11 @@ void TextureDX11::createData() {
 
 	if (m_IsShaderResource) {
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
-		srvd.Format = texDesc.Format;
+		if (m_DesiredShaderResourceFormat == 0) {
+			srvd.Format = texDesc.Format;
+		} else {
+			srvd.Format = (DXGI_FORMAT)m_DesiredShaderResourceFormat;
+		}
 		srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvd.TextureCube.MipLevels = texDesc.MipLevels;
 		srvd.TextureCube.MostDetailedMip = 0;

@@ -6,6 +6,19 @@
 
 class Shader;
 
+struct SHADERDEFINES {
+public:
+	SHADERDEFINES() : m_Name(""), m_Value(0) {
+	};
+	/*constexpr*/ SHADERDEFINES(CMString a_Name, int a_Value) : m_Name(a_Name), m_Value(a_Value) {
+	};
+
+	CMString m_Name;
+	int m_Value;
+};
+
+extern CMArray<SHADERDEFINES> ShaderDefines;
+
 enum ShaderType {
 	SHADER_VERTEX,
 	SHADER_FRAGMENT,
@@ -38,6 +51,8 @@ public:
 	void AddShader(Shader* a_Shader);
 	void RemoveShader(Shader* a_Shader);
 
+	void AddDefine(SHADERDEFINES* a_Define);
+
 	bool m_HasBeenLoaded = false;
 
 	CMFilePath m_FilePath;
@@ -61,6 +76,9 @@ private:
 	glslang::TProgram* m_Program;
 
 	bool m_HasPermutation;
+
+	CMArray<SHADERDEFINES*> m_ShaderDefines;
+
 
 	unsigned char m_Hash[16];
 };

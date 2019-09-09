@@ -53,7 +53,10 @@ public:
 	virtual void BindTexture(Texture* a_Tex, uint a_Slot) = 0;
 	virtual void UnbindTexture(uint a_Slot) = 0;
 
-	virtual void UseRenderTarget(RenderTarget* a_Rt) = 0;
+	virtual void UseRenderTarget(RenderTarget* a_Rt, SimpleBox a_ViewPort);
+	virtual void UseRenderTarget(RenderTarget* a_Rt);
+	virtual void SetViewPort(SimpleBox a_ViewPort) = 0;
+
 	virtual void ResetRenderTarget() = 0;
 	virtual void ResetShader() = 0;
 
@@ -74,6 +77,7 @@ protected:
 	virtual bool InitGfx() = 0;
 	virtual void InitImGui_Internal() = 0;
 	virtual void ResizeWindow_Internal(int a_Width, int a_Height) = 0;
+
 
 	float m_ClearR = 0, m_ClearG = 0, m_ClearB = 0, m_ClearA = 1;
 

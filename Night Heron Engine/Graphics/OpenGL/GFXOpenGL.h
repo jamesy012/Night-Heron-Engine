@@ -25,7 +25,8 @@ public:
 	virtual class Texture* CreateTexture() override;
 	virtual class RenderTarget* CreateRenderTarget(int a_Width, int a_Height) override;
 
-	virtual void UseRenderTarget(RenderTarget* a_Rt) override;
+	virtual void SetViewPort(SimpleBox a_ViewPort) override;
+
 	virtual void ResetRenderTarget() override;
 	virtual void ResetShader() override;
 

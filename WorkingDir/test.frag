@@ -11,7 +11,7 @@ in vec3 vVertPos;
 layout(location=5)in vec4 vFragDirLightSpace;
 
 layout(location=7) in ShadowMatrix{
-	vec4 FragDirLightSpace[4];
+	vec4 FragDirLightSpace[NUM_SHADOWS];
 } vShadowMatrix;
 
 out vec4 fragColor; 
@@ -63,9 +63,6 @@ struct PointLight {
 #define BLINN_PHONG 1
 #define COLORED_SHADOW 1
 
-#define NUM_POINTLIGHTS 2
-#define NUM_DIRECTIONAL_LIGHTS 2
-#define NUM_SPOT_LIGHTS 1
 layout (std140) uniform Lighting_Data {
 	PointLight pointLights[NUM_POINTLIGHTS];
 	DirectionalLight directionalLights[NUM_DIRECTIONAL_LIGHTS];
@@ -75,10 +72,11 @@ layout (std140) uniform Lighting_Data {
 layout (binding = 0) uniform sampler2D textureTest;
 layout (binding = 1) uniform sampler2D shadowTexture;
 
-float LinearizeDepth(float depth)
+float LinearizeDepth(float depth, float near, float far)
 {
-    float z = depth * 2.0 - 1.0; // Back to NDC 
-    return (2.0 * 1 * 100) / (100 + 1 - z * (100 - 1));
+    //float z = depth * 2.0 - 1.0; // Back to NDC 
+    //return (2.0 * near * far) / (far + near - z * (far - near));
+	return near * far / (far + depth * (near - far));
 }
 
 float ShadowCalculation(vec4 dirShadowSpace, vec3 lightDir, vec4 UVOffset)
@@ -89,7 +87,13 @@ float ShadowCalculation(vec4 dirShadowSpace, vec3 lightDir, vec4 UVOffset)
 	//projCoords *= vec3(-1,1,1);
 
 	// transform to [0,1] range
-    projCoords = projCoords * 0.5 + 0.5;
+	projCoords.x = projCoords.x * 0.5 + 0.5;
+    projCoords.y = projCoords.y * 0.5 + 0.5;
+	#if WITH_OPENGL
+		projCoords.z = projCoords.z * 0.5 + 0.5;
+    #else
+		projCoords.z = projCoords.z;
+	#endif
 
 	vec2 shadowUV = projCoords.xy;
 	shadowUV.x = UVOffset.x + (shadowUV.x * UVOffset.z);
@@ -101,24 +105,29 @@ float ShadowCalculation(vec4 dirShadowSpace, vec3 lightDir, vec4 UVOffset)
 	if(shadowUV.y > UVOffset.y + UVOffset.w || shadowUV.y < UVOffset.y){
 		return 0;
 	}
-
+	#if WITH_DIRECTX
+		shadowUV.y = (shadowUV.y *-1 + UVOffset.w);
+	#endif
 	// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
     float closestDepth = texture(shadowTexture, shadowUV).r; 
-
-	//closestDepth = LinearizeDepth(closestDepth) / 100;
+	
+	//closestDepth = LinearizeDepth(closestDepth,1,200);
 
 	//return closestDepth;
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
-
-	vec3 lightDirNorm = normalize(lightDir);
-	float bias = max(0.05 * (1.0 - dot(vVertNormal.xyz, lightDirNorm)), 0.005);  
+	//return currentDepth;
+	//vec3 lightDirNorm = normalize(lightDir);
+	//float bias = max(0.05 * (1.0 - dot(vVertNormal.xyz, lightDirNorm)), 0.005); 
+	float margin = acos(dot(vVertNormal.xyz, lightDir));
+	float bias = 0.0005/margin;
+	bias = clamp(bias, 0, .1);
 
     // check whether current frag pos is in shadow
     float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
     //float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;  
 
-	if(projCoords.z > 1.0) {
+	if(currentDepth > 1.0) {
         shadow = 0.0;
 	}
 
@@ -140,7 +149,6 @@ void main() {
 	//lighting
 	vec3 result = vec3(0);
 
-#if WITH_OPENGL
 #if COLORED_SHADOW
 	vec3 shadow = vec3(0);
 #else
@@ -152,7 +160,7 @@ float shadow = 1;
 		 lightData.directionalLights[i].direction,
 		 lightData.directionalLights[i].UVOffsets);
 #if COLORED_SHADOW	 
-	shadow += (1-thisShadow) * lightData.directionalLights[i].color;
+		shadow += (1-thisShadow) * lightData.directionalLights[i].color;
 #else
 		shadow += (1-thisShadow);
 #endif
@@ -168,16 +176,15 @@ float shadow = 1;
 		float theta = dot(lightDir, normalize(-lightData.spotLights[i].direction));		
 		thisShadow = thisShadow * step(lightData.spotLights[i].cutOff, theta); 
 #if COLORED_SHADOW	 
-	shadow += (1-thisShadow) * lightData.spotLights[i].color;
+		shadow += (1-thisShadow) * lightData.spotLights[i].color;
 #else
 		 shadow += (1-thisShadow);
 #endif
 	}
-#else
-	float shadow = 1;
-#endif
+
 
 	//fragColor = vec4(shadow, shadow, shadow, 1);
+	//fragColor = vec4(shadow, 1);
 	//fragColor = vFragDirLightSpace;
 	//return;
 	{		

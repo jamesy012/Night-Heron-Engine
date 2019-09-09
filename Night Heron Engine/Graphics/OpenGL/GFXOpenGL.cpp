@@ -110,10 +110,10 @@ RenderTarget* GFXOpenGL::CreateRenderTarget(int a_Width, int a_Height) {
 	return new RenderTargetGL(a_Width, a_Height);
 }
 
-void GFXOpenGL::UseRenderTarget(RenderTarget * a_Rt) {
-	a_Rt->Bind();
-	glViewport(0, 0, a_Rt->GetWidth(), a_Rt->GetHeight());
+void GFXOpenGL::SetViewPort(SimpleBox a_ViewPort) {
+	glViewport(a_ViewPort.X, a_ViewPort.Y, a_ViewPort.Width, a_ViewPort.Height);
 }
+
 
 void GFXOpenGL::ResetRenderTarget() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

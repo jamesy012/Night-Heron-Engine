@@ -1,18 +1,33 @@
-general:
+-- GENERAL
 Clean up the code
 Transform/Object class
-Input
+Input - partly finished
 Editor viewport
 Materials
 Scenes
 object GUIDS
 
-api:
+-- LIGHTING
+Point shadows
+dynamic mapping of lights into shadow map
+more control over light values being sent to shader
+	such as using degrees when modifying spot light angle instead of cutoff
+
+-- SHADERS
+Ability to preproesses the shaders so they are all compiled and saved before running the exe
+	so that we dont have to link to spriv or glslang (these are currently set up in a way that they need debug and x86
+Match up locations/bindings between vertex/fragment dynamicly
+Make shadow versions of shaders when generating
+
+-- RENDERING
+override textures and shaders when doing shadow pass
+
+-- API
 rendering pipelines
     normal and postprocessing
 Improve Render targets
 Text rendering/UI (ImGui is alright at this stage)
 
-other:
+-- OTHER
 Possibly vulkan
 xbox/UWP?

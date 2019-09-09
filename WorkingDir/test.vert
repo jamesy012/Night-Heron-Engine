@@ -11,11 +11,11 @@ layout(location=4) out vec2 vPosTest;
 
 
 layout(location=7) out ShadowMatrix{
-	vec4 FragDirLightSpace[4];
+	vec4 FragDirLightSpace[NUM_SHADOWS];
 } vShadowMatrix;
 
 layout (std140, binding = 4) uniform Shadow_Data {
-	mat4 DirLightPV[2];
+	mat4 DirLightPV[NUM_SHADOWS];
 } shadowData;
 
 
@@ -32,7 +32,7 @@ void main() {
 	mat4 normalMatrix = transpose(inverse(objectData.model));
 	vVertNormal = normalMatrix * vertNormal;
 	
-	for(int i = 0;i<4;i++){
+	for(int i = 0;i<NUM_SHADOWS;i++){
 		vShadowMatrix.FragDirLightSpace[i] = shadowData.DirLightPV[i] * vec4(vVertPos, 1.0);
 	}
 
