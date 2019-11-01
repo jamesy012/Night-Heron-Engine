@@ -232,7 +232,7 @@ void GFXDX11::SetViewPort(SimpleBox a_ViewPort) {
 	viewport.TopLeftY = a_ViewPort.Y;
 	viewport.Width = a_ViewPort.Width;
 	viewport.Height = a_ViewPort.Height;
-	viewport.MaxDepth = 1.5f;
+	viewport.MaxDepth = 1.0f;
 	viewport.MinDepth = 0.0f;
 
 	GFXDX11::GetCurrentContex()->m_DevCon->RSSetViewports(1, &viewport);

@@ -9,11 +9,7 @@ in vec4 vVertNormal;
 in vec3 vVertPos; 	
 
 layout(location=5)in vec4 vFragDirLightSpace;
-
-layout(location=7) in ShadowMatrix{
-	vec4 FragDirLightSpace[NUM_SHADOWS];
-} vShadowMatrix;
-
+						
 out vec4 fragColor; 
 
 layout (std140) uniform Shader_Data {
@@ -26,8 +22,6 @@ struct DirectionalLight {
 	float ambientStrength;
 	vec3 color;
 	float specularStrength;
-	
-	vec4 UVOffsets;
 };
 
 struct SpotLight {
@@ -44,8 +38,6 @@ struct SpotLight {
 	float shininess;
 	float specularStrength;
 	float pad;
-
-	vec4 UVOffsets;	
 };    
 
 struct PointLight {
@@ -61,8 +53,10 @@ struct PointLight {
 };
 
 #define BLINN_PHONG 1
-#define COLORED_SHADOW 1
 
+#define NUM_POINTLIGHTS 2
+#define NUM_DIRECTIONAL_LIGHTS 1
+#define NUM_SPOT_LIGHTS 1
 layout (std140) uniform Lighting_Data {
 	PointLight pointLights[NUM_POINTLIGHTS];
 	DirectionalLight directionalLights[NUM_DIRECTIONAL_LIGHTS];
@@ -72,63 +66,38 @@ layout (std140) uniform Lighting_Data {
 layout (binding = 0) uniform sampler2D textureTest;
 layout (binding = 1) uniform sampler2D shadowTexture;
 
-float LinearizeDepth(float depth, float near, float far)
+float LinearizeDepth(float depth)
 {
-    //float z = depth * 2.0 - 1.0; // Back to NDC 
-    //return (2.0 * near * far) / (far + near - z * (far - near));
-	return near * far / (far + depth * (near - far));
+    float z = depth * 2.0 - 1.0; // Back to NDC 
+    return (2.0 * 1 * 100) / (100 + 1 - z * (100 - 1));
 }
 
-float ShadowCalculation(vec4 dirShadowSpace, vec3 lightDir, vec4 UVOffset)
+float ShadowCalculation()
 {
 	// perform perspective divide
-	vec3 projCoords = dirShadowSpace.xyz / dirShadowSpace.w;
+	vec3 projCoords = vFragDirLightSpace.xyz / vFragDirLightSpace.w;
 	//return projCoords.z;
 	//projCoords *= vec3(-1,1,1);
 
 	// transform to [0,1] range
-	projCoords.x = projCoords.x * 0.5 + 0.5;
-    projCoords.y = projCoords.y * 0.5 + 0.5;
-	#if WITH_OPENGL
-		projCoords.z = projCoords.z * 0.5 + 0.5;
-    #else
-		projCoords.z = projCoords.z;
-	#endif
-	
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(shadowTexture, projCoords.xy).r; 
 
-	vec2 shadowUV = projCoords.xy;
-	shadowUV.x = UVOffset.x + (shadowUV.x * UVOffset.z);
-	shadowUV.y = UVOffset.y + (shadowUV.y * UVOffset.w);
-
-	if(shadowUV.x > UVOffset.x + UVOffset.z || shadowUV.x < UVOffset.x){
-		return 0;
-	}
-	if(shadowUV.y > UVOffset.y + UVOffset.w || shadowUV.y < UVOffset.y){
-		return 0;
-	}
-	#if WITH_DIRECTX
-		shadowUV.y = (shadowUV.y *-1 + UVOffset.w);
-	#endif
-	// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-    float closestDepth = texture(shadowTexture, shadowUV).r; 
-	
-	//closestDepth = LinearizeDepth(closestDepth,1,100);
+	//closestDepth = LinearizeDepth(closestDepth) / 100;
 
 	//return closestDepth;
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
-	//return currentDepth;
-	//vec3 lightDirNorm = normalize(lightDir);
-	//float bias = max(0.05 * (1.0 - dot(vVertNormal.xyz, lightDirNorm)), 0.005); 
-	float margin = acos(dot(vVertNormal.xyz, lightDir));
-	float bias = 0.0005/margin;
-	bias = clamp(bias, 0, .1);
+
+	vec3 lightDir = normalize(lightData.directionalLights[0].direction);
+	float bias = max(0.05 * (1.0 - dot(vVertNormal.xyz, lightDir)), 0.005);  
 
     // check whether current frag pos is in shadow
     float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
     //float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;  
 
-	if(currentDepth > 1.0) {
+	if(projCoords.z > 1.0) {
         shadow = 0.0;
 	}
 
@@ -149,43 +118,8 @@ void main() {
 
 	//lighting
 	vec3 result = vec3(0);
-
-#if COLORED_SHADOW
-	vec3 shadow = vec3(0);
-#else
-float shadow = 1;
-#endif
-	for(int i =0;i<NUM_DIRECTIONAL_LIGHTS;i++){
-		float thisShadow = ShadowCalculation(
-		vShadowMatrix.FragDirLightSpace[i],
-		 lightData.directionalLights[i].direction,
-		 lightData.directionalLights[i].UVOffsets);
-#if COLORED_SHADOW	 
-		shadow += (1-thisShadow) * lightData.directionalLights[i].color;
-#else
-		shadow += (1-thisShadow);
-#endif
-	}
-
-	for(int i =0;i<NUM_SPOT_LIGHTS;i++){
-		float thisShadow = ShadowCalculation(
-		vShadowMatrix.FragDirLightSpace[2+i],
-		 lightData.spotLights[i].direction,
-		 lightData.spotLights[i].UVOffsets);
-
-		vec3 lightDir = normalize(lightData.spotLights[i].position - vVertPos.xyz);  
-		float theta = dot(lightDir, normalize(-lightData.spotLights[i].direction));		
-		thisShadow = thisShadow * step(lightData.spotLights[i].cutOff, theta); 
-#if COLORED_SHADOW	 
-		shadow += (1-thisShadow) * lightData.spotLights[i].color;
-#else
-		 shadow += (1-thisShadow);
-#endif
-	}
-
-
+	float shadow = ShadowCalculation();
 	//fragColor = vec4(shadow, shadow, shadow, 1);
-	//fragColor = vec4(shadow, 1);
 	//fragColor = vFragDirLightSpace;
 	//return;
 	{		
@@ -308,11 +242,11 @@ float shadow = 1;
 			//else  // else, use ambient light so scene isn't completely dark outside the spotlight.
 			//color = vec4(light.ambient * vec3(texture(material.diffuse, TexCoords)), 1.0);
 		}
-		result = finalAmbient + (finalDiffuse + finalSpecular) * ( shadow);
+		result = finalAmbient + (finalDiffuse + finalSpecular) * (1-shadow);
 	}
 	
 	//vec3 result = (ambient + diffuse + specular) * testBlock.color.xyz;
-	//result *= testBlock.color.xyz;
+	result *= testBlock.color.xyz;
 	//fragColor = vec4(result, 1.0);
 	//return;
 	fragColor = texture(textureTest, vTexCoord) * vec4(result, 1.0);

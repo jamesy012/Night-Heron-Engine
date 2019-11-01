@@ -28,13 +28,16 @@ LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM  wParam, LPARAM  lParam) {
 				if (_CGraphics == nullptr) {
 					return 1;
 				}
+
+				int border_thickness = GetSystemMetrics(SM_CXSIZEFRAME);
+
 				int width = LOWORD(lParam);
 				int height = HIWORD(lParam);
 
 				_CGraphics->ResizeWindow(width, height);
 
 				_CGraphics->m_Window->m_WindowWidth = width;
-				_CGraphics->m_Window->m_WindowHeight = height;
+				_CGraphics->m_Window->m_WindowHeight = height + border_thickness;
 
 				if (_CGraphics->m_Window->m_IsShown) {
 					_CGraphics->ResetRenderTarget();

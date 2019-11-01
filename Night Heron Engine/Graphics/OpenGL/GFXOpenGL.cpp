@@ -217,6 +217,8 @@ bool GFXOpenGL::InitGfx() {
 
 	glEnable(GL_DEPTH_TEST);
 
+	glDepthRange(0, 1);
+
 	return true;
 }
 

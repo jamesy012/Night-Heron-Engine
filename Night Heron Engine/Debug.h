@@ -6,6 +6,7 @@
 #include <cassert>
 
 #define CMASSERT_MSG(Expression, Message) assert(!(Expression) && Message);
+//ASSERTS WHEN TRUE
 #define CMASSERT(Expression) CMASSERT_MSG(Expression, "");
 
 

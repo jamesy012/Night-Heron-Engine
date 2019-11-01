@@ -187,12 +187,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		SimpleMaterial.Save();
 	}
 
+	//Assimp::DefaultLogger::create();
+
 	//MODELS
 	Model* squareModel = new Model();
 	squareModel->CreateSquare();
 
 	Model* planeModel = new Model();
 	planeModel->CreatePlane();
+
+	//Model testBistro = Model();
+	//testBistro.LoadModel("Models/Bistro v4 Update/Bistro_v4/Bistro_Interior.fbx");
 
 	Model testModel;
 	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");
@@ -351,7 +356,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		groundPlane->m_Transform.SetScale(Vector3(100));
 		groundPlane->m_Transform.SetPosition(glm::vec3(0,-5,0));
 		scene.AddObject(groundPlane);
-		shadowScene.AddObject(groundPlane);
+		//shadowScene.AddObject(groundPlane);
 
 		glm::vec3 positions[] = { glm::vec3(3.7f,-1.5f,-5) , glm::vec3(1,3.25f,0) , glm::vec3(-2.5f,7,0.75f) , glm::vec3(-1,-4.5f,-7.250) };
 		for (int i = 0; i < 4; i++) {
