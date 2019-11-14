@@ -183,6 +183,7 @@
     <ClCompile Include="Dependency\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Dependency\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Dependency\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="Generated\Objects_Night_Heron_Engine.cpp" />
     <ClCompile Include="Graphics\API\GFXAPI.cpp" />
     <ClCompile Include="Graphics\API\GFXObj.cpp" />
@@ -295,6 +296,7 @@
     <ClInclude Include="Dependency\rapidjson\stream.h" />
     <ClInclude Include="Dependency\rapidjson\stringbuffer.h" />
     <ClInclude Include="Dependency\rapidjson\writer.h" />
+    <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="Generated\Hash_Night_Heron_Engine.h" />
     <ClInclude Include="Generated\Objects_Night_Heron_Engine.h" />
     <ClInclude Include="Graphics\Material.h" />

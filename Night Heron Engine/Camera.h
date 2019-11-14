@@ -27,7 +27,7 @@ private:
 	float m_Aspect = 1.7f;
 	float m_Fov = glm::radians(90.0f);
 	float m_Near = 0.1f;
-	float m_Far = 100.0f;
+	float m_Far = 200.0f;
 };
 
 

@@ -124,6 +124,11 @@ CMString Shader::GetShaderTypeString(ShaderType a_Type) {
 			return "Vertex";
 		case ShaderType::SHADER_FRAGMENT:
 			return "Fragment";
+		case ShaderType::SHADER_COMPUTE:
+			return "Compute";
+		default:
+			CMASSERT_MSG(true, "Shader not defined");
+			return "Shader not defined";
 	}
 	return CMString();
 }

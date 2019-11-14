@@ -423,14 +423,15 @@ void ShaderSpirvData::AddDefine(SHADERDEFINES* a_Define) {
 
 
 void ShaderSpirvData::GetTypeFromFilePath() {
-	const CMArray<CMStringHash> hashs = { ".vert", ".frag","SHADERCOUNT", ".inc" };
+	//const CMArray<CMStringHash> hashs = { ".vert", ".frag", "SHADERCOUNT", ".inc" };
+	const CMArray<CMStringHash>* hashs = &_CShaderSpirvManager->m_FileTypes;
 
 	uchar* fileNameHash = m_FilePath.m_FileName.SubStrFindFromEnd('.').ToLower().HashAlloc();
 
 	m_ShaderType = ShaderType::SHADERCOUNT;
 
-	for (uint i = 0; i < hashs.Length(); i++) {
-		if (memcmp(hashs[i].m_ExtenstionHash, fileNameHash, HASH_LENGTH) == 0) {
+	for (uint i = 0; i < hashs->Length(); i++) {
+		if (memcmp((*hashs)[i].m_ExtenstionHash, fileNameHash, HASH_LENGTH) == 0) {
 			m_ShaderType = (ShaderType)i;
 			break;
 		}
@@ -443,11 +444,15 @@ void ShaderSpirvData::GetTypeFromFilePath() {
 
 unsigned int ShaderSpirvData::ShaderTypeToEShLanguage() {
 	switch (m_ShaderType) {
-		default:
 		case ShaderType::SHADER_VERTEX:
 			return EShLangVertex;
 		case ShaderType::SHADER_FRAGMENT:
 			return EShLangFragment;
+		case ShaderType::SHADER_COMPUTE:
+			return EShLangCompute;
+		default:
+			CMASSERT_MSG(true, "Shader not defined");
+			return EShLangCount;
 	}
 }
 

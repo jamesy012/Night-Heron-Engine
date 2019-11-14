@@ -29,7 +29,7 @@ void Model::LoadModel(CMString a_FileName) {
 	Assimp::Importer importer;
 	const struct aiScene* scene;
 
-	scene = importer.ReadFile(a_FileName.c_str(), aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	scene = importer.ReadFile(a_FileName.c_str(), aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace);
 
 	ProcessNode(scene->mRootNode, scene);
 
@@ -216,6 +216,18 @@ Mesh* Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 			vert.m_UV.y = mesh->mTextureCoords[0][i].y;
 		} else {
 			vert.m_UV = glm::vec2(0, 0);
+		}
+
+		if (mesh->HasTangentsAndBitangents()) {
+			vert.m_Tangent.x = mesh->mTangents[i].x;
+			vert.m_Tangent.y = mesh->mTangents[i].y;
+			vert.m_Tangent.z = mesh->mTangents[i].z;
+			vert.m_BiTangent.x = mesh->mBitangents[i].x;
+			vert.m_BiTangent.y = mesh->mBitangents[i].y;
+			vert.m_BiTangent.z = mesh->mBitangents[i].z;
+		} else {
+			vert.m_Tangent = glm::vec3(0, 1, 0);
+			vert.m_BiTangent = glm::vec3(0, 1, 0);
 		}
 
 		if (mesh->mColors[0]) {

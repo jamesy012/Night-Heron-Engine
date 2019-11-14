@@ -1,0 +1,7 @@
+{
+    "Object": {
+        "Debug Name": "Tree Model Mat 1",
+        "Shader": "Shaders/ForwardPlus/LightDebug.shader"
+    },
+    "Version": 1.0
+}

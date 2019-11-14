@@ -2,6 +2,8 @@ layout(location = 0) in vec4 position;
 layout(location = 1) in vec4 vertNormal;
 layout(location = 2) in vec2 texCoord;
 layout(location = 3) in vec4 vertColor;	
+layout(location = 4) in vec3 tangent;	
+layout(location = 5) in vec3 bitangent;	
 
 /*
 layout (std140, binding = 0) uniform Vertex_Data {

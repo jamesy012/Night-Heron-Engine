@@ -15,6 +15,8 @@ struct Vertex {
 	glm::vec4 m_Normal;
 	glm::vec2 m_UV;
 	glm::vec4 m_Color;
+	glm::vec3 m_Tangent;
+	glm::vec3 m_BiTangent;
 };
 
 typedef Vertex MeshVerticesType;

@@ -14,7 +14,10 @@ unsigned int getOpenglShaderType(ShaderType a_Type) {
 			return GL_VERTEX_SHADER;
 		case ShaderType::SHADER_FRAGMENT:
 			return GL_FRAGMENT_SHADER;
+		case ShaderType::SHADER_COMPUTE:
+			return GL_COMPUTE_SHADER;
 		default:
+			CMASSERT_MSG(true, "Shader not defined");
 			return 0;
 	}
 }

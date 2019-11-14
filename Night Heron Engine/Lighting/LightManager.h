@@ -5,7 +5,7 @@
 
 #include <glm\glm.hpp>
 
-
+/*
 struct PointLight {
 	glm::vec3 pos;
 	float ambientStrength;
@@ -92,6 +92,7 @@ CREATE_BUFFER_UNIFORM(LightsData,
 	DirectionalLight directionalLights[MAX_NUM_DIRECTIONALLIGHTS];
 	SpotLight spotLights[MAX_NUM_SPOTLIGHTS];
 )
+*/
 
 class LightManager {
 public:

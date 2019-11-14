@@ -171,6 +171,9 @@
     <ClCompile Include="Lighting\LightManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FlyCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\OpenGL\GFXOpenGL.h">
@@ -546,6 +549,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Lighting\PointLightObj.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

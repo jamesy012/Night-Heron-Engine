@@ -19,6 +19,8 @@ D3D11_INPUT_ELEMENT_DESC VertexLayout[] = {
 { "TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Normal), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 { "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(Vertex, m_UV), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 { "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+{ "TEXCOORD", 4, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(Vertex, m_Tangent), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+{ "TEXCOORD", 5, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(Vertex, m_BiTangent), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 UINT numVertexLayoutElements = ARRAYSIZE(VertexLayout);
 
@@ -131,6 +133,9 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 				CMLOG("PIXEL Test SHADER ERROR CreatePixelShader\n%s", (char*)(shaderError->GetBufferPointer()));
 				return;
 			}
+			return;
+		default:
+			CMASSERT_MSG(true, "Shader not defined");
 			return;
 	}
 }

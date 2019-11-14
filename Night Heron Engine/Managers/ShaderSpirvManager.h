@@ -24,6 +24,8 @@ public:
 
 	ShaderSpirvData* GetShaderPart(CMString a_FilePath);
 
+	const CMArray<CMStringHash> m_FileTypes = { ".vert", ".frag", ".comp","SHADERCOUNT", ".inc" };
+
 protected:
 	friend ShaderManager;
 
@@ -33,6 +35,4 @@ protected:
 private:
 	bool IsFileAOurType(CMString a_FilePath) override;
 	void AddFromPath_Internal(CMString a_FilePath) override;
-
-	const CMArray<CMStringHash> m_FileTypes = { ".vert", ".frag", ".inc" };
 };

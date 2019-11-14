@@ -101,7 +101,7 @@ public:
 		}
 
 		if (m_Array) {
-			delete m_Array;
+			delete[] m_Array;
 		}
 		m_Array = newArray;
 		m_Size--;

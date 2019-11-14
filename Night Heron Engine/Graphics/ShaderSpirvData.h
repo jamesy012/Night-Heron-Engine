@@ -22,6 +22,7 @@ extern CMArray<SHADERDEFINES> ShaderDefines;
 enum ShaderType {
 	SHADER_VERTEX,
 	SHADER_FRAGMENT,
+	SHADER_COMPUTE,
 	SHADERCOUNT,
 	SHADER_INCLUDE,
 };
@@ -46,7 +47,7 @@ public:
 
 	ShaderLoadRes LoadFromFile(CMString a_FilePath);
 	ShaderLoadRes Reload();
-	ShaderType m_ShaderType;
+	ShaderType m_ShaderType = ShaderType::SHADERCOUNT;
 
 	void AddShader(Shader* a_Shader);
 	void RemoveShader(Shader* a_Shader);
