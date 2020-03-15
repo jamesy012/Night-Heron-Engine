@@ -3,7 +3,13 @@
 #include <Windows.h>
 #include <wincrypt.h>
 
+#include <algorithm>
+
 #include "Util.h"
+
+void CMString::Replace(char find, char replace) {
+	std::replace(begin(), end(), find, replace);
+}
 
 CMString CMString::ToLower() {
 	CMString newString;
@@ -15,6 +21,10 @@ CMString CMString::ToLower() {
 		newString += letter;
 	}
 	return newString;
+}
+
+bool CMString::StartsWith(CMString a_String) const {
+	return compare(0, a_String.Length(), a_String.Get()) == 0;
 }
 
 void CMString::Hash(uchar* a_Output) const {

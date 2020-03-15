@@ -6,6 +6,7 @@
 #include "Generated/Objects_Night_Heron_Engine.h"
 
 class Camera : public Transform {
+	ADD_OBJ(Camera);
 public:
 	Camera();
 
@@ -17,6 +18,12 @@ public:
 	void SetFov(float a_NewFov);
 	void SetNearClip(float a_NearClip);
 	void SetFarClip(float a_FarClip);
+
+	float GetFov() const;
+
+	// Inherited via Jsonable
+	virtual bool LoadData_Internal(nlohmann::json& a_Json) override;
+	virtual void SaveData_Internal(nlohmann::json& a_Json) override;
 private:
 	void UpdateModelMatrix() override;
 
@@ -31,8 +38,8 @@ private:
 };
 
 
-ADD_OBJ(CameraBaseObject)
 class CameraBaseObject : public Object {
+ADD_OBJ(CameraBaseObject)
 public:
 	Camera* m_Camera;
 };

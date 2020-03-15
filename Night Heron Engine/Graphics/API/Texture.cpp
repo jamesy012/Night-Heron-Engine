@@ -2,21 +2,25 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb-master/stb_image.h>
+#include "Debug.h"
 
-void Texture::LoadTexture(CMString a_Path) {
+bool Texture::LoadTexture(CMString a_Path) {
 	m_Path = a_Path;
 
 	int imageFormat = 0;
 
 	//m_TextureData = stbi_load(a_Path.c_str(), &m_Width, &m_Height, &m_ImageFormat, STBI_default);
 	m_TextureData = stbi_load(a_Path.Get(), &m_Width, &m_Height, &imageFormat, STBI_rgb_alpha);
-	m_ImageFormat = STBiToSize(4);//seems to be loading it at RBG instead of RGBA
+	if (m_TextureData) {
+		m_ImageFormat = STBiToSize(4);//seems to be loading it at RBG instead of RGBA
 
-	createData();
+		createData();
 
-	SetDebugObjName_Internal();
+		SetDebugObjName_Internal();
 
-	stbi_image_free(m_TextureData);
+		stbi_image_free(m_TextureData);
+	}
+	return !!m_TextureData;
 }
 
 void Texture::CreateTexture(int a_Width, int a_Height) {

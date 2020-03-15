@@ -4,11 +4,14 @@
 #include <glm/gtc/quaternion.hpp>
 
 #include "Interfaces/Jsonable.h"
+#include "Generated/Objects_Night_Heron_Engine.h"
+
 
 typedef glm::vec3 Vector3;
 typedef glm::mat4 Matrix;
 
 class Transform : public Jsonable {
+ADD_OBJ_BASE(Transform)
 public:
 	Transform();
 	~Transform();

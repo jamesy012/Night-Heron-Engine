@@ -19,6 +19,8 @@ Object::~Object() {
 }
 
 void Object::ImGuiExtras() {
+	ImGui::Text("Model: %s", m_ObjectModel ? m_ObjectModel->GetDebugObjName().Get() : "No Model");
+
 	float scale = 0.25f;
 	if (ImGui::DragFloat3("Position", &m_Transform.m_Position.x, scale)) {
 		m_Transform.SetDirty();
@@ -34,7 +36,7 @@ void Object::ImGuiExtras() {
 
 bool Object::LoadData_Internal(nlohmann::json & a_Json) {
 	//nlohmann::json& json = (*a_Json);
-	//json["Type"] = "Object";	
+	//json["Type"] = "Object";
 	if (!m_Transform.LoadData_Internal(a_Json["Transform"])) {
 		return false;
 	}
@@ -55,8 +57,8 @@ void Object::SaveData_Internal(nlohmann::json & a_Json) {
 	a_Json["Type"] = GetObjectClassName();
 	m_Transform.SaveData_Internal(a_Json["Transform"]);
 	if (m_ObjectModel) {
-		if (m_ObjectModel->m_FilePath.Length() > 5) {
-			a_Json["Model"] = m_ObjectModel->m_FilePath;
+		if (m_ObjectModel->m_FilePath.m_FilePath.Length() > 5) {
+			a_Json["Model"] = m_ObjectModel->m_FilePath.m_FilePath;
 		}
 	}
 	a_Json["Name"] = m_Name;

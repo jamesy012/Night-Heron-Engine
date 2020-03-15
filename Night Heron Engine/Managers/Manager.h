@@ -31,20 +31,22 @@ public:
 	bool m_ShowTextures;
 	bool m_ShowShaders;
 
+	bool m_ShowingModal = false;
+
 	void AddModel(Model* a_Model);
 	Model* GetModel(CMString a_FileName);
 
 	//todo: remove this, get this another way
 	class ShaderUniformBlock* tempPVMUniform;
+
+	//saves to ini file
+	void UpdateIniFile();
 private:
 	void ImGuiObjects();
 	void ImGuiModels();
 	void ImGuiMaterials();
 
 	void InlineImGoiRenderTargetSettings();
-
-	//saves to ini file
-	void UpdateIniFile();
 
 	class RenderTarget* m_CommonRT;
 

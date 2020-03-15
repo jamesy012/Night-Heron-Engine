@@ -9,12 +9,17 @@
 #include "Types/CMArray.h"
 
 #include "GFXObj.h"
+#include "GFXConstants.h"
+
+class Texture;
 
 struct Vertex {
 	glm::vec4 m_Pos;
 	glm::vec4 m_Normal;
 	glm::vec2 m_UV;
 	glm::vec4 m_Color;
+	glm::vec3 m_Tangent;
+	glm::vec3 m_BiTangent;
 };
 
 typedef Vertex MeshVerticesType;
@@ -25,6 +30,8 @@ public:
 
 	CMArray<MeshVerticesType> m_Vertices;
 	CMArray<MeshIndicesType> m_Indices;
+
+	Texture* m_Textures[MAX_TEXTURE_NUM]{0};
 
 	virtual void Bind() = 0;
 

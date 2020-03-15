@@ -9,6 +9,7 @@
 
 #include "ImGui/imgui.h"
 #include "nlohmann/json.hpp"
+#include "jsonConverter/JCglm.h"
 
 //for uniforms
 #include "Managers/ShaderManager.h"
@@ -55,9 +56,7 @@ bool ObjectDrawTest::LoadData_Internal(nlohmann::json & a_Json) {
 	}
 
 	if (a_Json.contains("UColor")) {
-		m_Color.x = a_Json["UColor"]["x"].get<float>();
-		m_Color.y = a_Json["UColor"]["y"].get<float>();
-		m_Color.z = a_Json["UColor"]["z"].get<float>();
+		m_Color = a_Json["UColor"].get<glm::vec3>();
 	}
 
 	return true;
@@ -65,7 +64,5 @@ bool ObjectDrawTest::LoadData_Internal(nlohmann::json & a_Json) {
 
 void ObjectDrawTest::SaveData_Internal(nlohmann::json & a_Json) {
 	Object::SaveData_Internal(a_Json);
-	a_Json["UColor"]["x"] = m_Color.x;
-	a_Json["UColor"]["y"] = m_Color.y;
-	a_Json["UColor"]["z"] = m_Color.z;
+	a_Json["UColor"] = m_Color;
 }

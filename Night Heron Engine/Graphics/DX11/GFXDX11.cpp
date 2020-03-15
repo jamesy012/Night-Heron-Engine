@@ -207,6 +207,26 @@ void GFXDX11::UnbindTexture(uint a_Slot) {
 	m_TextureSlots[a_Slot] = nullptr;
 }
 
+
+void GFXDX11::BindTextures(Texture* a_Tex[MAX_TEXTURE_NUM]) {
+	//possible optimization? set the samplers and resources for all of them at the end
+	for (int i = 0; i < MAX_TEXTURE_NUM; i++) {
+		if (m_TextureSlots[i] == a_Tex[i]) {
+			continue;
+		}
+		ID3D11ShaderResourceView* textureSRV = nullptr;
+		ID3D11SamplerState* samplerRef = nullptr;
+		if (a_Tex[i]) {
+			const TextureDX11* dxTex = (TextureDX11*)a_Tex[i];
+			ID3D11ShaderResourceView* textureSRV = dxTex->GetTextureSRV();
+			ID3D11SamplerState* samplerRef = dxTex->GetSamplerRef();
+		}
+		GFXDX11::GetCurrentContex()->m_DevCon->PSSetSamplers(i, 1, &samplerRef);
+		GFXDX11::GetCurrentContex()->m_DevCon->PSSetShaderResources(i, 1, &textureSRV);
+	}
+	memcpy(m_TextureSlots, a_Tex, MAX_TEXTURE_NUM);
+}
+
 void GFXDX11::PushDebugGroup(CMString a_Name) {
 	std::wstring stemp = std::wstring(a_Name.begin(), a_Name.end());
 	if (m_PerfDebug) {

@@ -49,6 +49,8 @@ public:
 		return Length() == 0;
 	}
 
+	void Replace(char find, char replace);
+
 	CMString ToLower();
 
 	void Hash(uchar* a_Output) const;
@@ -60,13 +62,15 @@ public:
 		return find_last_of(a_Character);
 	}
 
-	uint FindFromStart(char a_Character) const {
-		return find_first_of(a_Character);
+	uint FindFromStart(char a_Character, unsigned int offset = 0) const {
+		return find_first_of(a_Character, offset);
 	}
 
 	bool Contains(CMString a_String) const {
 		return find(a_String) != std::string::npos;
 	}
+
+	bool StartsWith(CMString a_String) const;
 
 	CMString SubStr(uint a_From, uint a_NumCharacters) const {
 		return substr(a_From, a_NumCharacters);

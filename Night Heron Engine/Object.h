@@ -9,8 +9,8 @@
 
 class Model;
 
-ADD_OBJ(Object)
 class Object : public Jsonable {
+ADD_OBJ_BASE(Object)
 public:
 	Object();
 	Object(CMString a_Name);
@@ -37,8 +37,8 @@ public:
 };
 
 
-ADD_OBJ(SinObject)
 class SinObject : public Object {
+ADD_OBJ(SinObject)
 public:
 	virtual void Update() override;
 };

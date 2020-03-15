@@ -8,6 +8,7 @@
 
 //for Uniforms
 #include <glm/glm.hpp>
+#include "Interfaces/Jsonable.h"
 
 class ShaderSpirvData;
 class Shader;
@@ -23,6 +24,25 @@ public: \
 x \
 };\
 static_assert(sizeof(name) % 16 == 0,"Buffer size must be multiple of 16 '" #name "'");
+
+struct BufferUniformJsonBase : public Jsonable {
+};
+
+
+
+#define CREATE_BUFFER_UNIFORM_WITH_JSON(name,x) \
+struct name;\
+void to_json(nlohmann::json& j, const name& p);\
+void from_json(const nlohmann::json& j, name& p);\
+struct name : public BufferUniformJsonBase { \
+public: \
+x \
+virtual bool LoadData_Internal(nlohmann::json& a_Json) { memcpy(this, &a_Json.get<name>(), sizeof(name)); return true; }; \
+virtual void SaveData_Internal(nlohmann::json& a_Json) { a_Json = (*this); }; \
+};\
+//static_assert(sizeof(name) % 16 == 0,"Buffer size must be multiple of 16 '" #name "'");\
+
+
 
 CREATE_BUFFER_UNIFORM(ObjectUniformStruct,
 					  glm::mat4 ModelMatrix = glm::mat4();

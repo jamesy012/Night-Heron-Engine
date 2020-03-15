@@ -7,6 +7,8 @@
 
 class Window;
 
+extern class InputHandler* _CInput;
+
 class InputHandler {
 public:
 	InputHandler();

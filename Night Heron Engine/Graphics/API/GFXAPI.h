@@ -3,10 +3,9 @@
 #include "SimpleMath.h"
 #include "Types/CMString.h"
 #include "FwdDec.h"
+#include "GFXConstants.h"
 
 class Window;
-
-#define NUM_OF_TEXTURE_SLOTS 32
 
 enum GraphicsAPITypes {
 	OPENGL4,
@@ -52,6 +51,7 @@ public:
 
 	virtual void BindTexture(Texture* a_Tex, uint a_Slot) = 0;
 	virtual void UnbindTexture(uint a_Slot) = 0;
+	virtual void BindTextures(Texture* a_Tex[MAX_TEXTURE_NUM]) = 0;
 
 	virtual void UseRenderTarget(RenderTarget* a_Rt, SimpleBox a_ViewPort);
 	virtual void UseRenderTarget(RenderTarget* a_Rt);
@@ -84,7 +84,7 @@ protected:
 	int m_FpsLimit = 60;
 
 	//reference to hold which textures are in each slot
-	Texture* m_TextureSlots[NUM_OF_TEXTURE_SLOTS] = { nullptr };
+	Texture* m_TextureSlots[MAX_TEXTURE_NUM] = { nullptr };
 };
 
 extern class GFX* _CGraphics;

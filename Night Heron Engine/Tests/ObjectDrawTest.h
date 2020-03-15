@@ -4,8 +4,8 @@
 
 class ShaderUniformBlock;
 
-ADD_OBJ(ObjectDrawTest)
 class ObjectDrawTest : public Object {
+ADD_OBJ(ObjectDrawTest)
 public:
 	ObjectDrawTest() {};
 	ObjectDrawTest(CMString a_String) : Object(a_String) {};

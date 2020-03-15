@@ -160,6 +160,21 @@ void GFXOpenGL::UnbindTexture(uint a_Slot) {
 	m_TextureSlots[a_Slot] = nullptr;
 }
 
+void GFXOpenGL::BindTextures(Texture* a_Tex[MAX_TEXTURE_NUM]) {
+	for (int i = 0; i < MAX_TEXTURE_NUM; i++) {
+		if (m_TextureSlots[i] == a_Tex[i]) {
+			continue;
+		}
+		glActiveTexture(GL_TEXTURE0 + i);
+		if (a_Tex[i]) {
+			glBindTexture(GL_TEXTURE_2D, (GLuint)a_Tex[i]->getTexturePtr());
+		} else {
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+	}
+	memcpy(m_TextureSlots, a_Tex, MAX_TEXTURE_NUM);
+}
+
 void GFXOpenGL::PushDebugGroup(CMString a_Name) {
 	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 2910, a_Name.size(), a_Name.c_str());
 }

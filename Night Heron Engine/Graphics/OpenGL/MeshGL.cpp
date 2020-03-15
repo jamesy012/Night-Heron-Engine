@@ -40,7 +40,7 @@ void MeshGL::Bind() {
 	//normal
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(MeshVerticesType), (GLvoid*)offsetof(Vertex, m_Normal));
-	
+
 	//texture coord
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(MeshVerticesType), (GLvoid*)offsetof(Vertex, m_UV));
@@ -48,6 +48,14 @@ void MeshGL::Bind() {
 	//Vertex Colors
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(MeshVerticesType), (GLvoid*)offsetof(Vertex, m_Color));
+
+	//tangent
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVerticesType), (GLvoid*)offsetof(Vertex, m_Tangent));
+
+	//biTangent
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVerticesType), (GLvoid*)offsetof(Vertex, m_BiTangent));
 
 	glBindVertexArray(0);
 

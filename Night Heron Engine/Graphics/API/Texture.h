@@ -16,7 +16,7 @@ enum TextureSizes {
 class Texture : public GFXObj {
 	friend GFX;
 public:
-	void LoadTexture(CMString a_Path);
+	bool LoadTexture(CMString a_Path);
 	void CreateTexture(int a_Width, int a_Height);
 
 	virtual void* getTexturePtr() = 0;

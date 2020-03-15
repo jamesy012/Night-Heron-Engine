@@ -14,6 +14,11 @@
 
 #include "Graphics/Material.h"
 
+#include "Debug.h"
+#include "Managers/TextureManager.h"
+#include "API/Texture.h"
+#include "Graphics/API/GFXConstants.h"
+
 Model::Model() {
 	_CManager->m_Models.Add(this);
 }
@@ -26,17 +31,22 @@ Model::~Model() {
 }
 
 void Model::LoadModel(CMString a_FileName) {
+	CMLOG("Loading %s Model\n", a_FileName.Get());
+	CMLOG_SCOPED_INDENT();
+	m_FilePath = a_FileName;
+
 	Assimp::Importer importer;
 	const struct aiScene* scene;
 
-	scene = importer.ReadFile(a_FileName.c_str(), aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	scene = importer.ReadFile(a_FileName.c_str(), aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace);
 
-	ProcessNode(scene->mRootNode, scene);
+	CMASSERT(!scene);
+	if (scene) {
+		ProcessNode(scene->mRootNode, scene);
 
-	uint index = a_FileName.FindFromEnd('/') + 1;
-	SetDebugObjName(a_FileName.SubStr(index, a_FileName.Size() - index));
-
-	m_FilePath = a_FileName;
+		uint index = a_FileName.FindFromEnd('/') + 1;
+		SetDebugObjName(a_FileName.SubStr(index, a_FileName.Size() - index));
+	}
 }
 
 void Model::CreateSquare() {
@@ -147,6 +157,10 @@ void Model::Draw() {
 		if (m_Meshs[i].m_Material) {
 			m_Meshs[i].m_Material->Use();
 		}
+
+		_CGraphics->BindTextures(m_Meshs[i].m_Mesh->m_Textures);
+
+
 		m_Meshs[i].m_Mesh->Draw();
 	}
 }
@@ -167,6 +181,8 @@ void Model::ProcessNode(aiNode * node, const aiScene * scene) {
 	for (uint i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* assimpMesh = scene->mMeshes[node->mMeshes[i]];
 
+		CMLOG("Loading Mesh %s %i/%i\n", assimpMesh->mName.C_Str(), node->mMeshes[i],scene->mNumMeshes);
+
 		Mesh* mesh = ProcessMesh(assimpMesh, scene);
 
 		CMString objName = assimpMesh->mName.C_Str();
@@ -179,6 +195,9 @@ void Model::ProcessNode(aiNode * node, const aiScene * scene) {
 }
 
 Mesh* Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
+	CMLOG_SCOPED_INDENT();
+
+	Mesh* newMesh = _CGraphics->CreateMesh();
 
 	CMArray<MeshVerticesType> verties;
 	CMArray<MeshIndicesType> indices;
@@ -188,6 +207,41 @@ Mesh* Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 
 	if (mesh->mMaterialIndex >= 0) {
 		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+
+		//textures
+		{
+			const unsigned int TextureNum = 4;
+			const aiTextureType assimpTypes[TextureNum] = { aiTextureType_DIFFUSE, aiTextureType_NORMALS, aiTextureType_HEIGHT, aiTextureType_SPECULAR };
+			const unsigned char textureSlot[TextureNum] = { 0, 1, 2,3 };
+			const CMString textureNames[TextureNum] = { "Diffuse", "Normals", "Bump","Specular" };
+			for (int q = 0; q < TextureNum; q++) {
+				for (int i = 0; i < mat->GetTextureCount(assimpTypes[q]); i++) {
+					aiString diffuse;
+					mat->GetTexture(assimpTypes[q], i, &diffuse);
+					CMLOG("%s %s\n", textureNames[q].Get(), diffuse.C_Str());
+					CMString texturePath = m_FilePath.m_FileLocation + diffuse.C_Str();
+					texturePath.Replace('\\', '/');
+					Texture* testTexture = _CTextureManager->GetTexture(texturePath);
+					if (testTexture == nullptr) {
+						testTexture = _CGraphics->CreateTexture();
+						if (!testTexture->LoadTexture(texturePath)) {
+							CMString path2 = diffuse.C_Str();
+							const CMString removePath = "..\\";
+							while (path2.StartsWith(removePath)) {
+								path2 = path2.SubStr(removePath.Length(), -1);
+							}
+							texturePath = m_FilePath.m_FileLocation + path2;
+							texturePath.Replace('\\', '/');
+							const bool textureFound = testTexture->LoadTexture(texturePath);
+							CMASSERT(!textureFound);
+						}
+						testTexture->SetDebugObjName(diffuse.C_Str());
+					}
+					newMesh->m_Textures[textureSlot[q]] = testTexture;
+				}
+			}
+		}
+
 		aiColor4D col;
 		mat->Get(AI_MATKEY_COLOR_DIFFUSE, col);
 		matColor.x = col.r;
@@ -231,6 +285,16 @@ Mesh* Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 			}
 		}
 
+		if (mesh->HasTangentsAndBitangents()) {
+			vert.m_Tangent.x = mesh->mTangents[i].x;
+			vert.m_Tangent.y = mesh->mTangents[i].y;
+			vert.m_Tangent.z = mesh->mTangents[i].z;
+
+			vert.m_BiTangent.x = mesh->mBitangents[i].x;
+			vert.m_BiTangent.y = mesh->mBitangents[i].y;
+			vert.m_BiTangent.z = mesh->mBitangents[i].z;
+		}
+
 		verties.Add(vert);
 	}
 
@@ -242,7 +306,6 @@ Mesh* Model::ProcessMesh(aiMesh * mesh, const aiScene * scene) {
 		}
 	}
 
-	Mesh* newMesh = _CGraphics->CreateMesh();
 	newMesh->m_Vertices = verties;
 	newMesh->m_Indices = indices;
 	newMesh->Bind();

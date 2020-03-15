@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types/CMString.h"
+#include "Types/CMFilePath.h"
 #include "Types/CMArray.h"
 #include "API/GFXObj.h"
 
@@ -35,7 +35,7 @@ public:
 		return &m_Meshs[a_Index];
 	}
 
-	CMString m_FilePath;
+	CMFilePath m_FilePath;
 private:
 	virtual void SetDebugObjName_Internal() override;
 

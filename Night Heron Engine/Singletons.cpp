@@ -7,6 +7,7 @@
 #include "Managers/Arguments.h"
 #include "Managers/TimeManager.h"
 #include "Managers/IniFile.h"
+#include "Input/InputHandler.h"
 
 extern Manager* _CManager = nullptr;
 extern GFX* _CGraphics = nullptr;
@@ -17,6 +18,7 @@ extern Window* _CMainWindow = nullptr;
 extern Arguments* _CArguments = nullptr;
 extern TimeManager* _CTimeManager = nullptr;
 extern IniFile* _CIniFileManager = nullptr;
+extern InputHandler* _CInput = nullptr;
 
 
 extern void SingletonManager::CreateSingletons() {
@@ -29,4 +31,6 @@ extern void SingletonManager::CreateSingletons() {
 	_CTextureManager->FindAllInFiles();
 
 	_CTimeManager = new TimeManager();
+
+	_CInput = new InputHandler();
 }

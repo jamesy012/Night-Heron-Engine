@@ -14,7 +14,7 @@
 #include "Graphics/Model.h"
 #include "Graphics/Material.h"
 #include "Util.h"
-#include "Camera.h"
+#include "FlyCamera.h"
 
 #include "Managers/ShaderManager.h"
 #include "Managers/ShaderSpirvManager.h"
@@ -23,13 +23,13 @@
 #include "Managers/Arguments.h"
 #include "Singletons.h"
 
-#include "Lighting/LightManager.h"
 #include "Managers/TimeManager.h"
 
 #include "Managers/IniFile.h"
 
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
+#include "jsonConverter/JCglm.h"
 
 #include <Dependency/ImGui/imgui.h>
 
@@ -49,6 +49,8 @@
 
 #include "Input/InputHandler.h"
 
+#include "nlohmann/json.hpp"
+
 CREATE_BUFFER_UNIFORM(TestUniformStruct2,
 	glm::vec4 Color;
 )
@@ -59,18 +61,21 @@ CREATE_BUFFER_UNIFORM(CommonDataStruct,
 	float pad;
 	)
 
-#define NUM_SHADOWS 4
-//size/res of an individual shadow map
-#define SHADOW_MAP_WIDTH 1024
-#define SHADOW_MAP_HEIGHT 1024
-//size/res of combined shadows
-#define SHADOW_MAP_COMBINED_WIDTH 4096
-#define SHADOW_MAP_COMBINED_HEIGHT 2048
-static_assert(SHADOW_MAP_COMBINED_WIDTH*SHADOW_MAP_COMBINED_HEIGHT > (SHADOW_MAP_WIDTH * SHADOW_MAP_HEIGHT) * NUM_SHADOWS, "Too many shadows to store in combined map");
+	CREATE_BUFFER_UNIFORM_WITH_JSON(LightDataStruct,
+						  glm::vec4 lightPos;
+						  glm::vec4 lightColor;
+						  )
 
-CREATE_BUFFER_UNIFORM(ShadowData,
-	glm::mat4 DirLightPV[NUM_SHADOWS];
-)
+
+	void to_json(nlohmann::json& j, const LightDataStruct& p) {
+		j = nlohmann::json{ { "Color", p.lightColor }, { "Pos", p.lightPos } };
+	}
+
+	void from_json(const nlohmann::json& j, LightDataStruct& p) {
+		j.at("Color").get_to(p.lightColor);
+		j.at("Pos").get_to(p.lightPos);
+	}
+
 
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance,
@@ -112,24 +117,27 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	}
 
 	//SHADER DEFINES SETUP
-	{
-		ShaderDefines.Add({ "NUM_POINTLIGHTS", MAX_NUM_POINTLIGHTS });
-		ShaderDefines.Add({ "NUM_SPOT_LIGHTS", MAX_NUM_SPOTLIGHTS });
-		ShaderDefines.Add({ "NUM_DIRECTIONAL_LIGHTS", MAX_NUM_DIRECTIONALLIGHTS });
-		ShaderDefines.Add({ "NUM_SHADOWS", NUM_SHADOWS });
-	}
+	//{
+	//	ShaderDefines.Add({ "NUM_POINTLIGHTS", MAX_NUM_POINTLIGHTS });
+	//	ShaderDefines.Add({ "NUM_SPOT_LIGHTS", MAX_NUM_SPOTLIGHTS });
+	//	ShaderDefines.Add({ "NUM_DIRECTIONAL_LIGHTS", MAX_NUM_DIRECTIONALLIGHTS });
+	//	ShaderDefines.Add({ "NUM_SHADOWS", NUM_SHADOWS });
+	//}
+
 
 	SingletonManager::CreateSingletons();
 
 	_CGraphics->SetUpGraphics();
 
+	_CInput->Startup(graphics->m_Window);
+
 	//TEXTURES
-	Texture* testTexture = _CTextureManager->GetTexture("peacock-2.jpg");
-	if (testTexture == nullptr) {
-		testTexture = graphics->CreateTexture();
-		testTexture->LoadTexture("peacock-2.jpg");
-		testTexture->SetDebugObjName("Test Texture");
-	}
+	//Texture* testTexture = _CTextureManager->GetTexture("peacock-2.jpg");
+	//if (testTexture == nullptr) {
+	//	testTexture = graphics->CreateTexture();
+	//	testTexture->LoadTexture("peacock-2.jpg");
+	//	testTexture->SetDebugObjName("Test Texture");
+	//}
 
 	//SHADERS
 	Shader* testShader = _CShaderManager->GetShader("Shaders/TestShader.shader");
@@ -148,44 +156,49 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 
-	Shader* treeShader = _CShaderManager->GetShader("Shaders/Tree.shader");
-	if (treeShader == nullptr) {
-		treeShader = graphics->CreateShader();
-		treeShader->m_FilePath = "Shaders/Tree.shader";
-		if (!treeShader->Load()) {
-			treeShader->SetDebugObjName("tree Shader");
-			treeShader->m_ShouldPrintCode = true;
-			treeShader->AddShader(_CShaderSpirvManager->GetShaderPart("test2.vert"));
-			treeShader->AddShader(_CShaderSpirvManager->GetShaderPart("test2.frag"));
-			treeShader->LinkShaders();
+	Shader* normalShader = _CShaderManager->GetShader("Simple Shader.shader");
 
+	Shader* SpecShader = _CShaderManager->GetShader("Shaders/SpecShader.shader");
+	if (SpecShader == nullptr) {
+		SpecShader = graphics->CreateShader();
+		SpecShader->m_FilePath = "Shaders/SpecShader.shader";
 
-			treeShader->Save();
+		if (!SpecShader->Load()) {
+			SpecShader->SetDebugObjName("Spec Shader");
+			SpecShader->m_ShouldPrintCode = true;
+			SpecShader->AddShader(_CShaderSpirvManager->GetShaderPart("Simple.vert"));
+			SpecShader->AddShader(_CShaderSpirvManager->GetShaderPart("SpecVisualizer.frag"));
+			SpecShader->LinkShaders();
+
+			SpecShader->Save();
+			_CShaderManager->AddShader(SpecShader);
+		}
+	}
+
+	Shader* BumpShader = _CShaderManager->GetShader("Shaders/BumpShader.shader");
+	if (BumpShader == nullptr) {
+		BumpShader = graphics->CreateShader();
+		BumpShader->m_FilePath = "Shaders/BumpShader.shader";
+
+		if (!BumpShader->Load()) {
+			BumpShader->SetDebugObjName("Bump Shader");
+			BumpShader->m_ShouldPrintCode = true;
+			BumpShader->AddShader(_CShaderSpirvManager->GetShaderPart("Simple.vert"));
+			BumpShader->AddShader(_CShaderSpirvManager->GetShaderPart("BumpVisualizer.frag"));
+			BumpShader->LinkShaders();
+
+			BumpShader->Save();
+			_CShaderManager->AddShader(BumpShader);
 		}
 	}
 
 	//MATERIALS
-	Material treeModelMat1("Material/TreeModelMat1.mat");
-	if (!treeModelMat1.Load()) {
-		treeModelMat1.SetDebugObjName("Tree Model Mat 1");
-		treeModelMat1.m_Shader = treeShader;
-		treeModelMat1.AddTexture(_CGraphics->m_WhiteTexture, 0);
-		treeModelMat1.Save();
-	}
-	Material treeModelMat2("Material/TreeModelMat2.mat");
-	if (!treeModelMat2.Load()) {
-		treeModelMat2.SetDebugObjName("Tree Model Mat 2");
-		treeModelMat2.m_Shader = testShader;
-		treeModelMat2.AddTexture(testTexture, 0);
-		treeModelMat2.Save();
-	}
-
-	Material SimpleMaterial("Material/SimpleMat.mat");
-	if (!SimpleMaterial.Load()) {
-		SimpleMaterial.SetDebugObjName("Simple");
-		SimpleMaterial.m_Shader = _CShaderManager->GetShader("Simple Shader.shader");
-		SimpleMaterial.Save();
-	}
+	//Material SimpleMaterial("Material/SimpleMat.mat");
+	//if (!SimpleMaterial.Load()) {
+	//	SimpleMaterial.SetDebugObjName("Simple");
+	//	SimpleMaterial.m_Shader = _CShaderManager->GetShader("Simple Shader.shader");
+	//	SimpleMaterial.Save();
+	//}
 
 	//Assimp::DefaultLogger::create();
 
@@ -200,54 +213,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	//testBistro.LoadModel("Models/Bistro v4 Update/Bistro_v4/Bistro_Interior.fbx");
 
 	Model testModel;
-	testModel.LoadModel("Models/Low Poly Forest Decoration Pack/Trees/FBX Files/Tree 1.2/Tree1.2.fbx");
+	Model groundModel;
+	Model pathModel;
+	//testModel.LoadModel("Models/sponza/sponza.obj");
+	//testModel.LoadModel("Models/sponzaDetailed/sponza.obj");
+	testModel.LoadModel("Models/syntystudios_Dont upload/SM_Env_Tree_01.fbx");
+	groundModel.LoadModel("Models/syntystudios_Dont upload/SM_Env_Path_Dirt_01.fbx");
+	pathModel.LoadModel("Models/syntystudios_Dont upload/SM_Env_Path_Tile_01.fbx");
 	//testModel.LoadModel("Models/nanosuit.obj");
 
-	testModel.SetMaterial(&treeModelMat1, 0);
-	testModel.SetMaterial(&SimpleMaterial, 1);
-	squareModel->SetMaterial(&treeModelMat2, 0);
-	planeModel->SetMaterial(&treeModelMat2, 0);
+	//testModel.SetMaterial(&SimpleMaterial, 0);
 
 	//UNIFORMS
-	LightsData lightsArray;
-	lightsArray.pointLights[0].color = glm::vec3(0);
-	lightsArray.pointLights[0].pos = glm::vec3(.5f, 3.25f, 3.25f);
-	lightsArray.pointLights[0].ambientStrength = 0.2f;
-	lightsArray.pointLights[0].specularStrength = 0.5f;
-	if (MAX_NUM_POINTLIGHTS >= 2) {
-		lightsArray.pointLights[1].color = glm::vec3(0);
-		lightsArray.pointLights[1].pos = glm::vec3(1, 1.25f, -10);
-		lightsArray.pointLights[1].ambientStrength = 0.0f;
-		lightsArray.pointLights[1].specularStrength = 0.5f;
-	}
-
-	const float shadowUVXRatio =  /*1.0f /*/ (float(SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH);
-	const float shadowUVYRatio = /*1.0f /*/ (float(SHADOW_MAP_HEIGHT) / SHADOW_MAP_COMBINED_HEIGHT);
-
-	lightsArray.directionalLights[0].color = glm::vec3(1,0.5f,0);
-	lightsArray.directionalLights[0].direction = glm::vec3(2.7f, 12.5f, 10.7f);
-	lightsArray.directionalLights[0].ambientStrength = 0.2f;
-	lightsArray.directionalLights[0].specularStrength = 0.5f;
-	lightsArray.directionalLights[1].color = glm::vec3(0,0.5f,1);
-	lightsArray.directionalLights[1].direction = glm::vec3(-2.7f, 12.5f, 10.7f);
-	lightsArray.directionalLights[1].ambientStrength = 0.2f;
-	lightsArray.directionalLights[1].specularStrength = 0.5f;
-	lightsArray.directionalLights[0].UVOffsets = glm::vec4(shadowUVXRatio *0, 0, shadowUVXRatio, shadowUVYRatio);
-	lightsArray.directionalLights[1].UVOffsets = glm::vec4(shadowUVXRatio *1, 0, shadowUVXRatio, shadowUVYRatio);
-
-
-
-	lightsArray.spotLights[0].color = glm::vec3(1);
-	lightsArray.spotLights[0].pos = glm::vec3(10.750f, 0.5f, -5.5f);
-	lightsArray.spotLights[0].direction = glm::vec3(-1.5f, -7.5f, -0.25f);
-	lightsArray.spotLights[0].cutOff = 0.45f;
-	lightsArray.spotLights[0].UVOffsets = glm::vec4(shadowUVXRatio*2, 0, shadowUVXRatio, shadowUVYRatio);
-
-
-	ShaderUniformBlock* pointLightsBlock = graphics->CreateBuffer(&lightsArray, sizeof(LightsData));
-	pointLightsBlock->SetDebugObjName("Color Array");
-	_CManager->RegisterShaderUniform(pointLightsBlock, "Lighting_Data");
-
 	CameraUniformStruct cameraUniformData;
 	ShaderUniformBlock* cameraUniformBlock = graphics->CreateBuffer(&cameraUniformData, sizeof(CameraUniformStruct));
 	cameraUniformBlock->SetDebugObjName("Camera Data");
@@ -264,33 +241,40 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	commonDataBlock->SetDebugObjName("Common Data Buffer");
 	_CManager->RegisterShaderUniform(commonDataBlock, "Common_Data");
 
+	LightDataStruct lightData;
+	{
+		nlohmann::json& j = _CIniFileManager->getIniData()["General"];
+		if (j.contains("LightData")) {
+			lightData.LoadData_Internal(j["LightData"]);
+		} else {
+
+			lightData.lightColor = glm::vec4(1);
+			lightData.lightPos = glm::vec4(0, 4, 5, 1);
+		}
+	}
+	ShaderUniformBlock* lightDataBlock = graphics->CreateBuffer(&lightData, sizeof(LightDataStruct));
+	lightDataBlock->SetDebugObjName("Light Data Buffer");
+	_CManager->RegisterShaderUniform(lightDataBlock, "Light_Data");
+
 	TestUniformStruct2 colorTest;
 	colorTest.Color = glm::vec4(1, 0, 1, 1);
 	ShaderUniformBlock* testUniform2 = graphics->CreateBuffer(&colorTest, sizeof(TestUniformStruct2));
 	testUniform2->SetDebugObjName("Color Test Buffer");
 	_CManager->RegisterShaderUniform(testUniform2, "Shader_Data");
 
-	ShadowData shadowData;
-	ShaderUniformBlock* shadowDataBlock = graphics->CreateBuffer(&shadowData, sizeof(ShadowData));
-	shadowDataBlock->SetDebugObjName("Shadow Data Buffer");
-	_CManager->RegisterShaderUniform(shadowDataBlock, "Shadow_Data");
-
-
 	//CAMERA
-	Camera mainCamera;
+	FlyCamera mainCamera;
 
 	//SCENE
 	Scene scene;
+	scene.m_FilePath = "Scenes/AssetTest.scene";
 	scene.m_Camera = &mainCamera;
+	scene.Load();
+
 
 	Scene shadowScene;
 
 	_CManager->m_CurrentScene = &scene;
-
-
-	//RENDER SETUP
-	InputHandler ih;
-	ih.Startup(graphics->m_Window);
 
 	//todo remove this
 	_CManager->tempPVMUniform = testUniform;
@@ -306,88 +290,60 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	mainCamera.SetFov(fov);
 	mainCamera.SetAspectRatio(graphics->m_Window->GetAspect());
 
-	//ObjectDrawTest* testObj = (ObjectDrawTest*)scene.GetObjectByName("Model/Uniform Object Test");
-	//if (testObj == nullptr) {
-	//	testObj = new ObjectDrawTest();
-	//	testObj->m_Name = "Model/Uniform Object Test";
-	//	testObj->m_Color = Vector3(1, 0, 1);
-	//	testObj->m_ObjectModel = planeModel;
-	//	testObj->m_ModelUniform = testUniform;
-	//	testObj->m_ColorUniform = testUniform2;
-	//	scene.AddObject(testObj);
-	//}
+	if (!_CArguments->IsArgument("DontUseIniCamera")) {
+		nlohmann::json& j = _CIniFileManager->getIniData()["General"];
+		if (j.contains("Camera")) {
+			mainCamera.LoadData_Internal(j["Camera"]);
+		}
+	}
 
-	ObjectDrawTest* lightVisuals[MAX_NUM_POINTLIGHTS + MAX_NUM_SPOTLIGHTS];
-	for (int i = 0; i < MAX_NUM_POINTLIGHTS; i++) {
-		ObjectDrawTest* lightVisual = new ObjectDrawTest();
-		lightVisual->m_Name = "Model/lightVisual Point " + CMString::IntToString(i);
-		lightVisual->m_Color = Vector3(1, 1, 1);
-		lightVisual->m_ObjectModel = squareModel;
-		lightVisual->m_ModelUniform = testUniform;
-		lightVisual->m_ColorUniform = testUniform2;
-		scene.AddObject(lightVisual);
-		lightVisual->m_Transform.SetPosition(lightsArray.pointLights[i].pos);
-		lightVisual->m_Transform.SetScale(glm::vec3(0.2f));
-		lightVisuals[i] = lightVisual;
-	}
-	for (int i = 0; i < MAX_NUM_SPOTLIGHTS; i++) {
-		ObjectDrawTest* lightVisual = new ObjectDrawTest();
-		lightVisual->m_Name = "Model/lightVisual Spot " + CMString::IntToString(i);
-		lightVisual->m_Color = Vector3(1, 1, 1);
-		lightVisual->m_ObjectModel = squareModel;
-		lightVisual->m_ModelUniform = testUniform;
-		lightVisual->m_ColorUniform = testUniform2;
-		scene.AddObject(lightVisual);
-		lightVisual->m_Transform.SetLookAt(lightsArray.spotLights[i].pos, lightsArray.spotLights[i].pos + lightsArray.spotLights[i].direction, glm::vec3(0, 1, 0));
-		lightVisual->m_Transform.SetScale(glm::vec3(0.1f,0.1f,0.4f));
-		lightVisuals[MAX_NUM_POINTLIGHTS + i] = lightVisual;
-	}
+	fov = mainCamera.GetFov();
 
 	//SCENE TEST
-	{
+	if(false){
 
 
-		ObjectDrawTest* groundPlane = new ObjectDrawTest();
-		groundPlane->m_Name = "Model/plane";
-		groundPlane->m_Color = Vector3(1, 1, 1);
-		groundPlane->m_ObjectModel = planeModel;
-		groundPlane->m_ModelUniform = testUniform;
-		groundPlane->m_ColorUniform = testUniform2;
-		groundPlane->m_Transform.SetScale(Vector3(100));
-		groundPlane->m_Transform.SetPosition(glm::vec3(0,-5,0));
-		scene.AddObject(groundPlane);
-		//shadowScene.AddObject(groundPlane);
-
-		glm::vec3 positions[] = { glm::vec3(3.7f,-1.5f,-5) , glm::vec3(1,3.25f,0) , glm::vec3(-2.5f,7,0.75f) , glm::vec3(-1,-4.5f,-7.250) };
-		for (int i = 0; i < 4; i++) {
-			ObjectDrawTest* box = new ObjectDrawTest();
-			box->m_Name = "Model/box " + CMString::IntToString(i);
-			box->m_Color = Vector3(1, 1, 1);
-			box->m_ObjectModel = squareModel;
-			box->m_ModelUniform = testUniform;
-			box->m_ColorUniform = testUniform2;
-			box->m_Transform.SetPosition(positions[i]);
-			scene.AddObject(box);
-			shadowScene.AddObject(box);
+		ObjectDrawTest* tree = (ObjectDrawTest*)scene.GetObjectByName("tree");
+		if (tree == nullptr) {
+			tree = new ObjectDrawTest();
+			tree->m_Name = "tree";
+			tree->m_Color = Vector3(1, 1, 1);
+			tree->m_ObjectModel = &testModel;
+			tree->m_ModelUniform = testUniform;
+			tree->m_ColorUniform = testUniform2;
+			tree->m_Transform.SetScale(Vector3(0.05f));
+			tree->m_Transform.SetPosition(glm::vec3(0, -5, 0));
+			scene.AddObject(tree);
 		}
 
+		ObjectDrawTest* groundPlane = (ObjectDrawTest*)scene.GetObjectByName("ground");
+		if (groundPlane == nullptr) {
+			groundPlane = new ObjectDrawTest();
+			groundPlane->m_Name = "ground";
+			groundPlane->m_Color = Vector3(1, 1, 1);
+			groundPlane->m_ObjectModel = &groundModel;
+			groundPlane->m_ModelUniform = testUniform;
+			groundPlane->m_ColorUniform = testUniform2;
+			groundPlane->m_Transform.SetScale(Vector3(0.1f));
+			groundPlane->m_Transform.SetPosition(glm::vec3(-15, -5, 15));
+			scene.AddObject(groundPlane);
+		}
+
+		ObjectDrawTest* pathObj = (ObjectDrawTest*)scene.GetObjectByName("pathObj");
+		if (pathObj == nullptr) {
+			pathObj = new ObjectDrawTest();
+			pathObj->m_Name = "pathObj";
+			pathObj->m_Color = Vector3(1, 1, 1);
+			pathObj->m_ObjectModel = &pathModel;
+			pathObj->m_ModelUniform = testUniform;
+			pathObj->m_ColorUniform = testUniform2;
+			pathObj->m_Transform.SetScale(Vector3(0.1f));
+			pathObj->m_Transform.SetPosition(glm::vec3(-15, -5, -15));
+			scene.AddObject(pathObj);
+		}
 
 	}
 
-	RenderTarget* shadowSmaller = _CGraphics->CreateRenderTarget(SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT);
-	shadowSmaller->AddBuffer(RenderTargetBufferTypes::TEXTURE, RenderTargetBufferFormats::DEPTH, RenderTargetBufferSize::Size16);
-	shadowSmaller->SetDebugObjName("shadowSmaller");
-	shadowSmaller->Bind();
-	RenderTarget* shadowRT = _CGraphics->CreateRenderTarget(SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_COMBINED_HEIGHT);
-	shadowRT->AddBuffer(RenderTargetBufferTypes::TEXTURE, RenderTargetBufferFormats::DEPTH, RenderTargetBufferSize::Size16);
-	shadowRT->SetDebugObjName("shadowRT");
-	shadowRT->Bind();
-	if (shadowRT->GetTexture()) {
-		treeModelMat2.AddTexture(shadowRT->GetTexture(), 1);
-	}
-
-
-	treeShader->FindUnlinkedUniforms();
 	testShader->FindUnlinkedUniforms();
 
 	//Simple Shader.shader
@@ -397,14 +353,22 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			shader->FindUnlinkedUniforms();
 		}
 	}
+	SpecShader->FindUnlinkedUniforms();
+	BumpShader->FindUnlinkedUniforms();
 
 	scene.Start();
 
 	{
 		CMLOG_SCOPED_NAME("START");
-		CMLOG_SCOPED_INDENT;
-		CMLOG_SCOPED_INDENT;
+		CMLOG_SCOPED_INDENT();
+		CMLOG_SCOPED_INDENT();
 		CMLOG("\n\nProgram starting!\n\n");
+	}
+
+	glm::vec4 ClearColour = glm::vec4(glm::vec3(0.1f),1.0f);
+	nlohmann::json& j = _CIniFileManager->getIniData()["General"];
+	if (j.contains("ClearColour")) {
+		ClearColour = j["ClearColour"].get<glm::vec4>();
 	}
 
 	while (true) {
@@ -422,7 +386,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			_CTimeManager->m_CurrentTime = currentTime;
 			_CTimeManager->m_DeltaTime = deltaTime;
 
-			ih.Update();
+			if (!_CManager->m_ShowingModal) {
+			_CInput->Update();
+			}
 
 			graphics->ImGuiNewFrame();
 
@@ -442,133 +408,32 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 				ImGui::ShowDemoWindow(&DemoWindow);
 			}
 
-			static bool RotateCamera = false;
-			static bool CameraLookAt = true;
-			static glm::vec3 CameraPos = glm::vec3(0, 0, 5);
-
 			ImGui::Begin("Stats");
 			ImGui::Text("Current Time: %f", currentTime);
 			ImGui::Text("Delta Time: %f", deltaTime);
 			ImGui::Text("fps: %f", ImGui::GetIO().Framerate);
-			ImGui::Text("Mouse Pos: (x=%f, y=%f)", ih.GetMousePos().x, ih.GetMousePos().y);
-			ImGui::Text("Keys: %s", ih.GetKeysDown().Get());
+			ImGui::Text("Mouse Pos: (x=%f, y=%f)", _CInput->GetMousePos().x, _CInput->GetMousePos().y);
+			ImGui::Text("Keys: %s", _CInput->GetKeysDown().Get());
 			if (ImGui::DragFloat("FOV", &fov, 1, 0, 180)) {
 				mainCamera.SetFov(fov);
 			}
-			ImGui::Checkbox("Rotate Camera", &RotateCamera);
-			ImGui::Checkbox("Look at Center?", &CameraLookAt);
-			ImGui::DragFloat3("Camera Pos", &CameraPos.x, 0.25f);
+			ImGui::DragFloat("Camera Speed", &mainCamera.MovementSpeed, 0.1f);
 
-			static float cameraSpeed = 5.0f;
-			ImGui::DragFloat("Camera Speed", &cameraSpeed, 0.1f);
-
-			if (shadowRT && shadowRT->GetTexture()) {
-				ImGui::Image(shadowRT->GetTexture()->getTexturePtr(), ImVec2(200, 150), SimpleVec2(0, 0), SimpleVec2(1, 1));
-			}
-			if (shadowSmaller && shadowSmaller->GetTexture()) {
-				ImGui::Image(shadowSmaller->GetTexture()->getTexturePtr(), ImVec2(200, 200), _CGraphics->GetImGuiImageUV0(), _CGraphics->GetImGuiImageUV1());
-			}
-
-			ImGui::End();
-
-			ImGui::Begin("Lights");
 			{
-				for (int i = 0; i < MAX_NUM_POINTLIGHTS; i++) {
-
-					ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf;
-					if (ImGui::TreeNode(CMString(CMString("PointLight: ") + CMString::IntToString(i)).Get())) {
-						bool updateUniform = false;
-						PointLight& light = lightsArray.pointLights[i];
-						updateUniform |= ImGui::DragFloat3("Pos", &light.pos.x, 0.25f);
-						updateUniform |= ImGui::DragFloat3("Color", &light.color.x, 0.05f, 0, 1);
-						updateUniform |= ImGui::DragFloat("Ambient Power", &light.ambientStrength, 0.05f);
-						updateUniform |= ImGui::DragFloat("Spec Power", &light.specularStrength, 0.05f);
-						updateUniform |= ImGui::DragFloat("constant", &light.constant, 0.05f);
-						updateUniform |= ImGui::DragFloat("linear", &light.linear, 0.05f);
-						updateUniform |= ImGui::DragFloat("quadratic", &light.quadratic, 0.05f);
-						updateUniform |= ImGui::DragFloat("shininess", &light.shininess, 0.5f);
-
-						if (updateUniform) {
-							pointLightsBlock->UpdateBuffer(&lightsArray);
-							lightVisuals[i]->m_Transform.SetPosition(light.pos);
-						}
-						ImGui::TreePop();
-					}
-				}
-				for (int i = 0; i < MAX_NUM_DIRECTIONALLIGHTS; i++) {
-
-					ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf;
-					if (ImGui::TreeNode(CMString(CMString("Directional: ") + CMString::IntToString(i)).Get())) {
-						bool updateUniform = false;
-						DirectionalLight& light = lightsArray.directionalLights[i];
-						updateUniform |= ImGui::DragFloat3("Direction", &light.direction.x, 0.25f);
-						updateUniform |= ImGui::DragFloat3("Color", &light.color.x, 0.05f, 0, 1);
-						updateUniform |= ImGui::DragFloat("Ambient Power", &light.ambientStrength, 0.05f);
-						updateUniform |= ImGui::DragFloat("Spec Power", &light.specularStrength, 0.05f);
-
-						if (updateUniform) {
-							pointLightsBlock->UpdateBuffer(&lightsArray);
-							//lightVisuals[i]->m_Transform.SetPosition(light->pos);
-						}
-						ImGui::TreePop();
-					}
-				}
-				for (int i = 0; i < MAX_NUM_SPOTLIGHTS; i++) {
-
-					ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf;
-					if (ImGui::TreeNode(CMString(CMString("Spotlight: ") + CMString::IntToString(i)).Get())) {
-						bool updateUniform = false;
-						SpotLight& light = lightsArray.spotLights[i];
-						updateUniform |= ImGui::DragFloat3("Pos", &light.pos.x, 0.25f);
-						updateUniform |= ImGui::DragFloat3("direction", &light.direction.x, 0.25f);
-						updateUniform |= ImGui::DragFloat3("Color", &light.color.x, 0.05f, 0, 1);
-						updateUniform |= ImGui::DragFloat("cutOff", &light.cutOff, 0.05f);
-						updateUniform |= ImGui::DragFloat("Spec Power", &light.specularStrength, 0.05f);
-						updateUniform |= ImGui::DragFloat("constant", &light.constant, 0.05f);
-						updateUniform |= ImGui::DragFloat("linear", &light.linear, 0.05f);
-						updateUniform |= ImGui::DragFloat("quadratic", &light.quadratic, 0.05f);
-						updateUniform |= ImGui::DragFloat("shininess", &light.shininess, 0.5f);
-
-						if (updateUniform) {
-							pointLightsBlock->UpdateBuffer(&lightsArray);
-							lightVisuals[MAX_NUM_POINTLIGHTS + i]->m_Transform.SetLookAt(light.pos, light.pos + light.direction, glm::vec3(0, 1, 0));
-							//lightVisuals[MAX_NUM_POINTLIGHTS + i]->m_Transform.SetPosition(light.pos);
-							//lightVisuals[MAX_NUM_POINTLIGHTS + i]->m_Transform.SetRotation(light.direction);
-						}
-						ImGui::TreePop();
-					}
+				bool lightingChange = false;
+				lightingChange |= ImGui::DragFloat3("Light Pos", &lightData.lightPos.x, 0.1f);
+				lightingChange |= ImGui::ColorEdit4("Light Color", &lightData.lightColor.x, 0.1f);
+				if (lightingChange) {
+					lightDataBlock->UpdateBuffer(&lightData);
 				}
 			}
+			ImGui::ColorEdit4("Clear Color", &ClearColour.x, 0.1f);
+
+			static int ShaderVisualizer = 0;
+			ImGui::Combo("Visualize", &ShaderVisualizer, "Normal\0Spec\0Bump\0");
 			ImGui::End();
 
-			//glm::vec3(glm::translate(getLocalMatrix(), a_Translation)[3]);
-			if (ih.IsKeyDown(IKEY_W)) {
-				const glm::mat4 inverted = glm::inverse(mainCamera.GetModelMatrix());
-				const glm::vec3 forward = normalize(glm::vec3(inverted[2])) * glm::vec3(1, 1, -1);
-				CameraPos += forward * cameraSpeed * deltaTime;
-			}
-			if (ih.IsKeyDown(IKEY_S)) {
-				const glm::mat4 inverted = glm::inverse(mainCamera.GetModelMatrix());
-				const glm::vec3 forward = normalize(glm::vec3(inverted[2])) * glm::vec3(1, 1, -1);
-				CameraPos -= forward * cameraSpeed * deltaTime;
-			}
-			if (ih.IsKeyDown(IKEY_Q)) {
-				CameraPos.y -= cameraSpeed * deltaTime;
-			}
-			if (ih.IsKeyDown(IKEY_E)) {
-				CameraPos.y += cameraSpeed * deltaTime;
-			}
-			if (ih.IsKeyDown(IKEY_A)) {
-				const glm::mat4 inverted = glm::inverse(mainCamera.GetModelMatrix());
-				const glm::vec3 right = normalize(glm::vec3(inverted[0])) * glm::vec3(1, 1, -1);
-				CameraPos -= right * cameraSpeed * deltaTime;
-			}
-			if (ih.IsKeyDown(IKEY_D)) {
-				const glm::mat4 inverted = glm::inverse(mainCamera.GetModelMatrix());
-				const glm::vec3 right = normalize(glm::vec3(inverted[0])) * glm::vec3(1, 1, -1);
-				CameraPos += right * cameraSpeed * deltaTime;
-			}
-
+			mainCamera.UpdateInput();
 
 
 			//UPDATE OUR SCENE
@@ -578,148 +443,29 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			commonPerFrameData.screenSize = glm::vec2(graphics->m_Window->m_WindowWidth, graphics->m_Window->m_WindowHeight);
 			commonDataBlock->UpdateBuffer(&commonPerFrameData);
 
-			float x = glm::sin(currentTime * 0.423f) * 5;
-			float y = glm::cos(currentTime * 0.72f) * 3;
-			//
-			//cameraUniformData.MatrixProjection = mainCamera.GetProjection();
 
-			/*
-			if (testRT) {
-				graphics->PushDebugGroup("Render Target");
-				mainCamera.SetLookAt(glm::vec3(-x, y, 10.0f), glm::vec3(0), glm::vec3(0, 1, 0));
-				testUniformStructObj.MatrixPV = mainCamera.GetPV();
-
-				_CGraphics->UseRenderTarget(testRT);
-				graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-				graphics->Clear();
-
-				testUniformStructObj.MatrixModelTest = glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.0f, 0));
-				testUniformStructObj.MatrixModelTest = glm::rotate(testUniformStructObj.MatrixModelTest, 90.0f, glm::vec3(0, 1, 1));
-				testUniform->UpdateBuffer(&testUniformStructObj);
-				colorTest.Color = glm::vec4(1, 1, 1, 1);
-				testUniform2->UpdateBuffer(&colorTest);
-
-				testModel.Draw();
-
-				_CGraphics->ResetRenderTarget();
-
-				graphics->UnbindTexture(0);
-
-				graphics->PopDebugGroup();
-			}
-			*/
-
-			if (shadowSmaller && shadowSmaller->GetTexture()) {
-				_CGraphics->SetCullState(CullState::Front);
-
-				_CGraphics->UseRenderTarget(shadowRT);
-
-				graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-				graphics->Clear();
-
-				float near_plane = 1.0f, far_plane = 100.0f;
-				//glm::mat4 lightProjection = mainCamera.GetProjection();
-				glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-
-				for (int i = 0; i < MAX_NUM_DIRECTIONALLIGHTS; i++) {
-					DirectionalLight& light = lightsArray.directionalLights[i];
-					if ((light.color.r + light.color.b + light.color.z) <= 0.05f) {
-						continue;
-					}
-					//glm::mat4 lightView = mainCamera.GetView();
-					glm::mat4 lightView = glm::lookAt(light.direction, glm::vec3(0), glm::vec3(0, 1, 0));
-					glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-
-					glm::mat4 biasMatrix(
-						0.5, 0.0, 0.0, 0.0,
-						0.0, 0.5, 0.0, 0.0,
-						0.0, 0.0, 0.5, 0.0,
-						0.5, 0.5, 0.5, 1.0
-					);
-
-
-					cameraUniformData.MatrixPV = lightSpaceMatrix;
-					shadowData.DirLightPV[i] = lightSpaceMatrix;
-
-					cameraUniformData.pos = -light.direction;
-					cameraUniformBlock->UpdateBuffer(&cameraUniformData);
-
-					//_CGraphics->UseRenderTarget(shadowRT, SimpleBox((i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
-					//_CGraphics->UseRenderTarget(shadowSmaller);
-					_CGraphics->SetViewPort(SimpleBox((i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
-
-					//graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-					//graphics->Clear();
-
-					shadowScene.Draw();
-
-					//CMLOG("%i WIDTH: %i, HEIGHT %i\n", i, (i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH);
-					//CMLOG("%i %i\n", i, (i * SHADOW_MAP_WIDTH));
-
-					//shadowRT->Blitz(shadowSmaller, 0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, (i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, RenderTargetBlitzFormats::DEPTH);
-				}
-				for (int i = 0; i < MAX_NUM_SPOTLIGHTS; i++) {
-					SpotLight& light = lightsArray.spotLights[i];
-					if ((light.color.r + light.color.b + light.color.z) <= 0.05f) {
-						continue;
-					}
-					//glm::mat4 lightView = mainCamera.GetView();
-					glm::mat4 lightView = glm::lookAt(light.pos, light.pos + light.direction, glm::vec3(0, 1, 0));
-					//float spotlightAngle = (1 - light.cutOff) * 180;
-					float spotlightAngle = (1 - light.cutOff) * 180 * 1.3f;
-					//CMLOG("FOV: %f\n", spotlightAngle);
-					lightProjection = glm::perspective(glm::radians(spotlightAngle), 1.0f, near_plane, far_plane*2);
-					glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-
-					glm::mat4 biasMatrix(
-						0.5, 0.0, 0.0, 0.0,
-						0.0, 0.5, 0.0, 0.0,
-						0.0, 0.0, 0.5, 0.0,
-						0.5, 0.5, 0.5, 1.0
-					);
-
-
-					cameraUniformData.MatrixPV = lightSpaceMatrix;
-					shadowData.DirLightPV[2+i] = lightSpaceMatrix;
-
-					cameraUniformData.pos = light.pos;
-					cameraUniformBlock->UpdateBuffer(&cameraUniformData);
-
-					//_CGraphics->UseRenderTarget(shadowRT, SimpleBox((i * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, (i * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
-					//_CGraphics->UseRenderTarget(shadowRT, SimpleBox(((2 + i) * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, ((2 + i) * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
-					_CGraphics->SetViewPort(SimpleBox(((2 + i) * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, ((2 + i) * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
-
-					//graphics->SetClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-					//graphics->Clear();
-
-					shadowScene.Draw();
-
-					//shadowRT->Blitz(shadowSmaller, 0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, ((2+i) * SHADOW_MAP_WIDTH) % SHADOW_MAP_COMBINED_WIDTH, ((2 + i) * SHADOW_MAP_WIDTH) / SHADOW_MAP_COMBINED_WIDTH, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, RenderTargetBlitzFormats::DEPTH);
-				}
-
-				_CGraphics->SetCullState(CullState::Back);
-				_CGraphics->ResetRenderTarget();
-				shadowDataBlock->UpdateBuffer(&shadowData);
-			}
 			_CGraphics->ResetRenderTarget();
-			if (CameraLookAt) {
-				if (RotateCamera) {
-					mainCamera.SetLookAt(CameraPos + glm::vec3(x, y, 0), glm::vec3(0), glm::vec3(0, 1, 0));
-				} else {
-					mainCamera.SetLookAt(CameraPos, glm::vec3(0), glm::vec3(0,1,0));
-				}
-			}else {
-				mainCamera.SetPosition(CameraPos);
-				mainCamera.SetRotation(glm::vec3(0));
-			}
+
 			cameraUniformData.MatrixPV = mainCamera.GetPV();
 			cameraUniformData.pos = mainCamera.m_Position;
 			cameraUniformBlock->UpdateBuffer(&cameraUniformData);
 
 			graphics->PushDebugGroup("Main Render");
-			graphics->SetClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			graphics->SetClearColor(ClearColour.r, ClearColour.g, ClearColour.b, ClearColour.a);
 			graphics->Clear();
-			testShader->Use();
+
+			switch (ShaderVisualizer) {
+				default:
+				case 0:
+					normalShader->Use();
+					break;
+				case 1:
+					SpecShader->Use();
+					break;
+				case 2:
+					BumpShader->Use();
+					break;
+			}
 
 			scene.Draw();
 
@@ -746,11 +492,26 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 	delete testUniform2;
 	delete commonDataBlock;
 	delete squareModel;
-	delete testTexture;
+	//delete testTexture;
 	delete testShader;
 	delete graphics;
 
+	{//save camera to ini
+		nlohmann::json& j = _CIniFileManager->getIniData()["General"]["Camera"];
+		mainCamera.SaveData_Internal(j);
+
+		//lightData.SaveData_Internal(_CIniFileManager->getIniData()["General"]["LightData"]);
+		_CIniFileManager->getIniData()["General"]["LightData"] = lightData;
+		_CIniFileManager->getIniData()["General"]["ClearColour"] = ClearColour;
+	}
+
+
+	scene.Save();
+
+	_CManager->UpdateIniFile();
 	_CIniFileManager->SaveIni();
 
 	return 0;
 }
+
+

@@ -48,6 +48,7 @@ public:
 
 	virtual void BindTexture(Texture* a_Tex, uint a_Slot) override;
 	virtual void UnbindTexture(uint a_Slot) override;
+	virtual void BindTextures(Texture* a_Tex[MAX_TEXTURE_NUM]) override;
 
 	virtual void PushDebugGroup(CMString a_Name) override;
 	virtual void PopDebugGroup() override;

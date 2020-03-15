@@ -30,7 +30,7 @@ ShaderGL::~ShaderGL() {
 void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
 	CMLOG_SCOPED_NAME(m_FilePath.m_FileName + " - " + GetShaderTypeString(a_Type));
 	CMLOG("Shader: %s\n", m_DebugName.Get());
-	CMLOG_SCOPED_INDENT;
+	CMLOG_SCOPED_INDENT();
 
 	spirv_cross::CompilerGLSL glsl(a_Code);
 
@@ -68,7 +68,7 @@ void ShaderGL::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a
 		glsl.unset_decoration(resource.id, spv::DecorationLocation);
 
 		if (binding != 0 && false) {
-			CMLOG_SCOPED_INDENT;
+			CMLOG_SCOPED_INDENT();
 			glsl.set_decoration(resource.id, spv::DecorationLocation, binding);
 
 			binding = glsl.get_decoration(resource.id, spv::DecorationBinding);

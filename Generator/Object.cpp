@@ -28,12 +28,18 @@ void Object::GetFromFile(std::string fileName, std::string& fileData) {
 
 	size_t posFile = 0;
 
-	while (true) {
-		posFile = fileData.find(m_DefineName + "(", posFile + 1);
+	static const int NumTexts = 2;
+	std::string texts[NumTexts] = { m_DefineName, m_DefineName+"_BASE" };
+	int currentText = 0;
+
+	while (currentText != NumTexts) {
+		posFile = fileData.find(texts[currentText] + "(", posFile + 1);
 		if (posFile == fileData.npos) {
-			break;
+			posFile = 0;
+			currentText++;
+			continue;
 		}
-		posFile += m_DefineName.size() + 1;
+		posFile += texts[currentText].size() + 1;
 		size_t size = (fileData.find(')', posFile) - posFile);
 		std::string hashText = fileData.substr(posFile, size);
 		//unsigned int hash = std::hash<std::string>{}(hashText);
@@ -65,12 +71,19 @@ void Object::SaveFileH() {
 #include <map>
 #include <iostream>
 
-#define DEFINE(text) //g_factory.register_class<text>(#text)
+#define )" + m_DefineName + R"((text)  \
+public: \
+virtual const char* GetObjName() override {return #text;};
+
+#define )" + m_DefineName + R"(_BASE(text)  \
+public: \
+virtual const char* GetObjName() {return #text;};
+
 #define REGISTER_OBJ(text) GENERATED_OBJ::g_factory->register_class<text>(#text);
 enum _PROG_OBJ_ENUM {
 )";
 
-	findAndReplaceAll(finalFile, "DEFINE", m_DefineName);
+	//findAndReplaceAll(finalFile, "DEFINE", m_DefineName);
 
 	//for (auto it = m_ObjectMap.begin(); it != m_ObjectMap.end(); it++) {
 	//	printf("Hash: (%i): %s\n", it->first, it->second.name.c_str());

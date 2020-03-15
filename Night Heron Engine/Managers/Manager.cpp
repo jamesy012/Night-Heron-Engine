@@ -48,6 +48,8 @@ Manager::Manager() {
 }
 
 Manager::~Manager() {
+	UpdateIniFile();
+
 	delete m_CommonRT;
 }
 
@@ -58,7 +60,7 @@ void Manager::UpdateIniFile() {
 	ImGuiManagerWindowHolders* wh = &ManagerWindowHolders[counter++];
 	while (wh->openRef != nullptr) {
 		j[wh->name] = *wh->openRef;
-		
+
 		wh = &ManagerWindowHolders[counter++];
 	}
 
@@ -125,7 +127,7 @@ void Manager::AddModel(Model * a_Model) {
 
 Model * Manager::GetModel(CMString a_FileName) {
 	for (uint i = 0; i < m_Models.Length(); i++) {
-		if (m_Models[i]->m_FilePath == a_FileName) {
+		if (m_Models[i]->m_FilePath.m_FilePath == a_FileName) {
 			return m_Models[i];
 		}
 	}
@@ -150,7 +152,6 @@ void Manager::ImGuiObjects() {
 		CHANGE_TYPE,
 	};
 	static MODALS modal = MODALS::NONE;
-	static bool showingModal = false;
 
 	ImGui::Begin("Object Menu", &m_ShowObjects);
 
@@ -171,7 +172,7 @@ void Manager::ImGuiObjects() {
 			}
 		}
 		ImGui::EndChild();
-		
+
 		ImGui::BeginChild("Buttons");
 
 		if (ImGui::Button("Create")) {
@@ -184,20 +185,20 @@ void Manager::ImGuiObjects() {
 	ImGui::SameLine();
 	{
 		ImGui::BeginChild("Details", ImVec2(0, 0), true);
-		if (nodeSelected >= 0) {			
+		if (nodeSelected >= 0) {
 
 			Object* obj = m_CurrentScene->m_Objects[nodeSelected];
 			ImGui::Text("Selected Object: %s", obj->m_Name.Get());
 			ImGui::SameLine();
 
-			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			//ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+			//ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
 			if (ImGui::Button("Change Name")) {
 				modal = MODALS::CHANGE_NAME;
 			}
-			ImGui::PopItemFlag();
-			ImGui::PopStyleVar();
-			
+			//ImGui::PopItemFlag();
+			//ImGui::PopStyleVar();
+
 			ImGui::SameLine();
 
 			if (ImGui::Button("Change Model")) {
@@ -218,7 +219,7 @@ void Manager::ImGuiObjects() {
 	{
 		static int Selected = 0;
 		static ImGuiTextFilter filter;
-		if (showingModal == false && modal != MODALS::NONE) {
+		if (m_ShowingModal == false && modal != MODALS::NONE) {
 			switch (modal) {
 				case MODALS::CREATE:
 					ImGui::OpenPopup("Create Scene Object");
@@ -233,14 +234,14 @@ void Manager::ImGuiObjects() {
 					ImGui::OpenPopup("Change Object Type");
 					break;
 			}
-			showingModal = true;
+			m_ShowingModal = true;
 			Selected = -1;
 			modal = MODALS::NONE;
 		}
 
 		if (ImGui::BeginPopupModal("Create Scene Object", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 			static CMString ObjectSelected;
-			ImGui::BeginChild("Selector", ImVec2(0, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
+			ImGui::BeginChild("Selector", ImVec2(150, 150), false, ImGuiWindowFlags_HorizontalScrollbar);
 			filter.Draw("", 100);
 			int index = 0;
 			for (auto it = GENERATED_OBJ::g_factory->m_classes.begin(); it != GENERATED_OBJ::g_factory->m_classes.end(); it++, index++) {
@@ -265,13 +266,13 @@ void Manager::ImGuiObjects() {
 					obj->Start();
 
 					ImGui::CloseCurrentPopup();
-					showingModal = false;
+					m_ShowingModal = false;
 				}
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Close")) {
 				ImGui::CloseCurrentPopup();
-				showingModal = false;
+				m_ShowingModal = false;
 			}
 			ImGui::EndPopup();
 		}
@@ -279,14 +280,16 @@ void Manager::ImGuiObjects() {
 			const uint nameMaxLength = 32;
 			static char name[nameMaxLength] = "";
 			static bool getNewName = true;
+			static int val = 0;
 
 			if (getNewName) {
 				strcpy_s(name, m_CurrentScene->m_Objects[nodeSelected]->m_Name.Get());
 				getNewName = false;
+				val++;
 			}
-			
+
 			bool EnterPressed = false;
-			if (ImGui::InputText("", name, nameMaxLength, ImGuiInputTextFlags_EnterReturnsTrue)) {
+			if (ImGui::InputText(CMString("Name#"+CMString::IntToString(val)).Get(), name, nameMaxLength, ImGuiInputTextFlags_EnterReturnsTrue)) {
 				EnterPressed = true;
 			}
 
@@ -296,13 +299,13 @@ void Manager::ImGuiObjects() {
 				m_CurrentScene->m_Objects[nodeSelected]->m_Name = name;
 
 				ImGui::CloseCurrentPopup();
-				showingModal = false;
+				m_ShowingModal = false;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Cancel")) {
 				getNewName = true;
 				ImGui::CloseCurrentPopup();
-				showingModal = false;
+				m_ShowingModal = false;
 			}
 			ImGui::EndPopup();
 		}
@@ -311,8 +314,8 @@ void Manager::ImGuiObjects() {
 			ImGui::BeginChild("Selector", ImVec2(400, 100), false, ImGuiWindowFlags_HorizontalScrollbar);
 			filter.Draw("", 100);
 			for (uint i = 0; i < m_Models.Length();i++) {
-				if (filter.PassFilter(m_Models[i]->m_FilePath.c_str())) {
-					if (ImGui::Selectable(m_Models[i]->m_FilePath.c_str(), Selected == i)) {
+				if (filter.PassFilter(m_Models[i]->m_FilePath.m_FilePath.Get())) {
+					if (ImGui::Selectable(m_Models[i]->m_FilePath.m_FilePath.Get(), Selected == i)) {
 						Selected = i;
 					}
 				}
@@ -325,13 +328,13 @@ void Manager::ImGuiObjects() {
 					m_CurrentScene->m_Objects[nodeSelected]->m_ObjectModel = m_Models[Selected];
 
 					ImGui::CloseCurrentPopup();
-					showingModal = false;
+					m_ShowingModal = false;
 				}
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Close")) {
 				ImGui::CloseCurrentPopup();
-				showingModal = false;
+				m_ShowingModal = false;
 			}
 			ImGui::EndPopup();
 		}
@@ -363,13 +366,13 @@ void Manager::ImGuiObjects() {
 					obj->Start();
 
 					ImGui::CloseCurrentPopup();
-					showingModal = false;
+					m_ShowingModal = false;
 				}
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Close")) {
 				ImGui::CloseCurrentPopup();
-				showingModal = false;
+				m_ShowingModal = false;
 			}
 			ImGui::EndPopup();
 		}

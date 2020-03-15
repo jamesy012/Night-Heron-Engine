@@ -4,6 +4,8 @@
 
 #include "Object.h"
 
+#include "Camera.h"
+
 #include "nlohmann/json.hpp"
 
 void Scene::Start() {
@@ -46,15 +48,21 @@ bool Scene::LoadData_Internal(nlohmann::json & a_Json) {
 		}
 		m_Objects.Add(obj);
 	}
+
+	if (m_Camera) {
+		m_Camera->LoadData_Internal(a_Json["Camera"]);
+	}
+
 	return true;
 }
 
 void Scene::SaveData_Internal(nlohmann::json & a_Json) {
 	a_Json["Name"] = m_Name;
-	nlohmann::json& test = a_Json["Objects"];
+	nlohmann::json& objs = a_Json["Objects"];
 	for (uint i = 0; i < m_Objects.Length(); i++) {
-		m_Objects[i]->SaveData_Internal(test[i]);
+		m_Objects[i]->SaveData_Internal(objs[i]);
 	}
+	m_Camera->SaveData_Internal(a_Json["Camera"]);
 }
 
 void Scene::AddObject(Object* a_Object) {

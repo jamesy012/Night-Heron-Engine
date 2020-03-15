@@ -4,7 +4,14 @@
 #include <map>
 #include <iostream>
 
-#define ADD_OBJ(text) //g_factory.register_class<text>(#text)
+#define ADD_OBJ(text)  \
+public: \
+virtual const char* GetObjName() override {return #text;};
+
+#define ADD_OBJ_BASE(text)  \
+public: \
+virtual const char* GetObjName() {return #text;};
+
 #define REGISTER_OBJ(text) GENERATED_OBJ::g_factory->register_class<text>(#text);
 enum _PROG_OBJ_ENUM {
 };

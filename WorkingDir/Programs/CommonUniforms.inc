@@ -9,3 +9,8 @@ layout (std140, binding = 3) uniform Camera_Data {
 	float pad;
 	mat4 PV;
 } cameraData;
+
+layout (std140, binding = 4) uniform Light_Data {
+	vec4 pos;
+	vec4 lightColor;
+} lightData;

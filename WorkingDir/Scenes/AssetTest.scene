@@ -1,0 +1,244 @@
+{
+    "Object": {
+        "Camera": {
+            "Far": 100.0,
+            "Fov": 1.0471975803375244,
+            "Near": 0.10000000149011612,
+            "Pos": {
+                "x": 27.437068939208984,
+                "y": 49.51234436035156,
+                "z": -51.413063049316406
+            },
+            "Rot": {
+                "x": -48.022422790527344,
+                "y": 166.70697021484375,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        "Name": "",
+        "Objects": [
+            {
+                "Model": "Models/syntystudios_Dont upload/SM_Env_Tree_01.fbx",
+                "Name": "tree",
+                "Transform": {
+                    "Pos": {
+                        "x": 8.75,
+                        "y": -5.0,
+                        "z": 0.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 0.10000000149011612,
+                        "y": 0.10000000149011612,
+                        "z": 0.10000000149011612
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "Models/syntystudios_Dont upload/SM_Env_Path_Dirt_01.fbx",
+                "Name": "ground",
+                "Transform": {
+                    "Pos": {
+                        "x": -15.0,
+                        "y": -5.0,
+                        "z": 15.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 0.10000000149011612,
+                        "y": 0.10000000149011612,
+                        "z": 0.10000000149011612
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "Models/syntystudios_Dont upload/SM_Env_Path_Tile_01.fbx",
+                "Name": "pathObj",
+                "Transform": {
+                    "Pos": {
+                        "x": -15.0,
+                        "y": -5.0,
+                        "z": -15.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 0.10000000149011612,
+                        "y": 0.10000000149011612,
+                        "z": 0.10000000149011612
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "Models/syntystudios_Dont upload/SM_Env_Path_Dirt_01.fbx",
+                "Name": "Dirt2",
+                "Transform": {
+                    "Pos": {
+                        "x": 45.0,
+                        "y": -5.0,
+                        "z": 15.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 90.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 0.10000000149011612,
+                        "y": 0.10000000149011612,
+                        "z": 0.10000000149011612
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "Models/syntystudios_Dont upload/SM_Env_Path_Dirt_01.fbx",
+                "Name": "Dirt3",
+                "Transform": {
+                    "Pos": {
+                        "x": 15.0,
+                        "y": -5.0,
+                        "z": -15.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 0.10000000149011612,
+                        "y": 0.10000000149011612,
+                        "z": 0.10000000149011612
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "Models/syntystudios_Dont upload/SM_Env_Path_Dirt_01.fbx",
+                "Name": "Dirt4",
+                "Transform": {
+                    "Pos": {
+                        "x": -45.0,
+                        "y": -5.0,
+                        "z": -15.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 0.10000000149011612,
+                        "y": 0.10000000149011612,
+                        "z": 0.10000000149011612
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "Models/syntystudios_Dont upload/SM_Env_Path_Dirt_01.fbx",
+                "Name": "Dirt5",
+                "Transform": {
+                    "Pos": {
+                        "x": -45.0,
+                        "y": -5.0,
+                        "z": 15.0
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "Scale": {
+                        "x": 0.10000000149011612,
+                        "y": 0.10000000149011612,
+                        "z": 0.10000000149011612
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            {
+                "Model": "Models/syntystudios_Dont upload/SM_Env_Tree_01.fbx",
+                "Name": "Tree 2",
+                "Transform": {
+                    "Pos": {
+                        "x": -15.0,
+                        "y": -4.75,
+                        "z": -11.5
+                    },
+                    "Rot": {
+                        "x": 0.0,
+                        "y": 51.75,
+                        "z": 6.0
+                    },
+                    "Scale": {
+                        "x": 0.0860000029206276,
+                        "y": 0.09000000357627869,
+                        "z": 0.12300000339746475
+                    }
+                },
+                "Type": "ObjectDrawTest",
+                "UColor": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            }
+        ]
+    },
+    "Version": 1.0
+}

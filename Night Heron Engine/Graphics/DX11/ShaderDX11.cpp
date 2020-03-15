@@ -19,6 +19,8 @@ D3D11_INPUT_ELEMENT_DESC VertexLayout[] = {
 { "TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Normal), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 { "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(Vertex, m_UV), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 { "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, m_Color), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+{ "TEXCOORD", 4, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(Vertex, m_Tangent), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+{ "TEXCOORD", 5, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(Vertex, m_BiTangent), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 UINT numVertexLayoutElements = ARRAYSIZE(VertexLayout);
 
@@ -44,7 +46,7 @@ ShaderDX11::~ShaderDX11() {
 void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int> a_Code) {
 	CMLOG_SCOPED_NAME(m_FilePath.m_FileName + " - " + GetShaderTypeString(a_Type));
 	CMLOG("Shader: %s\n", m_DebugName.Get());
-	CMLOG_SCOPED_INDENT;
+	CMLOG_SCOPED_INDENT();
 
 	spirv_cross::CompilerHLSL hlsl(a_Code);
 
@@ -78,7 +80,7 @@ void ShaderDX11::AddShader_Internal(ShaderType a_Type, std::vector<unsigned int>
 		//// Some arbitrary remapping if we want.
 		//hlsl.set_decoration(resource.id, spv::DecorationBinding, set * 16 + binding);
 		if (binding != 0) {
-			CMLOG_SCOPED_INDENT;
+			CMLOG_SCOPED_INDENT();
 			hlsl.set_decoration(resource.id, spv::DecorationLocation, binding);
 
 			binding = hlsl.get_decoration(resource.id, spv::DecorationBinding);

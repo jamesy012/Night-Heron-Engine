@@ -9,6 +9,7 @@ extern class Window* _CMainWindow;
 extern class Arguments* _CArguments;
 extern class TimeManager* _CTimeManager;
 extern class IniFile* _CIniFileManager;
+extern class InputHandler* _CInput;
 
 namespace SingletonManager {
 	extern void CreateSingletons();

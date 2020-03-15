@@ -168,7 +168,10 @@
     <ClCompile Include="Types\CMString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Lighting\LightManager.cpp">
+    <ClCompile Include="FlyCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jsonConverter\JCglm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -542,10 +545,13 @@
     <ClInclude Include="Types\CMStringHash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Lighting\LightManager.h">
+    <ClInclude Include="Graphics\API\GFXConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Lighting\PointLightObj.h">
+    <ClInclude Include="FlyCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="jsonConverter\JCglm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

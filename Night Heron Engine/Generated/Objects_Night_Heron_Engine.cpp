@@ -1,10 +1,12 @@
 //Do not edit - automated file
 #include "Objects_Night_Heron_Engine.h"
 
-#include "Lighting\PointLightObj.h" //PointLightObj 
 #include "Tests\ObjectDrawTest.h" //ObjectDrawTest 
 #include "Camera.h" //CameraBaseObject 
+#include "Camera.h" //Camera 
 #include "Object.h" //Object 
+#include "Transform.h" //Transform 
+#include "FlyCamera.h" //FlyCamera 
 #include "Object.h" //SinObject 
 
 namespace GENERATED_OBJ{
@@ -24,10 +26,12 @@ namespace GENERATED_OBJ{
 	}
 
 	void RegisterClasses() {
-REGISTER_OBJ(PointLightObj);
 REGISTER_OBJ(ObjectDrawTest);
 REGISTER_OBJ(CameraBaseObject);
+REGISTER_OBJ(Camera);
 REGISTER_OBJ(Object);
+REGISTER_OBJ(Transform);
+REGISTER_OBJ(FlyCamera);
 REGISTER_OBJ(SinObject);
 
 	}

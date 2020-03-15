@@ -2,6 +2,7 @@
 
 #include <glm\ext.hpp>
 
+#include "jsonConverter/JCglm.h"
 #include "nlohmann/json.hpp"
 
 Transform::Transform() {
@@ -75,23 +76,17 @@ void Transform::Reset() {
 
 bool Transform::LoadData_Internal(nlohmann::json & a_Json) {
 	if (a_Json.contains("Pos")) {
-		a_Json["Pos"]["x"].get_to(m_Position.x);
-		a_Json["Pos"]["y"].get_to(m_Position.y);
-		a_Json["Pos"]["z"].get_to(m_Position.z);
+		m_Position = a_Json["Pos"].get<glm::vec3>();
 	} else {
 		return false;
 	}
 	if (a_Json.contains("Rot")) {
-		a_Json["Rot"]["x"].get_to(m_Rotation.x);
-		a_Json["Rot"]["y"].get_to(m_Rotation.y);
-		a_Json["Rot"]["z"].get_to(m_Rotation.z);
+		m_Rotation = a_Json["Rot"].get<glm::vec3>();
 	} else {
 		return false;
 	}
 	if (a_Json.contains("Scale")) {
-		a_Json["Scale"]["x"].get_to(m_Scale.x);
-		a_Json["Scale"]["y"].get_to(m_Scale.y);
-		a_Json["Scale"]["z"].get_to(m_Scale.z);
+		m_Scale = a_Json["Scale"].get<glm::vec3>();
 	} else {
 		return false;
 	}
@@ -100,17 +95,11 @@ bool Transform::LoadData_Internal(nlohmann::json & a_Json) {
 }
 
 void Transform::SaveData_Internal(nlohmann::json & a_Json) {
-	a_Json["Pos"]["x"] = m_Position.x;
-	a_Json["Pos"]["y"] = m_Position.y;
-	a_Json["Pos"]["z"] = m_Position.z;
+	a_Json["Pos"] = m_Position;
 
-	a_Json["Rot"]["x"] = m_Rotation.x;
-	a_Json["Rot"]["y"] = m_Rotation.y;
-	a_Json["Rot"]["z"] = m_Rotation.z;
-	
-	a_Json["Scale"]["x"] = m_Scale.x;
-	a_Json["Scale"]["y"] = m_Scale.y;
-	a_Json["Scale"]["z"] = m_Scale.z;
+	a_Json["Rot"] = m_Rotation;
+
+	a_Json["Scale"] = m_Scale;
 }
 
 void Transform::UpdateModelMatrix() {
