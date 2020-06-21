@@ -218,8 +218,8 @@ void GFXDX11::BindTextures(Texture* a_Tex[MAX_TEXTURE_NUM]) {
 		ID3D11SamplerState* samplerRef = nullptr;
 		if (a_Tex[i]) {
 			const TextureDX11* dxTex = (TextureDX11*)a_Tex[i];
-			ID3D11ShaderResourceView* textureSRV = dxTex->GetTextureSRV();
-			ID3D11SamplerState* samplerRef = dxTex->GetSamplerRef();
+			textureSRV = dxTex->GetTextureSRV();
+			samplerRef = dxTex->GetSamplerRef();
 		}
 		GFXDX11::GetCurrentContex()->m_DevCon->PSSetSamplers(i, 1, &samplerRef);
 		GFXDX11::GetCurrentContex()->m_DevCon->PSSetShaderResources(i, 1, &textureSRV);

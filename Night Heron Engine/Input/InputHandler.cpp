@@ -11,8 +11,11 @@ LPDIRECTINPUTDEVICE8 m_Keyboard;
 LPDIRECTINPUTDEVICE8 m_Mouse;
 
 unsigned char m_KeyboardState[256];
+unsigned char m_KeyboardStateOld[256];
 DIMOUSESTATE m_mouseState;
+DIMOUSESTATE m_mouseStateOld;
 int m_MouseX, m_MouseY;
+int m_MouseDeltaX, m_MouseDeltaY;
 
 unsigned char m_KeyboardRemapper[256] = { -1 };
 //	IKEY_Escape				/*DIK_ESCAPE		*/
@@ -283,7 +286,7 @@ bool InputHandler::Startup(Window * a_InputWindow) {
 		return false;
 	}
 
-	hr = m_Keyboard->SetCooperativeLevel(a_InputWindow->m_HWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);//DISCL_NONEXCLUSIVE | DISCL_BACKGROUND
+	hr = m_Keyboard->SetCooperativeLevel(a_InputWindow->m_HWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);//DISCL_NONEXCLUSIVE | DISCL_BACKGROUND
 	if (FAILED(hr)) {
 		return false;
 	}
@@ -303,7 +306,7 @@ bool InputHandler::Startup(Window * a_InputWindow) {
 		return false;
 	}
 
-	hr = m_Mouse->SetCooperativeLevel(a_InputWindow->m_HWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);//DISCL_NONEXCLUSIVE | DISCL_BACKGROUND
+	hr = m_Mouse->SetCooperativeLevel(a_InputWindow->m_HWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);//DISCL_NONEXCLUSIVE | DISCL_BACKGROUND
 	if (FAILED(hr)) {
 		return false;
 	}
@@ -357,13 +360,30 @@ bool InputHandler::IsKeyDown(IKeys a_Key) {
 	return m_KeyboardState[m_KeyboardRemapper[a_Key]];
 }
 
+bool InputHandler::WasKeyPressed(IKeys a_Key) {
+	const int index = m_KeyboardRemapper[a_Key];
+	return m_KeyboardState[index] && !m_KeyboardStateOld[index];
+}
+
 SimpleVec2 InputHandler::GetMousePos() {
 	return SimpleVec2(m_MouseX, m_MouseY);
 }
 
+SimpleVec2 InputHandler::GetMouseDelta() {
+	return SimpleVec2(m_MouseDeltaX, m_MouseDeltaY);
+}
+
+bool InputHandler::IsMouseKeyDown(IMouseKeys a_Key) {
+	return m_mouseState.rgbButtons[a_Key] & 0x80;
+}
+
+bool InputHandler::WasMouseKeyPressed(IMouseKeys a_Key) {
+	return (m_mouseState.rgbButtons[a_Key] & 0x80) && !(m_mouseStateOld.rgbButtons[a_Key] & 0x80);
+}
+
 CMString InputHandler::GetKeysDown() {
 	//only 0-9 and A-Z
-	
+
 	CMString output;
 
 	for (int i = 0; i < 10; i++) {
@@ -398,10 +418,11 @@ CMString InputHandler::GetKeysDown() {
 	return output;
 }
 
+
 bool InputHandler::ReadKeyboard() {
 	HRESULT hr;
 
-
+	memcpy(m_KeyboardStateOld, m_KeyboardState, sizeof(m_KeyboardState));
 	// Read the keyboard device.
 	hr = m_Keyboard->GetDeviceState(sizeof(m_KeyboardState), (LPVOID)&m_KeyboardState);
 	if (FAILED(hr)) {
@@ -419,16 +440,19 @@ bool InputHandler::ReadMouse() {
 	HRESULT hr;
 
 
-	POINT pos;
-	if (::GetCursorPos(&pos) && ::ScreenToClient(m_MainWindow->m_HWnd, &pos)) {
-		m_MouseX = (float)pos.x;
-		m_MouseY = (float)pos.y;
-	}
+	//POINT pos;
+	//if (::GetCursorPos(&pos) && ::ScreenToClient(Win32Application::GetHwnd(), &pos)) {
+	//	m_MouseDeltaX = m_MouseX - pos.x;
+	//	m_MouseDeltaY = m_MouseY - pos.y;
+	//	m_MouseX = (float)pos.x;
+	//	m_MouseY = (float)pos.y;
+	//}
 
 	if (m_Mouse == nullptr) {
 		return false;
 	}
 
+	memcpy(&m_mouseStateOld, &m_mouseState, sizeof(m_mouseState));
 	// Read the mouse device.
 	hr = m_Mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_mouseState);
 	if (FAILED(hr)) {
@@ -438,6 +462,12 @@ bool InputHandler::ReadMouse() {
 		} else {
 			return false;
 		}
+	} else {
+		m_MouseDeltaX = m_mouseState.lX;
+		m_MouseDeltaY = m_mouseState.lY;
+		m_MouseX + m_MouseDeltaX;
+		m_MouseY + m_MouseDeltaY;
+		//move m_MouseX and co to be here and use m_MouseState instead
 	}
 	return true;
 }

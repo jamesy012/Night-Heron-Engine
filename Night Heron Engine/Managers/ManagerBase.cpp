@@ -1,7 +1,9 @@
 #include "ManagerBase.h"
 
 #include <iostream>
-#include <filesystem>
+//#include <filesystem>
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 
 #include "ImGui/imgui.h"

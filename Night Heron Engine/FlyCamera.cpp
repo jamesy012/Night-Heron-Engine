@@ -59,6 +59,11 @@ void FlyCamera::UpdateInput() {
 		m_Rotation.x += RotationSpeed * deltaTime;
 	}
 
+	if (m_MouseMovement) {
+		glm::vec2 mouseDelta = { _CInput->GetMouseDelta().y, _CInput->GetMouseDelta().x };
+		m_Rotation += glm::vec3((mouseDelta * -20.0f * deltaTime), 0);
+	}
+
 	SetDirty();
 
 	//SetLookAt(m_Position, glm::vec3(0), glm::vec3(0, 1, 0));

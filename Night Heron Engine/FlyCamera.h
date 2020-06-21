@@ -11,5 +11,6 @@ public:
 
 	float MovementSpeed;
 	float RotationSpeed;
+	bool m_MouseMovement = false;
 };
 

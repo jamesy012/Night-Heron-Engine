@@ -13,4 +13,5 @@ layout (std140, binding = 3) uniform Camera_Data {
 layout (std140, binding = 4) uniform Light_Data {
 	vec4 pos;
 	vec4 lightColor;
+	vec4 padding;
 } lightData;

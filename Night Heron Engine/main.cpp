@@ -64,6 +64,7 @@ CREATE_BUFFER_UNIFORM(CommonDataStruct,
 	CREATE_BUFFER_UNIFORM_WITH_JSON(LightDataStruct,
 						  glm::vec4 lightPos;
 						  glm::vec4 lightColor;
+						  glm::vec3 padding;
 						  )
 
 
@@ -433,6 +434,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance,
 			ImGui::Combo("Visualize", &ShaderVisualizer, "Normal\0Spec\0Bump\0");
 			ImGui::End();
 
+
+			mainCamera.m_MouseMovement = _CInput->IsMouseKeyDown(IMOUSEKEY_RIGHTBUTTON);
 			mainCamera.UpdateInput();
 
 

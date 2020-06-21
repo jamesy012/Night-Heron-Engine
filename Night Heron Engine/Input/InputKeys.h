@@ -108,6 +108,12 @@ enum IKeys {
 	, IKEY_F12
 };
 
+enum IMouseKeys {
+	IMOUSEKEY_LEFTBUTTON,
+	IMOUSEKEY_RIGHTBUTTON,
+	IMOUSEKEY_MIDDLEBUTTON,
+};
+
 //#define IKEY_0 IKeys::IKEY_0
 //#define IKEY_1 IKeys::IKEY_1
 //#define IKEY_2 IKeys::IKEY_2

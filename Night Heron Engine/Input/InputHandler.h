@@ -19,10 +19,14 @@ public:
 
 	void Update();
 
-	bool IsKeyDown(IKeys a_Key);
-	SimpleVec2 GetMousePos();
-
 	CMString GetKeysDown();
+
+	bool IsKeyDown(IKeys a_Key);
+	bool WasKeyPressed(IKeys a_Key);
+	SimpleVec2 GetMousePos();
+	SimpleVec2 GetMouseDelta();
+	bool IsMouseKeyDown(IMouseKeys a_Key);
+	bool WasMouseKeyPressed(IMouseKeys a_Key);
 
 private:
 
