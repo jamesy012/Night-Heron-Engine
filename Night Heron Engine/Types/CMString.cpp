@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "CMString.h"
 
 #include <Windows.h>

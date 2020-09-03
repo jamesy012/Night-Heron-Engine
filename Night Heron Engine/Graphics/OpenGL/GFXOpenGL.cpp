@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GFXOpenGL.h"
 #include "Debug.h"
 

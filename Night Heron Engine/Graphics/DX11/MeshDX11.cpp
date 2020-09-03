@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "MeshDX11.h"
 
 #include "GFXDX11.h"

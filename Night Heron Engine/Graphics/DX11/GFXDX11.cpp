@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GFXDX11.h"
 
 //#include "WindowDX11.h"

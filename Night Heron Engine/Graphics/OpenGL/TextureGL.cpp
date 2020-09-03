@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "TextureGL.h"
 
 #include <GL/glew.h>

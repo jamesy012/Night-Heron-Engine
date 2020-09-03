@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GFXObj.h"
 
 void GFXObj::SetDebugObjName(CMString a_NewName) {

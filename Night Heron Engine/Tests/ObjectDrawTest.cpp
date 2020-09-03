@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ObjectDrawTest.h"
 
 #include "Graphics/API/Shader.h"

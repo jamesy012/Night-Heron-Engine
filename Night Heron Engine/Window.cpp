@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Window.h"
 
 #include "Graphics/API/GFXAPI.h"

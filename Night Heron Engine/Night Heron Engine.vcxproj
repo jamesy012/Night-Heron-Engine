@@ -103,6 +103,7 @@
       <FunctionLevelLinking>
       </FunctionLevelLinking>
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);$(SolutionDir)Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\hlsl\Debug;$(SolutionDir)Dependencies\assimp-4.1.0\lib\debug</AdditionalLibraryDirectories>
@@ -123,6 +124,7 @@
       </FunctionLevelLinking>
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>Default</LanguageStandard>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.0.0\libary\Release\$(Platform);$(SolutionDir)Dependencies\SPIRV-Cross-master\cmakeBuild\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\OGLCompilersDLL\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\glslang\OSDependent\Windows\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\SPIRV\Debug;$(SolutionDir)Dependencies\glslang-master\cmakeBuild\hlsl\Debug;$(SolutionDir)Dependencies\assimp-4.1.0\lib\debug</AdditionalLibraryDirectories>
@@ -142,6 +144,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm\;$(ProjectDir);$(ProjectDir)Dependency\;$(SolutionDir)Dependencies\assimp-4.1.0\include\;$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -163,6 +166,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glm\;$(ProjectDir);$(ProjectDir)Dependency\;$(SolutionDir)Dependencies\assimp-4.1.0\include\;$(SolutionDir)Dependencies\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -175,6 +179,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AppBase.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Dependency\ImGui\examples\imgui_impl_dx11.cpp" />
@@ -185,6 +190,7 @@
     <ClCompile Include="Dependency\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Dependency\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="FlyCamera.cpp" />
+    <ClCompile Include="_GameTest\Game1\Game1.cpp" />
     <ClCompile Include="Generated\Objects_Night_Heron_Engine.cpp" />
     <ClCompile Include="Graphics\API\GFXAPI.cpp" />
     <ClCompile Include="Graphics\API\GFXObj.cpp" />
@@ -228,6 +234,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppBase.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Dependency\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="Dependency\nlohmann\detail\conversions\from_json.hpp" />
@@ -298,6 +305,8 @@
     <ClInclude Include="Dependency\rapidjson\stringbuffer.h" />
     <ClInclude Include="Dependency\rapidjson\writer.h" />
     <ClInclude Include="FlyCamera.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="_GameTest\Game1\Game1.h" />
     <ClInclude Include="Generated\Hash_Night_Heron_Engine.h" />
     <ClInclude Include="Generated\Objects_Night_Heron_Engine.h" />
     <ClInclude Include="Graphics\API\GFXConstants.h" />

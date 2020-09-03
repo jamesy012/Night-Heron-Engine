@@ -1,4 +1,6 @@
 //Do not edit - automated file
+#include "stdafx.h"
+
 #include "Objects_Night_Heron_Engine.h"
 
 #include "Tests\ObjectDrawTest.h" //ObjectDrawTest 

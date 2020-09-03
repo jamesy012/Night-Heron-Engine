@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Saveable.h"
 
 #include <fstream> //std::ifstream

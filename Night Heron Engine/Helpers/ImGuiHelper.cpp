@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "ImGuiHelper.h"
-
-#include "ImGui/imgui.h"
 
 
 bool ImGuiHelper::Selectable(int* a_Index, CMArray<CMString> a_Names) {

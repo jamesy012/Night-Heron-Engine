@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "FlyCamera.h"
 
 #include "Input/InputHandler.h"

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "IniFile.h"
 
 #include <fstream> //std::ifstream
@@ -6,6 +7,8 @@
 
 #include "Util.h"
 #include "nlohmann/json.hpp"
+
+#include <windows.h>
 
 static nlohmann::json JsonData;
 
@@ -28,7 +31,8 @@ void IniFile::LoadIni() {
 }
 
 void IniFile::SaveIni() {
-	std::ofstream infoFile(m_Location.m_FilePath);
+	CreateDirectory(m_Location.m_FileLocation.Get(), NULL);
+	std::ofstream infoFile(m_Location.m_FilePath, std::ofstream::out);
 
 	if (infoFile.is_open()) {
 		infoFile << JsonData.dump(4);

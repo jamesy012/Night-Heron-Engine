@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "RenderTargetDX11.h"
 
 #include "Debug.h"

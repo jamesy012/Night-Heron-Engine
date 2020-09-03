@@ -190,6 +190,7 @@ void Object::SaveFileCPP() {
 
 	finalFile = R"(//Do not edit - automated file
 )";
+	finalFile += "#include \"stdafx.h\"\n\n";
 
 	finalFile += "#include \"" + m_Name+ ".h\"\n\n";
 

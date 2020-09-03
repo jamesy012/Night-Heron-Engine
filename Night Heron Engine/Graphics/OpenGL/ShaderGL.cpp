@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ShaderGL.h"
 
 #include <GL/glew.h>

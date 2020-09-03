@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Manager.h"
 
 #include <ImGui/imgui.h>
@@ -165,10 +166,12 @@ void Manager::ImGuiObjects() {
 		}
 
 		ImGui::BeginChild("Selector", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), false, ImGuiWindowFlags_HorizontalScrollbar);
-		for (uint i = 0; i < m_CurrentScene->m_Objects.Length(); i++) {
-			CMString text = m_CurrentScene->m_Objects[i]->m_Name.Get();
-			if (ImGui::Selectable(text.Get(), nodeSelected == i)) {
-				nodeSelected = i;
+		if (m_CurrentScene) {
+			for (uint i = 0; i < m_CurrentScene->m_Objects.Length(); i++) {
+				CMString text = m_CurrentScene->m_Objects[i]->m_Name.Get();
+				if (ImGui::Selectable(text.Get(), nodeSelected == i)) {
+					nodeSelected = i;
+				}
 			}
 		}
 		ImGui::EndChild();
@@ -408,7 +411,9 @@ void Manager::ImGuiModels() {
 		_CGraphics->SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		_CGraphics->Clear();
 
-		tempPVMUniform->UpdateBuffer(&testUniformStructObj);
+		if (tempPVMUniform) {
+			tempPVMUniform->UpdateBuffer(&testUniformStructObj);
+		}
 
 		m_Models[nodeSelected]->Draw();
 

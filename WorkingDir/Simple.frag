@@ -68,4 +68,5 @@ void main() {
 
 	//vec4 result = vec4(1,1,1,1);
 	fragColor =result * vVertColor;
+	//fragColor =texDiffuse;
 } 

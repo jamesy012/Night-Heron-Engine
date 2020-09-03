@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ShaderSpirvData.h"
 
 #include <glslang-master/glslang/Public/ShaderLang.h>

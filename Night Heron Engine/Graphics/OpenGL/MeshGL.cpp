@@ -1,5 +1,4 @@
-#pragma once
-
+#include "stdafx.h"
 #include "MeshGL.h"
 
 #include <GL/glew.h>

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ShaderSpirvManager.h"
 
 #include "Graphics/ShaderSpirvData.h"

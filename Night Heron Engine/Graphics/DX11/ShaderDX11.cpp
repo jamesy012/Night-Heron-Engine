@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ShaderDX11.h"
 
 #include "GFXDX11.h"

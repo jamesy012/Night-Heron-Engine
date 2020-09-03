@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Singletons.h"
 
 #include "Managers/Manager.h"

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "SceneManager.h"
 
 #include "Util.h"
@@ -5,6 +6,7 @@
 #include "Scene.h"
 
 void SceneManager::ImGuiData() {
+
 }
 
 bool SceneManager::IsFileAOurType(CMString a_FilePath) {

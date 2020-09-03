@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Scene.h"
 
 #include "Generated/Objects_Night_Heron_Engine.h"

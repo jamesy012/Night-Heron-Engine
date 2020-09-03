@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "JCglm.h"
 
 void glm::to_json(nlohmann::json & j, const vec2 & p) {

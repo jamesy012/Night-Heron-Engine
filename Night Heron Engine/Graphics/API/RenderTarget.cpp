@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "RenderTarget.h"
 
 RenderTarget::RenderTarget(unsigned int a_Width, unsigned int a_Height) {

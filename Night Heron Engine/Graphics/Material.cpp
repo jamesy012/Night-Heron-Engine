@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Material.h"
 
 #include "Graphics/API/Shader.h"
